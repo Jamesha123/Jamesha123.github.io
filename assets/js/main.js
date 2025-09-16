@@ -421,4 +421,21 @@
 		toggle.textContent = 'Playing';
 		toggle.classList.add('disabled');
 	});
+	
+	// Reset game when leaving Snake page
+	window.addEventListener('hashchange', function(){
+		if (location.hash !== '#project-snake') {
+			// Reset Snake game state
+			if (window.__snakeLoaded) {
+				var old = document.querySelector('script[src^="assets/js/snake.js"]');
+				if (old) old.remove();
+				window.__snakeLoaded = false;
+			}
+			started = false;
+			if (toggle) {
+				toggle.textContent = 'Play';
+				toggle.classList.remove('disabled');
+			}
+		}
+	});
 })();
