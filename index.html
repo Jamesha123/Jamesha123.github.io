@@ -166,21 +166,21 @@
 									async function loadCheerpJIfNeeded() {
 										if (typeof cheerpjInit === 'function') return;
 										await new Promise(function(resolve, reject){
-											var existing = document.querySelector('script[src*="cjrtnc.leaningtech.com/3.0/loader.js"]');
+											var existing = document.querySelector('script[src*="cjrtnc.leaningtech.com"]');
 											if (existing) { existing.addEventListener('load', resolve); existing.addEventListener('error', reject); return; }
 											var s = document.createElement('script');
-											s.src = 'https://cjrtnc.leaningtech.com/3.0/loader.js';
+											s.src = 'https://cjrtnc.leaningtech.com/latest/loader.js';
 											s.defer = true;
-											s.onload = resolve;
-											s.onerror = reject;
+											s.onload = function(){ console.log('[Snake Java] CheerpJ loader.js loaded'); resolve(); };
+											s.onerror = function(e){ console.error('[Snake Java] Failed to load CheerpJ loader', e); reject(e); };
 											document.head.appendChild(s);
 										});
-										// Poll until the API is attached
-										for (var i = 0; i < 40; i++) { // up to ~2s
-											if (typeof cheerpjInit === 'function') return;
-											await new Promise(r => setTimeout(r, 50));
+										// Poll until the API is attached (timeout ~8s)
+										for (var i = 0; i < 80; i++) {
+											if (typeof cheerpjInit === 'function') { console.log('[Snake Java] CheerpJ API ready'); return; }
+											await new Promise(r => setTimeout(r, 100));
 										}
-										throw new Error('CheerpJ did not initialize');
+										throw new Error('CheerpJ did not initialize (timeout)');
 									}
 									async function checkJarReachable() {
 										try {
