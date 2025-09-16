@@ -1659,3 +1659,53 @@ input, select, textarea {
 		body.is-preload #footer {
 			opacity: 0;
 		}
+
+/* Projects Grid */
+.projects-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 1rem;
+	margin: 1.5rem 0 2rem 0;
+}
+
+.project-card {
+	display: block;
+	text-decoration: none;
+	border: 1px solid #ffffff;
+	border-radius: 6px;
+	padding: 0.75rem;
+	background: rgba(255,255,255,0.02);
+	transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.project-card:hover {
+	background: rgba(255,255,255,0.06);
+	transform: translateY(-3px);
+}
+
+.project-card h4 {
+	margin: 0.75rem 0 0 0;
+	letter-spacing: 0.15rem;
+	text-transform: uppercase;
+	font-weight: 600;
+	font-size: 0.9rem;
+	text-align: center;
+}
+
+@media screen and (max-width: 980px) {
+	.projects-grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@media screen and (max-width: 736px) {
+	.projects-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media screen and (max-width: 480px) {
+	.projects-grid {
+		grid-template-columns: 1fr;
+	}
+}
