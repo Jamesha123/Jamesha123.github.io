@@ -161,7 +161,7 @@
 									var playBtn = document.getElementById('cj-snake-play');
 									var restartBtn = document.getElementById('cj-snake-restart');
 									var display = document.getElementById('snakej-display');
-									var jarUrl = 'assets/jar/SnakeGame.jar';
+									var jarUrl = '/assets/jar/SnakeGame.jar';
 									var started = false;
 									async function checkJarReachable() {
 										try {
@@ -185,7 +185,8 @@
 										try {
 											await cheerpjInit();
 											await cheerpjCreateDisplay(-1, -1, display);
-											await cheerpjRunJar(jarUrl);
+											await cheerpjAddClasspath('/assets/jar/SnakeGame.jar');
+											await cheerpjRunMain('SnakeGame', []);
 										} catch (e) {
 											started = false;
 											playBtn.classList.remove('disabled');
