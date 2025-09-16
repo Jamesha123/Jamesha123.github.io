@@ -68,6 +68,16 @@
 								<li>Created animation for the players to move around the board</li>
 								<li>Developed & designed the UI/UX of the GUI using Java Swing</li>
 								</ul>
+								<h3>Play a Demo: Snake</h3>
+								<p>A tiny HTML5 game embedded here so visitors can try something instantly.</p>
+								<div style="display:flex; gap:0.75rem; align-items:center; margin: 0 0 1rem 0;">
+									<a href="#" class="button primary" id="snake-toggle">Play / Hide</a>
+									<a href="#" class="button" id="snake-restart">Restart</a>
+								</div>
+								<div id="snake-container" style="display:none;">
+									<canvas id="snake-canvas" width="420" height="300" style="width:100%;max-width:420px;border:1px solid #333;border-radius:6px;display:block;margin:0 auto 1rem auto;background:#111"></canvas>
+									<p style="text-align:center;font-size:0.9rem;opacity:0.8;">Use Arrow Keys or WASD. Space to restart.</p>
+								</div>
 								<span class="image main"><img src="images/cat.gif" alt="" /></span>
 								<h3>Nyan Defender</h3>
 								<ul style=“list-style-type:disc”>

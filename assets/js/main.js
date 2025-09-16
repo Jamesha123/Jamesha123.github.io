@@ -399,3 +399,41 @@
 					});
 
 })(jQuery);
+
+// Snake demo controls (safe to run even if elements missing)
+(function(){
+	function byId(id){ return document.getElementById(id); }
+	var toggle = byId('snake-toggle');
+	var container = byId('snake-container');
+	var restart = byId('snake-restart');
+	if(!toggle || !container) return;
+	toggle.addEventListener('click', function(e){
+		e.preventDefault();
+		var isHidden = container.style.display === 'none' || container.style.display === '';
+		container.style.display = isHidden ? 'block' : 'none';
+		if (isHidden) {
+			// Lazy-load the game script once
+			if (!window.__snakeLoaded) {
+				var s = document.createElement('script');
+				s.src = 'assets/js/snake.js?v=1';
+				s.onload = function(){ window.__snakeLoaded = true; };
+				document.body.appendChild(s);
+			}
+		}
+	});
+	if (restart) {
+		restart.addEventListener('click', function(e){
+			e.preventDefault();
+			// Reload the script to restart game state in a simple way
+			if (window.__snakeLoaded) {
+				var old = document.querySelector('script[src^="assets/js/snake.js"]');
+				if (old) old.remove();
+				window.__snakeLoaded = false;
+			}
+			var s = document.createElement('script');
+			s.src = 'assets/js/snake.js?v=' + Date.now();
+			s.onload = function(){ window.__snakeLoaded = true; };
+			document.body.appendChild(s);
+		});
+	}
+})();
