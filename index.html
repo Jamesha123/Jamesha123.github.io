@@ -149,92 +149,13 @@
 									<a href="https://github.com/Jamesha123/Snake" class="button" target="_blank" rel="noopener">View Source on GitHub</a>
 								</p>
 								<div style="display:flex; gap:0.75rem; align-items:center; margin: 0 0 1rem 0;">
-									<a href="#" class="button primary" id="cj-snake-play">Play Snake (Java)</a>
-									<a href="#" class="button" id="cj-snake-restart">Restart</a>
+									<a href="#" class="button primary" id="snake-toggle">Play / Hide</a>
+									<a href="#" class="button" id="snake-restart">Restart</a>
 								</div>
-								<div id="snakej-display" style="width:640px;max-width:100%;height:480px;border:1px solid #333;border-radius:6px;margin:0 auto 1rem auto;background:#111;display:flex;align-items:center;justify-content:center;color:#aaa;">
-									<span>Click "Play Snake (Java)" to load the game…</span>
+								<div id="snake-container" style="display:none;">
+									<canvas id="snake-canvas" width="420" height="300" style="width:100%;max-width:420px;border:1px solid #333;border-radius:6px;display:block;margin:0 auto 1rem auto;background:#111"></canvas>
+									<p style="text-align:center;font-size:0.9rem;opacity:0.8;">Use Arrow Keys or WASD. Space to restart.</p>
 								</div>
-								<script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
-								<script>
-								(function(){
-									var playBtn = document.getElementById('cj-snake-play');
-									var restartBtn = document.getElementById('cj-snake-restart');
-									var display = document.getElementById('snakej-display');
-									var jarUrl = '/assets/jar/SnakeGame.jar';
-									var started = false;
-									async function loadCheerpJIfNeeded() {
-										if (typeof cheerpjInit === 'function') return;
-										await new Promise(function(resolve, reject){
-											var existing = document.querySelector('script[src*="cjrtnc.leaningtech.com"]');
-											if (existing) { existing.addEventListener('load', resolve); existing.addEventListener('error', reject); return; }
-											var s = document.createElement('script');
-											s.src = 'https://cjrtnc.leaningtech.com/latest/loader.js';
-											s.defer = true;
-											s.onload = function(){ console.log('[Snake Java] CheerpJ loader.js loaded'); resolve(); };
-											s.onerror = function(e){ console.error('[Snake Java] Failed to load CheerpJ loader', e); reject(e); };
-											document.head.appendChild(s);
-										});
-										// Poll until the API is attached (timeout ~8s)
-										for (var i = 0; i < 80; i++) {
-											if (typeof cheerpjInit === 'function') { console.log('[Snake Java] CheerpJ API ready'); return; }
-											await new Promise(r => setTimeout(r, 100));
-										}
-										throw new Error('CheerpJ did not initialize (timeout)');
-									}
-									async function checkJarReachable() {
-										try {
-											var res = await fetch(jarUrl, { method: 'HEAD', cache: 'no-store' });
-											return res.ok;
-										} catch (e) {
-											return false;
-										}
-									}
-									async function launch() {
-										if (started) return;
-										started = true;
-										playBtn.classList.add('disabled');
-										var ok = await checkJarReachable();
-										if (!ok) {
-											started = false;
-											playBtn.classList.remove('disabled');
-											alert('Could not find SnakeGame.jar at ' + jarUrl + '. Make sure the file exists and the path/case matches.');
-											return;
-										}
-										try {
-											display.textContent = 'Loading Java runtime…';
-											await loadCheerpJIfNeeded();
-											await cheerpjInit();
-											display.textContent = 'Creating display…';
-											await cheerpjCreateDisplay(-1, -1, display);
-											console.log('[Snake Java] Trying cheerpjRunJar', jarUrl);
-											display.textContent = 'Launching game…';
-											try {
-												await cheerpjRunJar(jarUrl);
-												return;
-											} catch (e1) {
-												console.warn('[Snake Java] RunJar failed, trying RunMain fallback', e1);
-												display.textContent = 'Launching (fallback)…';
-												await cheerpjAddClasspath(jarUrl);
-												await cheerpjRunMain('SnakeGame', []);
-												return;
-											}
-										} catch (e) {
-											started = false;
-											playBtn.classList.remove('disabled');
-											console.error('CheerpJ error:', e);
-											alert('Failed to launch the Java game. Open DevTools Console for details.');
-										}
-									}
-									function restart() {
-										// Simple restart: reload the page section
-										location.hash = '#projects';
-										setTimeout(function(){ location.hash = '#project-snake'; }, 50);
-									}
-									if (playBtn) playBtn.addEventListener('click', function(e){ e.preventDefault(); launch(); });
-									if (restartBtn) restartBtn.addEventListener('click', function(e){ e.preventDefault(); restart(); });
-								})();
-								</script>
 							</article>
 
 						<!-- About -->
