@@ -163,10 +163,25 @@
 									var display = document.getElementById('snakej-display');
 									var jarUrl = 'assets/jar/SnakeGame.jar';
 									var started = false;
+									async function checkJarReachable() {
+										try {
+											var res = await fetch(jarUrl, { method: 'HEAD', cache: 'no-store' });
+											return res.ok;
+										} catch (e) {
+											return false;
+										}
+									}
 									async function launch() {
 										if (started) return;
 										started = true;
 										playBtn.classList.add('disabled');
+										var ok = await checkJarReachable();
+										if (!ok) {
+											started = false;
+											playBtn.classList.remove('disabled');
+											alert('Could not find SnakeGame.jar at ' + jarUrl + '. Make sure the file exists and the path/case matches.');
+											return;
+										}
 										try {
 											await cheerpjInit();
 											await cheerpjCreateDisplay(-1, -1, display);
@@ -174,8 +189,8 @@
 										} catch (e) {
 											started = false;
 											playBtn.classList.remove('disabled');
-											console.error(e);
-											alert('Failed to load the Java game. Please try again.');
+											console.error('CheerpJ error:', e);
+											alert('Failed to launch the Java game. Open DevTools Console for details.');
 										}
 									}
 									function restart() {
