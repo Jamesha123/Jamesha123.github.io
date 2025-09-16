@@ -170,11 +170,17 @@
 											if (existing) { existing.addEventListener('load', resolve); existing.addEventListener('error', reject); return; }
 											var s = document.createElement('script');
 											s.src = 'https://cjrtnc.leaningtech.com/3.0/loader.js';
-											s.async = true;
+											s.defer = true;
 											s.onload = resolve;
 											s.onerror = reject;
 											document.head.appendChild(s);
 										});
+										// Poll until the API is attached
+										for (var i = 0; i < 40; i++) { // up to ~2s
+											if (typeof cheerpjInit === 'function') return;
+											await new Promise(r => setTimeout(r, 50));
+										}
+										throw new Error('CheerpJ did not initialize');
 									}
 									async function checkJarReachable() {
 										try {
