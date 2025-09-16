@@ -1716,29 +1716,35 @@ input, select, textarea {
 	max-width: 95vw;
 }
 
-/* Square thumbnails inside project cards */
+/* Square thumbnails using aspect-ratio, disable pseudo helpers to avoid conflicts */
 .project-card .image.fit {
+	aspect-ratio: 1 / 1;
 	position: relative;
 	display: block;
-	width: 100%;
 	overflow: hidden;
 }
-/* Use ::after to create aspect-ratio, avoid clashing with theme's ::before */
+.project-card .image.fit::before,
 .project-card .image.fit::after {
-	content: '';
-	display: block;
-	padding-top: 100%; /* 1:1 aspect ratio */
+	content: none !important;
 }
 .project-card .image.fit img {
-	position: absolute;
-	top: 0;
-	left: 0;
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
+	display: block;
+	position: static;
 }
 
 /* Default visibility: show Projects grid, hide other articles until active */
 #main > article { display: none; }
 #main > article#projects { display: block; }
 #main > article.active { display: block; }
+
+/* Make Projects article visible even when not .active */
+#main > article#projects {
+	opacity: 1;
+	-moz-transform: none;
+	-webkit-transform: none;
+	-ms-transform: none;
+	transform: none;
+}
