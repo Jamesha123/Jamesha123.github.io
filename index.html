@@ -145,14 +145,48 @@
 						<!-- Snake Game Project -->
 							<article id="project-snake">
 								<h2 class="major">Snake Game</h2>
+								<p>
+									<a href="https://github.com/Jamesha123/Snake" class="button" target="_blank" rel="noopener">View Source on GitHub</a>
+								</p>
 								<div style="display:flex; gap:0.75rem; align-items:center; margin: 0 0 1rem 0;">
-									<a href="#" class="button primary" id="snake-toggle">Play / Hide</a>
-									<a href="#" class="button" id="snake-restart">Restart</a>
+									<a href="#" class="button primary" id="cj-snake-play">Play Snake (Java)</a>
+									<a href="#" class="button" id="cj-snake-restart">Restart</a>
 								</div>
-								<div id="snake-container" style="display:none;">
-									<canvas id="snake-canvas" width="420" height="300" style="width:100%;max-width:420px;border:1px solid #333;border-radius:6px;display:block;margin:0 auto 1rem auto;background:#111"></canvas>
-									<p style="text-align:center;font-size:0.9rem;opacity:0.8;">Use Arrow Keys or WASD. Space to restart.</p>
+								<div id="snakej-display" style="width:640px;max-width:100%;height:480px;border:1px solid #333;border-radius:6px;margin:0 auto 1rem auto;background:#111;display:flex;align-items:center;justify-content:center;color:#aaa;">
+									<span>Click "Play Snake (Java)" to load the game…</span>
 								</div>
+								<script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
+								<script>
+								(function(){
+									var playBtn = document.getElementById('cj-snake-play');
+									var restartBtn = document.getElementById('cj-snake-restart');
+									var display = document.getElementById('snakej-display');
+									var jarUrl = 'https://raw.githubusercontent.com/Jamesha123/Snake/main/SnakeGame.jar';
+									var started = false;
+									async function launch() {
+										if (started) return;
+										started = true;
+										playBtn.classList.add('disabled');
+										try {
+											await cheerpjInit();
+											await cheerpjCreateDisplay(-1, -1, display);
+											await cheerpjRunJar(jarUrl);
+										} catch (e) {
+											started = false;
+											playBtn.classList.remove('disabled');
+											console.error(e);
+											alert('Failed to load the Java game. Please try again.');
+										}
+									}
+									function restart() {
+										// Simple restart: reload the page section
+										location.hash = '#projects';
+										setTimeout(function(){ location.hash = '#project-snake'; }, 50);
+									}
+									if (playBtn) playBtn.addEventListener('click', function(e){ e.preventDefault(); launch(); });
+									if (restartBtn) restartBtn.addEventListener('click', function(e){ e.preventDefault(); restart(); });
+								})();
+								</script>
 							</article>
 
 						<!-- About -->
