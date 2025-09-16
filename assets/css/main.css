@@ -1735,3 +1735,8 @@ input, select, textarea {
 	height: 100%;
 	object-fit: cover;
 }
+
+/* Default visibility: show Projects grid, hide other articles until active */
+#main > article { display: none; }
+#main > article#projects { display: block; }
+#main > article.active { display: block; }

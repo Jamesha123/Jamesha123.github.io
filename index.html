@@ -77,9 +77,9 @@
 										<span class="image fit"><img src="images/weather.jpg" alt="NWS Updater" /></span>
 										<h4>NWS Updater</h4>
 									</a>
-									<a class="project-card" href="#">
-										<span class="image fit"><img src="images/pic01.jpg" alt="Project 5" /></span>
-										<h4>Project 5</h4>
+									<a class="project-card" href="#project-snake">
+										<span class="image fit"><img src="images/pic01.jpg" alt="Snake Game" /></span>
+										<h4>Snake Game</h4>
 									</a>
 									<a class="project-card" href="#">
 										<span class="image fit"><img src="images/pic02.jpg" alt="Project 6" /></span>
@@ -140,6 +140,19 @@
 								<li>Created relational database using MariaDB to store Amazon Topic ARN and users email and phone</li>
 								<li>Developed services using Jackson library to extract data from NWS API requests</li>
 								</ul>
+							</article>
+
+						<!-- Snake Game Project -->
+							<article id="project-snake">
+								<h2 class="major">Snake Game</h2>
+								<div style="display:flex; gap:0.75rem; align-items:center; margin: 0 0 1rem 0;">
+									<a href="#" class="button primary" id="snake-toggle">Play / Hide</a>
+									<a href="#" class="button" id="snake-restart">Restart</a>
+								</div>
+								<div id="snake-container" style="display:none;">
+									<canvas id="snake-canvas" width="420" height="300" style="width:100%;max-width:420px;border:1px solid #333;border-radius:6px;display:block;margin:0 auto 1rem auto;background:#111"></canvas>
+									<p style="text-align:center;font-size:0.9rem;opacity:0.8;">Use Arrow Keys or WASD. Space to restart.</p>
+								</div>
 							</article>
 
 						<!-- About -->
