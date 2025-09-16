@@ -202,11 +202,23 @@
 											return;
 										}
 										try {
+											display.textContent = 'Loading Java runtime…';
 											await loadCheerpJIfNeeded();
 											await cheerpjInit();
+											display.textContent = 'Creating display…';
 											await cheerpjCreateDisplay(-1, -1, display);
-											await cheerpjAddClasspath(jarUrl);
-											await cheerpjRunMain('SnakeGame', []);
+											console.log('[Snake Java] Trying cheerpjRunJar', jarUrl);
+											display.textContent = 'Launching game…';
+											try {
+												await cheerpjRunJar(jarUrl);
+												return;
+											} catch (e1) {
+												console.warn('[Snake Java] RunJar failed, trying RunMain fallback', e1);
+												display.textContent = 'Launching (fallback)…';
+												await cheerpjAddClasspath(jarUrl);
+												await cheerpjRunMain('SnakeGame', []);
+												return;
+											}
 										} catch (e) {
 											started = false;
 											playBtn.classList.remove('disabled');
