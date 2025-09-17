@@ -5,37 +5,16 @@
   let gamePaused = false;
   let animationId = null;
   let gameOver = false;
+  let difficulty = 'medium'; // easy, medium, hard
 
   // Canvas and context
-  const canvas = document.getElementById('pong-canvas');
-  const ctx = canvas.getContext('2d');
+  let canvas;
+  let ctx;
 
   // Game objects
-  const ball = {
-    x: canvas.width / 2,
-    y: canvas.height / 2,
-    dx: 2,
-    dy: 2,
-    radius: 8
-  };
-
-  const playerPaddle = {
-    x: 20,
-    y: canvas.height / 2 - 40,
-    width: 10,
-    height: 80,
-    dy: 0,
-    speed: 5
-  };
-
-  const computerPaddle = {
-    x: canvas.width - 30,
-    y: canvas.height / 2 - 40,
-    width: 10,
-    height: 80,
-    dy: 0,
-    speed: 4
-  };
+  let ball;
+  let playerPaddle;
+  let computerPaddle;
 
   // Scores
   let playerScore = 0;
@@ -51,9 +30,56 @@
   const computerScoreEl = document.getElementById('computer-score');
   const startBtn = document.getElementById('pong-start-btn');
   const resetBtn = document.getElementById('pong-reset-btn');
+  const difficultySelect = document.getElementById('pong-difficulty');
+
+  // Initialize canvas and game objects
+  function initCanvas() {
+    canvas = document.getElementById('pong-canvas');
+    ctx = canvas.getContext('2d');
+    
+    if (!canvas || !ctx) {
+      console.error('Canvas not found or context not available');
+      return false;
+    }
+    
+    // Initialize game objects
+    ball = {
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      dx: 2,
+      dy: 2,
+      radius: 8
+    };
+
+    playerPaddle = {
+      x: 20,
+      y: canvas.height / 2 - 40,
+      width: 10,
+      height: 80,
+      dy: 0,
+      speed: 5
+    };
+
+    computerPaddle = {
+      x: canvas.width - 30,
+      y: canvas.height / 2 - 40,
+      width: 10,
+      height: 80,
+      dy: 0,
+      speed: 4,
+      reactionTime: 0.8
+    };
+    
+    return true;
+  }
 
   // Initialize game
   function init() {
+    if (!initCanvas()) {
+      console.error('Failed to initialize canvas');
+      return;
+    }
+    
     resetGame();
     setupEventListeners();
     draw();
@@ -73,6 +99,9 @@
     // Button controls
     startBtn.addEventListener('click', startGame);
     resetBtn.addEventListener('click', resetGame);
+    
+    // Difficulty selection
+    difficultySelect.addEventListener('change', updateDifficulty);
   }
 
   // Handle key down
@@ -137,6 +166,26 @@
     e.preventDefault();
   }
 
+  // Update difficulty settings
+  function updateDifficulty() {
+    difficulty = difficultySelect.value;
+    
+    switch(difficulty) {
+      case 'easy':
+        computerPaddle.speed = 2;
+        computerPaddle.reactionTime = 0.3;
+        break;
+      case 'medium':
+        computerPaddle.speed = 4;
+        computerPaddle.reactionTime = 0.8;
+        break;
+      case 'hard':
+        computerPaddle.speed = 6;
+        computerPaddle.reactionTime = 1.2;
+        break;
+    }
+  }
+
   // Start game
   function startGame() {
     if (gameRunning) return;
@@ -166,6 +215,9 @@
     gameRunning = false;
     gamePaused = false;
     gameOver = false;
+    
+    // Update difficulty settings
+    updateDifficulty();
     
     // Reset ball
     ball.x = canvas.width / 2;
@@ -253,16 +305,38 @@
       playerPaddle.y = canvas.height - playerPaddle.height;
     }
     
-    // Update computer paddle (simple AI)
+    // Update computer paddle (AI with difficulty levels)
     const paddleCenter = computerPaddle.y + computerPaddle.height / 2;
     const ballCenter = ball.y;
+    const ballDistance = Math.abs(ball.x - computerPaddle.x);
     
-    if (ballCenter < paddleCenter - 10) {
-      computerPaddle.dy = -computerPaddle.speed;
-    } else if (ballCenter > paddleCenter + 10) {
-      computerPaddle.dy = computerPaddle.speed;
+    // Only react when ball is coming towards computer paddle
+    if (ball.dx > 0 && ballDistance < canvas.width * computerPaddle.reactionTime) {
+      const targetY = ballCenter;
+      const error = targetY - paddleCenter;
+      
+      if (Math.abs(error) > 5) {
+        if (error < 0) {
+          computerPaddle.dy = -computerPaddle.speed;
+        } else {
+          computerPaddle.dy = computerPaddle.speed;
+        }
+      } else {
+        computerPaddle.dy = 0;
+      }
     } else {
-      computerPaddle.dy = 0;
+      // Move towards center when ball is far away (harder difficulty)
+      if (difficulty === 'hard') {
+        const centerY = canvas.height / 2;
+        const centerError = centerY - paddleCenter;
+        if (Math.abs(centerError) > 10) {
+          computerPaddle.dy = centerError > 0 ? computerPaddle.speed * 0.5 : -computerPaddle.speed * 0.5;
+        } else {
+          computerPaddle.dy = 0;
+        }
+      } else {
+        computerPaddle.dy = 0;
+      }
     }
     
     computerPaddle.y += computerPaddle.dy;

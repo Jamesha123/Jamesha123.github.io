@@ -112,7 +112,7 @@
     wrongCount.textContent = wrongGuesses;
     
     // Update hangman drawing
-    hangmanDrawing.innerHTML = hangmanStages[Math.min(wrongGuesses, 6)].replace(/\n/g, '<br>');
+    hangmanDrawing.textContent = hangmanStages[Math.min(wrongGuesses, 6)];
     
     // Update letter buttons
     const buttons = letterButtons.querySelectorAll('button');
