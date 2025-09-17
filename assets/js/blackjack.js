@@ -1,7 +1,7 @@
 // Blackjack Game Demo
 (() => {
   // Game state
-  let deck = [];
+  let shoe = [];
   let playerHand = [];
   let dealerHand = [];
   let gameOver = false;
@@ -24,28 +24,37 @@
   const suits = ['♠', '♥', '♦', '♣'];
   const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
-  // Initialize deck
-  function createDeck() {
-    deck = [];
-    for (let suit of suits) {
-      for (let value of values) {
-        deck.push({ suit, value });
+  // Initialize 6-deck shoe (default)
+  function createShoe(numDecks = 6) {
+    shoe = [];
+    for (let n = 0; n < numDecks; n++) {
+      for (let suit of suits) {
+        for (let value of values) {
+          shoe.push({ suit, value });
+        }
       }
     }
-    shuffleDeck();
+    shuffleShoe();
   }
 
-  // Shuffle deck using Fisher-Yates algorithm
-  function shuffleDeck() {
-    for (let i = deck.length - 1; i > 0; i--) {
+  // Shuffle shoe using Fisher-Yates algorithm
+  function shuffleShoe() {
+    for (let i = shoe.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [deck[i], deck[j]] = [deck[j], deck[i]];
+      [shoe[i], shoe[j]] = [shoe[j], shoe[i]];
     }
   }
 
-  // Deal a card from deck
+  function ensureShoe() {
+    if (!shoe || shoe.length === 0) createShoe(6);
+    // Reshuffle when low (e.g., less than one deck remaining)
+    if (shoe.length < 52) createShoe(6);
+  }
+
+  // Deal a card from shoe
   function dealCard() {
-    return deck.pop();
+    ensureShoe();
+    return shoe.pop();
   }
 
   // Calculate hand value
@@ -206,6 +215,11 @@
     // Check for immediate blackjack
     if (isBlackjack(playerHand)) {
       gameOver = true;
+      // Round ended immediately; enable Deal for next hand
+      dealBtn.disabled = false;
+      hitBtn.disabled = true;
+      standBtn.disabled = true;
+      newGameBtn.disabled = false;
       updateDisplay();
       updateGameStatus();
     }
@@ -245,11 +259,16 @@
     
     updateDisplay();
     updateGameStatus();
+    // Round ended; enable Deal for next hand
+    dealBtn.disabled = false;
+    hitBtn.disabled = true;
+    standBtn.disabled = true;
+    newGameBtn.disabled = false;
   }
 
-  // Start new game
+  // Start new game (reshuffle shoe if needed)
   function newGame() {
-    createDeck();
+    ensureShoe();
     playerHand = [];
     dealerHand = [];
     gameOver = false;
@@ -269,13 +288,20 @@
 
   // Deal cards
   function dealCards() {
+    // If a round is active, ignore; otherwise start/continue with a fresh deal
+    if (!gameOver && playerHand.length > 0) return;
+    // Clear previous hands and start next round from the shoe
+    playerHand = [];
+    dealerHand = [];
     dealInitialCards();
     
-    // Enable/disable buttons
-    dealBtn.disabled = true;
-    hitBtn.disabled = false;
-    standBtn.disabled = false;
-    newGameBtn.disabled = false;
+    // If round did not end due to immediate blackjack, enable play controls
+    if (!gameOver) {
+      dealBtn.disabled = true;
+      hitBtn.disabled = false;
+      standBtn.disabled = false;
+      newGameBtn.disabled = false;
+    }
   }
 
   // Event listeners
