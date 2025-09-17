@@ -1778,6 +1778,17 @@ input, select, textarea {
 	transform: none;
 }
 
+/* Calculator article image size override */
+#project-calculator .image.main {
+	margin: 1.5rem auto;
+}
+#project-calculator .image.main img {
+	width: 100%;
+	max-width: 420px; /* adjust as needed */
+	display: block;
+	margin: 0 auto;
+}
+
 /* Blackjack Game Styles */
 #blackjack-game {
 	background: #1a1a1a;
