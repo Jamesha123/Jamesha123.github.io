@@ -295,7 +295,7 @@
 					$('<div class="close">Close</div>')
 						.appendTo($this)
 						.on('click', function() {
-							location.hash = '';
+							location.hash = '#projects';
 						});
 
 				// Prevent clicks from inside article from bubbling.
@@ -308,9 +308,14 @@
 		// Events.
 			$body.on('click', function(event) {
 
-				// Article visible? Hide.
-					if ($body.hasClass('is-article-visible'))
+				// Article visible? Hide and go back to projects.
+					if ($body.hasClass('is-article-visible')) {
 						$main._hide(true);
+						// Navigate back to projects after hiding
+						setTimeout(function() {
+							location.hash = '#projects';
+						}, 100);
+					}
 
 			});
 
@@ -320,9 +325,14 @@
 
 					case 27:
 
-						// Article visible? Hide.
-							if ($body.hasClass('is-article-visible'))
+						// Article visible? Hide and go back to projects.
+							if ($body.hasClass('is-article-visible')) {
 								$main._hide(true);
+								// Navigate back to projects after hiding
+								setTimeout(function() {
+									location.hash = '#projects';
+								}, 100);
+							}
 
 						break;
 
