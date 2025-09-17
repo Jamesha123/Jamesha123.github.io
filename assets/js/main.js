@@ -416,7 +416,7 @@
 		
 		if (!window.__snakeLoaded) {
 			var s = document.createElement('script');
-			s.src = 'assets/js/snake.js?v=2';
+			s.src = 'assets/js/snake.js?v=3';
 			s.onload = function(){ 
 				window.__snakeLoaded = true;
 			};

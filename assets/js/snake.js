@@ -4,38 +4,12 @@
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   
-  // Responsive canvas sizing for mobile
-  function resizeCanvas() {
-    const container = canvas.parentElement;
-    const maxWidth = Math.min(420, container.clientWidth - 20);
-    const aspectRatio = 420 / 300;
-    const newWidth = Math.max(200, maxWidth); // Ensure minimum width
-    const newHeight = Math.max(150, newWidth / aspectRatio); // Ensure minimum height
-    
-    canvas.style.width = newWidth + 'px';
-    canvas.style.height = newHeight + 'px';
-    canvas.width = newWidth;
-    canvas.height = newHeight;
-    
-    // Recalculate grid dimensions
-    tilesX = Math.floor(canvas.width / tileSize);
-    tilesY = Math.floor(canvas.height / tileSize);
-    
-    // Ensure we have valid grid dimensions
-    if (tilesX < 5) tilesX = 5;
-    if (tilesY < 5) tilesY = 5;
-  }
-  
-  // Initial resize
-  resizeCanvas();
-  
-  // Resize on window resize
-  window.addEventListener('resize', resizeCanvas);
-  
+  // Fixed canvas dimensions for reliability
+  const canvasWidth = 420;
+  const canvasHeight = 300;
   const tileSize = 20;
-  let tilesX = Math.floor(canvas.width / tileSize);
-  let tilesY = Math.floor(canvas.height / tileSize);
-  
+  const tilesX = Math.floor(canvasWidth / tileSize);
+  const tilesY = Math.floor(canvasHeight / tileSize);
 
   let snake = [
     { x: Math.floor(tilesX / 2), y: Math.floor(tilesY / 2) },
@@ -57,7 +31,7 @@
   function handleSwipe() {
     const deltaX = touchEndX - touchStartX;
     const deltaY = touchEndY - touchStartY;
-    const minSwipeDistance = 30; // Minimum distance for a swipe
+    const minSwipeDistance = 30;
 
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
       // Horizontal swipe
@@ -84,48 +58,32 @@
     }
   }
 
-  // Add touch events - try immediately and also after a delay
+  // Add touch events
   function addTouchEvents() {
     if (canvas) {
-      // Remove existing listeners to avoid duplicates
-      canvas.removeEventListener('touchstart', handleTouchStart);
-      canvas.removeEventListener('touchend', handleTouchEnd);
-      canvas.removeEventListener('touchmove', handleTouchMove);
+      canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+      });
+
+      canvas.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        const touch = e.changedTouches[0];
+        touchEndX = touch.clientX;
+        touchEndY = touch.clientY;
+        handleSwipe();
+      });
       
-      // Add new listeners
-      canvas.addEventListener('touchstart', handleTouchStart);
-      canvas.addEventListener('touchend', handleTouchEnd);
-      canvas.addEventListener('touchmove', handleTouchMove);
+      canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+      });
     }
   }
 
-  function handleTouchStart(e) {
-    e.preventDefault();
-    const touch = e.touches[0];
-    touchStartX = touch.clientX;
-    touchStartY = touch.clientY;
-  }
-
-  function handleTouchEnd(e) {
-    e.preventDefault();
-    const touch = e.changedTouches[0];
-    touchEndX = touch.clientX;
-    touchEndY = touch.clientY;
-    handleSwipe();
-  }
-
-  function handleTouchMove(e) {
-    e.preventDefault();
-  }
-
-  // Try to add events immediately
+  // Add touch events
   addTouchEvents();
-  
-  // Also try after a delay in case canvas isn't visible yet
-  setTimeout(addTouchEvents, 200);
-  
-  // Fallback: try again when the game loop starts
-  let touchEventsAdded = false;
 
   window.addEventListener('keydown', (e) => {
     switch (e.key) {
@@ -202,22 +160,23 @@
   }
 
   function draw() {
+    // Clear canvas
     ctx.fillStyle = '#111';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
     // Grid (subtle)
     ctx.strokeStyle = '#222';
     ctx.lineWidth = 1;
-    for (let x = 0; x <= canvas.width; x += tileSize) {
+    for (let x = 0; x <= canvasWidth; x += tileSize) {
       ctx.beginPath();
       ctx.moveTo(x + 0.5, 0);
-      ctx.lineTo(x + 0.5, canvas.height);
+      ctx.lineTo(x + 0.5, canvasHeight);
       ctx.stroke();
     }
-    for (let y = 0; y <= canvas.height; y += tileSize) {
+    for (let y = 0; y <= canvasHeight; y += tileSize) {
       ctx.beginPath();
       ctx.moveTo(0, y + 0.5);
-      ctx.lineTo(canvas.width, y + 0.5);
+      ctx.lineTo(canvasWidth, y + 0.5);
       ctx.stroke();
     }
 
@@ -238,22 +197,16 @@
 
     if (isGameOver) {
       ctx.fillStyle = 'rgba(0,0,0,0.6)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
       ctx.fillStyle = '#fff';
       ctx.font = '20px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('Game Over - Press Space', canvas.width / 2, canvas.height / 2);
+      ctx.fillText('Game Over - Press Space', canvasWidth / 2, canvasHeight / 2);
       ctx.textAlign = 'start';
     }
   }
 
   function loop(ts) {
-    // Try to add touch events if not already added
-    if (!touchEventsAdded) {
-      addTouchEvents();
-      touchEventsAdded = true;
-    }
-    
     if (!lastTick) lastTick = ts;
     const delta = ts - lastTick;
     if (!isGameOver && delta >= speedMs) {
@@ -268,5 +221,3 @@
   restart();
   requestAnimationFrame(loop);
 })();
-
-
