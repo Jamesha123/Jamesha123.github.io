@@ -257,7 +257,31 @@
 									<li>Learned to use the Java programming language</li>
 								</ul>
 								<div style="display:flex; gap:0.75rem; align-items:center; margin: 0 0 2rem 0;">
+									<button type="button" class="button primary" id="pong-toggle">Play Demo</button>
 									<a href="https://github.com/Jamesha123/Pong" class="button" target="_blank" rel="noopener">View Source on GitHub</a>
+								</div>
+								<div id="pong-container" style="display:none;">
+									<div id="pong-game" style="background: #1a1a1a; border: 2px solid #333; border-radius: 8px; padding: 1.5rem; margin: 0 auto; max-width: 600px;">
+										<div style="text-align: center; margin-bottom: 1rem;">
+											<h3 style="color: #fff; margin: 0 0 0.5rem 0;">Pong Demo</h3>
+											<div id="pong-status" style="color: #2ecc71; font-weight: bold; margin-bottom: 1rem;">Click "Start Game" to begin!</div>
+											<div style="color: #fff; margin-bottom: 1rem;">
+												<strong>Player Score: <span id="player-score">0</span> | Computer Score: <span id="computer-score">0</span></strong>
+											</div>
+										</div>
+										
+										<canvas id="pong-canvas" width="400" height="300" style="width: 100%; max-width: 400px; height: 300px; border: 1px solid #333; border-radius: 4px; display: block; margin: 0 auto 1rem auto; background: #111; touch-action: none;"></canvas>
+										
+										<div style="text-align: center; margin-bottom: 1rem;">
+											<p style="color: #fff; font-size: 0.9rem; opacity: 0.8; margin: 0;">Use W/S keys or swipe up/down to control paddle</p>
+										</div>
+										
+										<div style="text-align: center;">
+											<button id="pong-start-btn" class="button primary" style="margin: 0 0.5rem;">Start Game</button>
+											<button id="pong-pause-btn" class="button" style="margin: 0 0.5rem;" disabled>Pause</button>
+											<button id="pong-reset-btn" class="button" style="margin: 0 0.5rem;">Reset</button>
+										</div>
+									</div>
 								</div>
 							</article>
 
@@ -270,7 +294,34 @@
 									<li>Learned to use the Java programming language</li>
 								</ul>
 								<div style="display:flex; gap:0.75rem; align-items:center; margin: 0 0 2rem 0;">
+									<button type="button" class="button primary" id="hangman-toggle">Play Demo</button>
 									<a href="https://github.com/Jamesha123/HangMan" class="button" target="_blank" rel="noopener">View Source on GitHub</a>
+								</div>
+								<div id="hangman-container" style="display:none;">
+									<div id="hangman-game" style="background: #1a1a1a; border: 2px solid #333; border-radius: 8px; padding: 1.5rem; margin: 0 auto; max-width: 600px;">
+										<div style="text-align: center; margin-bottom: 1rem;">
+											<h3 style="color: #fff; margin: 0 0 0.5rem 0;">Hangman Demo</h3>
+											<div id="hangman-status" style="color: #2ecc71; font-weight: bold; margin-bottom: 1rem;">Click "New Game" to start!</div>
+											<div style="color: #fff; margin-bottom: 1rem;">
+												<strong>Word: <span id="word-display"></span></strong>
+											</div>
+											<div style="color: #fff; margin-bottom: 1rem;">
+												<strong>Wrong Guesses: <span id="wrong-count">0</span>/6</strong>
+											</div>
+										</div>
+										
+										<div id="hangman-drawing" style="min-height: 200px; margin-bottom: 1rem; padding: 1rem; background: #222; border-radius: 4px; text-align: center; color: #fff; font-family: monospace; font-size: 16px; line-height: 1.2;">
+										</div>
+										
+										<div id="letter-buttons" style="margin-bottom: 1rem; text-align: center;">
+											<!-- Letter buttons will be generated here -->
+										</div>
+										
+										<div style="text-align: center;">
+											<button id="hangman-new-game-btn" class="button primary" style="margin: 0 0.5rem;">New Game</button>
+											<button id="hangman-hint-btn" class="button" style="margin: 0 0.5rem;">Hint</button>
+										</div>
+									</div>
 								</div>
 							</article>
 

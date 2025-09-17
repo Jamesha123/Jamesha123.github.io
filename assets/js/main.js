@@ -516,3 +516,103 @@
 		}
 	});
 })();
+
+// Hangman demo controls
+(function(){
+	function byId(id){ return document.getElementById(id); }
+	var toggle = byId('hangman-toggle');
+	var container = byId('hangman-container');
+	if(!toggle || !container) return;
+	
+	// Hide container initially
+	container.style.display = 'none';
+	var started = false;
+	
+	toggle.addEventListener('click', function(e){
+		e.preventDefault();
+		// Show the container when Play is clicked
+		container.style.display = 'block';
+		
+		if (!window.__hangmanLoaded) {
+			var s = document.createElement('script');
+			s.src = 'assets/js/hangman.js?v=1';
+			s.onload = function(){ 
+				window.__hangmanLoaded = true;
+			};
+			document.body.appendChild(s);
+		}
+		started = true;
+		toggle.textContent = 'Playing';
+		toggle.classList.add('disabled');
+	});
+	
+	// Reset game when leaving Hangman page
+	window.addEventListener('hashchange', function(){
+		if (location.hash !== '#project-hangman') {
+			// Hide container when leaving hangman page
+			container.style.display = 'none';
+			
+			// Reset Hangman game state
+			if (window.__hangmanLoaded) {
+				var old = document.querySelector('script[src^="assets/js/hangman.js"]');
+				if (old) old.remove();
+				window.__hangmanLoaded = false;
+			}
+			started = false;
+			if (toggle) {
+				toggle.textContent = 'Play Demo';
+				toggle.classList.remove('disabled');
+			}
+		}
+	});
+})();
+
+// Pong demo controls
+(function(){
+	function byId(id){ return document.getElementById(id); }
+	var toggle = byId('pong-toggle');
+	var container = byId('pong-container');
+	if(!toggle || !container) return;
+	
+	// Hide container initially
+	container.style.display = 'none';
+	var started = false;
+	
+	toggle.addEventListener('click', function(e){
+		e.preventDefault();
+		// Show the container when Play is clicked
+		container.style.display = 'block';
+		
+		if (!window.__pongLoaded) {
+			var s = document.createElement('script');
+			s.src = 'assets/js/pong.js?v=1';
+			s.onload = function(){ 
+				window.__pongLoaded = true;
+			};
+			document.body.appendChild(s);
+		}
+		started = true;
+		toggle.textContent = 'Playing';
+		toggle.classList.add('disabled');
+	});
+	
+	// Reset game when leaving Pong page
+	window.addEventListener('hashchange', function(){
+		if (location.hash !== '#project-pong') {
+			// Hide container when leaving pong page
+			container.style.display = 'none';
+			
+			// Reset Pong game state
+			if (window.__pongLoaded) {
+				var old = document.querySelector('script[src^="assets/js/pong.js"]');
+				if (old) old.remove();
+				window.__pongLoaded = false;
+			}
+			started = false;
+			if (toggle) {
+				toggle.textContent = 'Play Demo';
+				toggle.classList.remove('disabled');
+			}
+		}
+	});
+})();
