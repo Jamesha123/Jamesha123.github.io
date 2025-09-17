@@ -3,9 +3,37 @@
   const canvas = document.getElementById('snake-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+  
+  // Responsive canvas sizing for mobile
+  function resizeCanvas() {
+    const container = canvas.parentElement;
+    const maxWidth = Math.min(420, container.clientWidth - 20);
+    const aspectRatio = 420 / 300;
+    const newWidth = maxWidth;
+    const newHeight = newWidth / aspectRatio;
+    
+    canvas.style.width = newWidth + 'px';
+    canvas.style.height = newHeight + 'px';
+    canvas.width = newWidth;
+    canvas.height = newHeight;
+    
+    // Recalculate grid dimensions
+    tilesX = Math.floor(canvas.width / tileSize);
+    tilesY = Math.floor(canvas.height / tileSize);
+    
+    // Restart game with new dimensions
+    restart();
+  }
+  
+  // Initial resize
+  resizeCanvas();
+  
+  // Resize on window resize
+  window.addEventListener('resize', resizeCanvas);
+  
   const tileSize = 20;
-  const tilesX = Math.floor(canvas.width / tileSize);
-  const tilesY = Math.floor(canvas.height / tileSize);
+  let tilesX = Math.floor(canvas.width / tileSize);
+  let tilesY = Math.floor(canvas.height / tileSize);
 
   let snake = [
     { x: Math.floor(tilesX / 2), y: Math.floor(tilesY / 2) },
@@ -17,6 +45,57 @@
   let speedMs = 140;
   let lastTick = 0;
   let isGameOver = false;
+
+  // Touch/swipe support for mobile
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchEndX = 0;
+  let touchEndY = 0;
+
+  canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+  });
+
+  canvas.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    const touch = e.changedTouches[0];
+    touchEndX = touch.clientX;
+    touchEndY = touch.clientY;
+    handleSwipe();
+  });
+
+  function handleSwipe() {
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+    const minSwipeDistance = 30; // Minimum distance for a swipe
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      // Horizontal swipe
+      if (Math.abs(deltaX) > minSwipeDistance) {
+        if (deltaX > 0) {
+          // Swipe right
+          if (direction.x !== -1) nextDirection = { x: 1, y: 0 };
+        } else {
+          // Swipe left
+          if (direction.x !== 1) nextDirection = { x: -1, y: 0 };
+        }
+      }
+    } else {
+      // Vertical swipe
+      if (Math.abs(deltaY) > minSwipeDistance) {
+        if (deltaY > 0) {
+          // Swipe down
+          if (direction.y !== -1) nextDirection = { x: 0, y: 1 };
+        } else {
+          // Swipe up
+          if (direction.y !== 1) nextDirection = { x: 0, y: -1 };
+        }
+      }
+    }
+  }
 
   window.addEventListener('keydown', (e) => {
     switch (e.key) {
@@ -125,7 +204,7 @@
     // HUD
     ctx.fillStyle = '#fff';
     ctx.font = '14px sans-serif';
-    ctx.fillText('Score: ' + score + '  (Space to restart)', 8, 18);
+    ctx.fillText('Score: ' + score, 8, 18);
 
     if (isGameOver) {
       ctx.fillStyle = 'rgba(0,0,0,0.6)';
