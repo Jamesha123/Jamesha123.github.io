@@ -414,7 +414,11 @@
 		if (!window.__snakeLoaded) {
 			var s = document.createElement('script');
 			s.src = 'assets/js/snake.js?v=2';
-			s.onload = function(){ window.__snakeLoaded = true; };
+			s.onload = function(){ 
+				window.__snakeLoaded = true;
+				// Show the container when script loads
+				container.style.display = 'block';
+			};
 			document.body.appendChild(s);
 		}
 		started = true;

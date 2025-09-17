@@ -52,21 +52,6 @@
   let touchEndX = 0;
   let touchEndY = 0;
 
-  canvas.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    const touch = e.touches[0];
-    touchStartX = touch.clientX;
-    touchStartY = touch.clientY;
-  });
-
-  canvas.addEventListener('touchend', (e) => {
-    e.preventDefault();
-    const touch = e.changedTouches[0];
-    touchEndX = touch.clientX;
-    touchEndY = touch.clientY;
-    handleSwipe();
-  });
-
   function handleSwipe() {
     const deltaX = touchEndX - touchStartX;
     const deltaY = touchEndY - touchStartY;
@@ -96,6 +81,49 @@
       }
     }
   }
+
+  // Add touch events - try immediately and also after a delay
+  function addTouchEvents() {
+    if (canvas) {
+      // Remove existing listeners to avoid duplicates
+      canvas.removeEventListener('touchstart', handleTouchStart);
+      canvas.removeEventListener('touchend', handleTouchEnd);
+      canvas.removeEventListener('touchmove', handleTouchMove);
+      
+      // Add new listeners
+      canvas.addEventListener('touchstart', handleTouchStart);
+      canvas.addEventListener('touchend', handleTouchEnd);
+      canvas.addEventListener('touchmove', handleTouchMove);
+    }
+  }
+
+  function handleTouchStart(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+  }
+
+  function handleTouchEnd(e) {
+    e.preventDefault();
+    const touch = e.changedTouches[0];
+    touchEndX = touch.clientX;
+    touchEndY = touch.clientY;
+    handleSwipe();
+  }
+
+  function handleTouchMove(e) {
+    e.preventDefault();
+  }
+
+  // Try to add events immediately
+  addTouchEvents();
+  
+  // Also try after a delay in case canvas isn't visible yet
+  setTimeout(addTouchEvents, 200);
+  
+  // Fallback: try again when the game loop starts
+  let touchEventsAdded = false;
 
   window.addEventListener('keydown', (e) => {
     switch (e.key) {
@@ -218,6 +246,12 @@
   }
 
   function loop(ts) {
+    // Try to add touch events if not already added
+    if (!touchEventsAdded) {
+      addTouchEvents();
+      touchEventsAdded = true;
+    }
+    
     if (!lastTick) lastTick = ts;
     const delta = ts - lastTick;
     if (!isGameOver && delta >= speedMs) {
