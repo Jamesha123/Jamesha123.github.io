@@ -441,7 +441,7 @@
 			}
 			started = false;
 			if (toggle) {
-				toggle.textContent = 'Play';
+				toggle.textContent = 'Play Demo';
 				toggle.classList.remove('disabled');
 			}
 		}
