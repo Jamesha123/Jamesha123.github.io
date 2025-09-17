@@ -406,18 +406,19 @@
 	var toggle = byId('snake-toggle');
 	var container = byId('snake-container');
 	if(!toggle || !container) return;
-	// Ensure container is visible by default; only control game start
-	container.style.display = 'block';
+	// Hide container initially
+	container.style.display = 'none';
 	var started = false;
 	toggle.addEventListener('click', function(e){
 		e.preventDefault();
+		// Show the container when Play is clicked
+		container.style.display = 'block';
+		
 		if (!window.__snakeLoaded) {
 			var s = document.createElement('script');
 			s.src = 'assets/js/snake.js?v=2';
 			s.onload = function(){ 
 				window.__snakeLoaded = true;
-				// Show the container when script loads
-				container.style.display = 'block';
 			};
 			document.body.appendChild(s);
 		}
@@ -429,6 +430,9 @@
 	// Reset game when leaving Snake page
 	window.addEventListener('hashchange', function(){
 		if (location.hash !== '#project-snake') {
+			// Hide container when leaving snake page
+			container.style.display = 'none';
+			
 			// Reset Snake game state
 			if (window.__snakeLoaded) {
 				var old = document.querySelector('script[src^="assets/js/snake.js"]');
