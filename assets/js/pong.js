@@ -26,8 +26,8 @@
 
   // DOM elements
   let statusEl = document.getElementById('pong-status');
-  let playerScoreEl = document.getElementById('player-score');
-  let computerScoreEl = document.getElementById('computer-score');
+  let playerScoreEl = document.getElementById('pong-player-score');
+  let computerScoreEl = document.getElementById('pong-computer-score');
   let startBtn = document.getElementById('pong-start-btn');
   let resetBtn = document.getElementById('pong-reset-btn');
   let difficultySelect = document.getElementById('pong-difficulty');
@@ -38,8 +38,8 @@
     ctx = canvas.getContext('2d');
     
     // Re-get DOM elements in case they weren't available before
-    playerScoreEl = document.getElementById('player-score');
-    computerScoreEl = document.getElementById('computer-score');
+    playerScoreEl = document.getElementById('pong-player-score');
+    computerScoreEl = document.getElementById('pong-computer-score');
     statusEl = document.getElementById('pong-status');
     startBtn = document.getElementById('pong-start-btn');
     resetBtn = document.getElementById('pong-reset-btn');
@@ -291,7 +291,6 @@
         ball.x - ball.radius >= playerPaddle.x &&
         ball.y + ball.radius >= playerPaddle.y &&
         ball.y - ball.radius <= playerPaddle.y + playerPaddle.height) {
-      console.log('Player paddle collision');
       ball.dx = Math.abs(ball.dx); // Reverse direction
       // Add some spin based on paddle movement
       ball.dy += playerPaddle.dy * 0.5;
@@ -312,18 +311,12 @@
     // Ball out of bounds
     if (ball.x < 0) {
       computerScore++;
-      console.log('Computer scores! Score:', computerScore);
       updateScores();
       checkGameOver();
       if (!gameOver) resetBall();
     } else if (ball.x > canvas.width) {
       playerScore++;
-      console.log('Player scores! Score:', playerScore);
       updateScores();
-      // Force a small delay to ensure DOM updates
-      setTimeout(() => {
-        updateScores();
-      }, 10);
       checkGameOver();
       if (!gameOver) resetBall();
     }
@@ -406,21 +399,17 @@
   // Update scores display
   function updateScores() {
     // Force update by getting elements again
-    const playerEl = document.getElementById('player-score');
-    const computerEl = document.getElementById('computer-score');
+    const playerEl = document.getElementById('pong-player-score');
+    const computerEl = document.getElementById('pong-computer-score');
     
     if (playerEl) {
       playerEl.textContent = playerScore;
-      playerEl.innerHTML = playerScore; // Force innerHTML update too
-      console.log('Updated player score to:', playerScore, 'Element value:', playerEl.textContent);
     } else {
       console.error('Player score element not found!');
     }
     
     if (computerEl) {
       computerEl.textContent = computerScore;
-      computerEl.innerHTML = computerScore; // Force innerHTML update too
-      console.log('Updated computer score to:', computerScore, 'Element value:', computerEl.textContent);
     } else {
       console.error('Computer score element not found!');
     }
