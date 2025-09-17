@@ -295,7 +295,10 @@
 					$('<div class="close">Close</div>')
 						.appendTo($this)
 						.on('click', function() {
-							location.hash = '#projects';
+							var $current = $main_articles.filter('.active');
+							var id = $current.length ? $current.attr('id') : null;
+							var isProjectDetail = id && /^project-/.test(id);
+							location.hash = isProjectDetail ? '#projects' : '#';
 						});
 
 				// Prevent clicks from inside article from bubbling.
@@ -308,12 +311,15 @@
 		// Events.
 			$body.on('click', function(event) {
 
-				// Article visible? Hide and go back to projects.
+				// Article visible? Hide and navigate appropriately.
 					if ($body.hasClass('is-article-visible')) {
+						var $current = $main_articles.filter('.active');
+						var id = $current.length ? $current.attr('id') : null;
+						var isProjectDetail = id && /^project-/.test(id);
 						$main._hide(true);
-						// Navigate back to projects after hiding
+						// Navigate after hiding
 						setTimeout(function() {
-							location.hash = '#projects';
+							location.hash = isProjectDetail ? '#projects' : '#';
 						}, 100);
 					}
 
@@ -325,12 +331,15 @@
 
 					case 27:
 
-						// Article visible? Hide and go back to projects.
+						// Article visible? Hide and navigate appropriately.
 							if ($body.hasClass('is-article-visible')) {
+								var $current = $main_articles.filter('.active');
+								var id = $current.length ? $current.attr('id') : null;
+								var isProjectDetail = id && /^project-/.test(id);
 								$main._hide(true);
-								// Navigate back to projects after hiding
+								// Navigate after hiding
 								setTimeout(function() {
-									location.hash = '#projects';
+									location.hash = isProjectDetail ? '#projects' : '#';
 								}, 100);
 							}
 
