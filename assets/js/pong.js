@@ -25,17 +25,32 @@
   let touchEndY = 0;
 
   // DOM elements
-  const statusEl = document.getElementById('pong-status');
-  const playerScoreEl = document.getElementById('player-score');
-  const computerScoreEl = document.getElementById('computer-score');
-  const startBtn = document.getElementById('pong-start-btn');
-  const resetBtn = document.getElementById('pong-reset-btn');
-  const difficultySelect = document.getElementById('pong-difficulty');
+  let statusEl = document.getElementById('pong-status');
+  let playerScoreEl = document.getElementById('player-score');
+  let computerScoreEl = document.getElementById('computer-score');
+  let startBtn = document.getElementById('pong-start-btn');
+  let resetBtn = document.getElementById('pong-reset-btn');
+  let difficultySelect = document.getElementById('pong-difficulty');
 
   // Initialize canvas and game objects
   function initCanvas() {
     canvas = document.getElementById('pong-canvas');
     ctx = canvas.getContext('2d');
+    
+    // Re-get DOM elements in case they weren't available before
+    playerScoreEl = document.getElementById('player-score');
+    computerScoreEl = document.getElementById('computer-score');
+    statusEl = document.getElementById('pong-status');
+    startBtn = document.getElementById('pong-start-btn');
+    resetBtn = document.getElementById('pong-reset-btn');
+    difficultySelect = document.getElementById('pong-difficulty');
+    
+    console.log('DOM elements found:', {
+      canvas: !!canvas,
+      playerScoreEl: !!playerScoreEl,
+      computerScoreEl: !!computerScoreEl,
+      statusEl: !!statusEl
+    });
     
     if (!canvas || !ctx) {
       console.error('Canvas not found or context not available');
@@ -386,8 +401,21 @@
 
   // Update scores display
   function updateScores() {
-    playerScoreEl.textContent = playerScore;
-    computerScoreEl.textContent = computerScore;
+    console.log('Updating scores - Player:', playerScore, 'Computer:', computerScore);
+    console.log('Player element:', playerScoreEl);
+    console.log('Computer element:', computerScoreEl);
+    
+    if (playerScoreEl) {
+      playerScoreEl.textContent = playerScore;
+    } else {
+      console.error('Player score element not found!');
+    }
+    
+    if (computerScoreEl) {
+      computerScoreEl.textContent = computerScore;
+    } else {
+      console.error('Computer score element not found!');
+    }
   }
 
   // Draw game

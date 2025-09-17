@@ -585,7 +585,7 @@ $(document).ready(function(){
 		
 		if (!window.__pongLoaded) {
 			var s = document.createElement('script');
-			s.src = 'assets/js/pong.js?v=5';
+			s.src = 'assets/js/pong.js?v=6';
 			s.onload = function(){ 
 				window.__pongLoaded = true;
 			};
