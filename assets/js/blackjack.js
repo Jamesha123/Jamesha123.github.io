@@ -235,6 +235,11 @@
     if (isBust(playerHand)) {
       gameOver = true;
       updateGameStatus();
+      // Round ended due to player bust; enable Deal for next hand
+      dealBtn.disabled = false;
+      hitBtn.disabled = true;
+      standBtn.disabled = true;
+      newGameBtn.disabled = false;
     } else if (calculateHandValue(playerHand) === 21) {
       // Player has 21, dealer's turn
       dealerPlay();
