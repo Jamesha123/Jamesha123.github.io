@@ -4,6 +4,7 @@
   let gameRunning = false;
   let gamePaused = false;
   let animationId = null;
+  let gameOver = false;
 
   // Canvas and context
   const canvas = document.getElementById('pong-canvas');
@@ -13,8 +14,8 @@
   const ball = {
     x: canvas.width / 2,
     y: canvas.height / 2,
-    dx: 4,
-    dy: 4,
+    dx: 2,
+    dy: 2,
     radius: 8
   };
 
@@ -49,7 +50,6 @@
   const playerScoreEl = document.getElementById('player-score');
   const computerScoreEl = document.getElementById('computer-score');
   const startBtn = document.getElementById('pong-start-btn');
-  const pauseBtn = document.getElementById('pong-pause-btn');
   const resetBtn = document.getElementById('pong-reset-btn');
 
   // Initialize game
@@ -72,7 +72,6 @@
 
     // Button controls
     startBtn.addEventListener('click', startGame);
-    pauseBtn.addEventListener('click', togglePause);
     resetBtn.addEventListener('click', resetGame);
   }
 
@@ -142,47 +141,37 @@
   function startGame() {
     if (gameRunning) return;
     
+    // If game is over, reset first
+    if (gameOver) {
+      resetGame();
+      return;
+    }
+    
     gameRunning = true;
     gamePaused = false;
+    gameOver = false;
     statusEl.textContent = 'Game Running!';
     statusEl.style.color = '#2ecc71';
     
     startBtn.disabled = true;
-    pauseBtn.disabled = false;
+    startBtn.textContent = 'Start Game';
     resetBtn.disabled = false;
     
     gameLoop();
   }
 
-  // Toggle pause
-  function togglePause() {
-    if (!gameRunning) return;
-    
-    gamePaused = !gamePaused;
-    
-    if (gamePaused) {
-      statusEl.textContent = 'Game Paused';
-      statusEl.style.color = '#f39c12';
-      pauseBtn.textContent = 'Resume';
-      cancelAnimationFrame(animationId);
-    } else {
-      statusEl.textContent = 'Game Running!';
-      statusEl.style.color = '#2ecc71';
-      pauseBtn.textContent = 'Pause';
-      gameLoop();
-    }
-  }
 
   // Reset game
   function resetGame() {
     gameRunning = false;
     gamePaused = false;
+    gameOver = false;
     
     // Reset ball
     ball.x = canvas.width / 2;
     ball.y = canvas.height / 2;
-    ball.dx = 4;
-    ball.dy = 4;
+    ball.dx = 2;
+    ball.dy = 2;
     
     // Reset paddles
     playerPaddle.y = canvas.height / 2 - 40;
@@ -200,8 +189,6 @@
     statusEl.style.color = '#2ecc71';
     
     startBtn.disabled = false;
-    pauseBtn.disabled = true;
-    pauseBtn.textContent = 'Pause';
     resetBtn.disabled = true;
     
     if (animationId) {
@@ -213,7 +200,7 @@
 
   // Game loop
   function gameLoop() {
-    if (!gameRunning || gamePaused) return;
+    if (!gameRunning || gamePaused || gameOver) return;
     
     update();
     draw();
@@ -250,11 +237,13 @@
     if (ball.x < 0) {
       computerScore++;
       updateScores();
-      resetBall();
+      checkGameOver();
+      if (!gameOver) resetBall();
     } else if (ball.x > canvas.width) {
       playerScore++;
       updateScores();
-      resetBall();
+      checkGameOver();
+      if (!gameOver) resetBall();
     }
     
     // Update player paddle
@@ -283,12 +272,31 @@
     }
   }
 
+  // Check if game is over
+  function checkGameOver() {
+    if (playerScore >= 7) {
+      gameOver = true;
+      gameRunning = false;
+      statusEl.textContent = 'You Win! Congratulations!';
+      statusEl.style.color = '#2ecc71';
+      startBtn.disabled = false;
+      startBtn.textContent = 'Play Again';
+    } else if (computerScore >= 7) {
+      gameOver = true;
+      gameRunning = false;
+      statusEl.textContent = 'You Lose! Better luck next time!';
+      statusEl.style.color = '#e74c3c';
+      startBtn.disabled = false;
+      startBtn.textContent = 'Play Again';
+    }
+  }
+
   // Reset ball to center
   function resetBall() {
     ball.x = canvas.width / 2;
     ball.y = canvas.height / 2;
-    ball.dx = (Math.random() > 0.5 ? 1 : -1) * 4;
-    ball.dy = (Math.random() > 0.5 ? 1 : -1) * 4;
+    ball.dx = (Math.random() > 0.5 ? 1 : -1) * 2;
+    ball.dy = (Math.random() > 0.5 ? 1 : -1) * 2;
   }
 
   // Update scores display
