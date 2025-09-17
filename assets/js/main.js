@@ -518,7 +518,7 @@
 })();
 
 // Hangman demo controls
-(function(){
+$(document).ready(function(){
 	function byId(id){ return document.getElementById(id); }
 	var toggle = byId('hangman-toggle');
 	var container = byId('hangman-container');
@@ -565,10 +565,10 @@
 			}
 		}
 	});
-})();
+});
 
 // Pong demo controls
-(function(){
+$(document).ready(function(){
 	function byId(id){ return document.getElementById(id); }
 	var toggle = byId('pong-toggle');
 	var container = byId('pong-container');
@@ -615,4 +615,4 @@
 			}
 		}
 	});
-})();
+});
