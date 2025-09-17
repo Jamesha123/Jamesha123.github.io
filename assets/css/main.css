@@ -1784,7 +1784,7 @@ input, select, textarea {
 }
 #project-calculator .image.main img {
 	width: 100%;
-	max-width: 420px; /* adjust as needed */
+	max-width: 250px; /* adjust as needed */
 	display: block;
 	margin: 0 auto;
 }
