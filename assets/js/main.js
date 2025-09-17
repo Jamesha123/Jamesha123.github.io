@@ -535,7 +535,7 @@ $(document).ready(function(){
 		
 		if (!window.__hangmanLoaded) {
 			var s = document.createElement('script');
-			s.src = 'assets/js/hangman.js?v=4';
+			s.src = 'assets/js/hangman.js?v=5';
 			s.onload = function(){ 
 				window.__hangmanLoaded = true;
 			};

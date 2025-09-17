@@ -34,28 +34,33 @@
   // Base gallows (always shown)
   const baseGallows = '   +---+\n   |   |\n       |\n       |\n       |\n       |\n=========';
   
-  // Body parts to add to gallows
+  // Body parts to add to gallows (progressive)
   const bodyParts = [
     '', // 0 wrong guesses - just gallows
     '   O   |', // 1 - head
-    '   |   |', // 2 - body
-    '  /|   |', // 3 - left arm
-    '  /|\\  |', // 4 - both arms
-    '  /    |', // 5 - left leg
-    '  / \\  |'  // 6 - both legs (game over)
+    '   O   |\n   |   |', // 2 - head + body
+    '   O   |\n   |   |\n  /|   |', // 3 - head + body + left arm
+    '   O   |\n   |   |\n  /|\\  |', // 4 - head + body + both arms
+    '   O   |\n   |   |\n  /|\\  |\n  /    |', // 5 - head + body + both arms + left leg
+    '   O   |\n   |   |\n  /|\\  |\n  / \\  |'  // 6 - head + body + both arms + both legs (game over)
   ];
 
   // Build complete hangman drawing
   function buildHangmanDrawing() {
-    const lines = baseGallows.split('\n');
+    const gallowsLines = baseGallows.split('\n');
     const bodyPart = bodyParts[Math.min(wrongGuesses, 6)];
     
     if (bodyPart) {
-      // Replace the empty line (line 2) with the body part
-      lines[2] = bodyPart;
+      // Replace the empty lines with body parts
+      const bodyLines = bodyPart.split('\n');
+      for (let i = 0; i < bodyLines.length; i++) {
+        if (gallowsLines[2 + i]) {
+          gallowsLines[2 + i] = bodyLines[i];
+        }
+      }
     }
     
-    return lines.join('\n');
+    return gallowsLines.join('\n');
   }
 
   // Initialize game
