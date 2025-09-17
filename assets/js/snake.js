@@ -9,8 +9,8 @@
     const container = canvas.parentElement;
     const maxWidth = Math.min(420, container.clientWidth - 20);
     const aspectRatio = 420 / 300;
-    const newWidth = maxWidth;
-    const newHeight = newWidth / aspectRatio;
+    const newWidth = Math.max(200, maxWidth); // Ensure minimum width
+    const newHeight = Math.max(150, newWidth / aspectRatio); // Ensure minimum height
     
     canvas.style.width = newWidth + 'px';
     canvas.style.height = newHeight + 'px';
@@ -21,8 +21,9 @@
     tilesX = Math.floor(canvas.width / tileSize);
     tilesY = Math.floor(canvas.height / tileSize);
     
-    // Restart game with new dimensions
-    restart();
+    // Ensure we have valid grid dimensions
+    if (tilesX < 5) tilesX = 5;
+    if (tilesY < 5) tilesY = 5;
   }
   
   // Initial resize
@@ -34,6 +35,7 @@
   const tileSize = 20;
   let tilesX = Math.floor(canvas.width / tileSize);
   let tilesY = Math.floor(canvas.height / tileSize);
+  
 
   let snake = [
     { x: Math.floor(tilesX / 2), y: Math.floor(tilesY / 2) },
@@ -262,6 +264,8 @@
     requestAnimationFrame(loop);
   }
 
+  // Initialize the game
+  restart();
   requestAnimationFrame(loop);
 })();
 
