@@ -320,6 +320,10 @@
       playerScore++;
       console.log('Player scores! Score:', playerScore);
       updateScores();
+      // Force a small delay to ensure DOM updates
+      setTimeout(() => {
+        updateScores();
+      }, 10);
       checkGameOver();
       if (!gameOver) resetBall();
     }
@@ -401,18 +405,22 @@
 
   // Update scores display
   function updateScores() {
-    console.log('Updating scores - Player:', playerScore, 'Computer:', computerScore);
-    console.log('Player element:', playerScoreEl);
-    console.log('Computer element:', computerScoreEl);
+    // Force update by getting elements again
+    const playerEl = document.getElementById('player-score');
+    const computerEl = document.getElementById('computer-score');
     
-    if (playerScoreEl) {
-      playerScoreEl.textContent = playerScore;
+    if (playerEl) {
+      playerEl.textContent = playerScore;
+      playerEl.innerHTML = playerScore; // Force innerHTML update too
+      console.log('Updated player score to:', playerScore, 'Element value:', playerEl.textContent);
     } else {
       console.error('Player score element not found!');
     }
     
-    if (computerScoreEl) {
-      computerScoreEl.textContent = computerScore;
+    if (computerEl) {
+      computerEl.textContent = computerScore;
+      computerEl.innerHTML = computerScore; // Force innerHTML update too
+      console.log('Updated computer score to:', computerScore, 'Element value:', computerEl.textContent);
     } else {
       console.error('Computer score element not found!');
     }
