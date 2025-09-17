@@ -81,9 +81,9 @@
 										<span class="image fit"><img src="images/Snake.jpg" alt="Snake Game" /></span>
 										<h4>Snake Game</h4>
 									</a>
-									<a class="project-card" href="#">
-										<span class="image fit"><img src="images/pic02.jpg" alt="Project 6" /></span>
-										<h4>Project 6</h4>
+									<a class="project-card" href="#project-blackjack">
+										<span class="image fit"><img src="images/blackjack.jpg" alt="Blackjack" /></span>
+										<h4>Blackjack</h4>
 									</a>
 									<a class="project-card" href="#">
 										<span class="image fit"><img src="images/pic03.jpg" alt="Project 7" /></span>
@@ -124,9 +124,6 @@
 								<h2 class="major">Compiler</h2>
 								<span class="image main"><img src="images/compiler.jpg" alt="" /></span>
 								<a href="https://github.com/Jamesha123/Simple_Compiler" class="button" target="_blank" rel="noopener">View Source on GitHub</a>
-								<div>
-									<a href="https://github.com/Jamesha123/Simple_Compiler" class="button" target="_blank" rel="noopener">View Source on GitHub</a>
-								</div>
 								<ul style="list-style-type: disc">
 								<li>Created a compiler in Lex, C, and Yacc to run source code like C, C++, or Java.</li>
 								<li>Designed an algorithm for the compiler to optimize code when ran and deleted any unnecessary instruction(s) or code.</li>
@@ -159,6 +156,53 @@
 								<div id="snake-container">
 									<canvas id="snake-canvas" width="420" height="300" style="width:100%;max-width:420px;height:300px;border:1px solid #333;border-radius:6px;display:block;margin:0 auto 1rem auto;background:#111;touch-action:none;"></canvas>
 									<p style="text-align:center;font-size:0.9rem;opacity:0.8;">Use Arrow Keys, WASD, or swipe on mobile.</p>
+								</div>
+							</article>
+
+						<!-- Blackjack Project -->
+							<article id="project-blackjack">
+								<h2 class="major">Blackjack</h2>
+								<span class="image main"><img src="images/blackjack.jpg" alt="" /></span>
+								<ul style="margin: 0 0 2rem 0;">
+									<li>Developed a blackjack game using Java Framework</li>
+									<li>Implemented a shoe of cards, player, and dealer</li>
+								</ul>
+								<div style="display:flex; gap:0.75rem; align-items:center; margin: 0 0 2rem 0;">
+									<a href="#" class="button primary" id="blackjack-toggle">Play Demo</a>
+									<a href="https://github.com/Jamesha123/Blackjack" class="button" target="_blank" rel="noopener">View Source on GitHub</a>
+								</div>
+								<div id="blackjack-container" style="display:none;">
+									<div id="blackjack-game" style="background: #1a1a1a; border: 2px solid #333; border-radius: 8px; padding: 1.5rem; margin: 0 auto; max-width: 600px;">
+										<div style="text-align: center; margin-bottom: 1rem;">
+											<h3 style="color: #fff; margin: 0 0 0.5rem 0;">Blackjack Demo</h3>
+											<div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+												<div style="color: #fff;">
+													<strong>Dealer: <span id="dealer-score">0</span></strong>
+												</div>
+												<div style="color: #fff;">
+													<strong>Player: <span id="player-score">0</span></strong>
+												</div>
+											</div>
+											<div id="game-status" style="color: #2ecc71; font-weight: bold; margin-bottom: 1rem;">Click "Deal" to start!</div>
+										</div>
+										
+										<div id="dealer-cards" style="min-height: 80px; margin-bottom: 1rem; padding: 0.5rem; background: #222; border-radius: 4px;">
+											<div style="color: #fff; margin-bottom: 0.5rem;">Dealer's Cards:</div>
+											<div id="dealer-hand"></div>
+										</div>
+										
+										<div id="player-cards" style="min-height: 80px; margin-bottom: 1rem; padding: 0.5rem; background: #222; border-radius: 4px;">
+											<div style="color: #fff; margin-bottom: 0.5rem;">Your Cards:</div>
+											<div id="player-hand"></div>
+										</div>
+										
+										<div style="text-align: center;">
+											<button id="deal-btn" class="button primary" style="margin: 0 0.5rem;">Deal Cards</button>
+											<button id="hit-btn" class="button" style="margin: 0 0.5rem;" disabled>Hit</button>
+											<button id="stand-btn" class="button" style="margin: 0 0.5rem;" disabled>Stand</button>
+											<button id="new-game-btn" class="button" style="margin: 0 0.5rem;" disabled>New Game</button>
+										</div>
+									</div>
 								</div>
 							</article>
 

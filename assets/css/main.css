@@ -1776,3 +1776,108 @@ input, select, textarea {
 	-ms-transform: none;
 	transform: none;
 }
+
+/* Blackjack Game Styles */
+#blackjack-game {
+	background: #1a1a1a;
+	border: 2px solid #333;
+	border-radius: 8px;
+	padding: 1.5rem;
+	margin: 0 auto;
+	max-width: 600px;
+}
+
+#blackjack-game .card {
+	display: inline-block;
+	width: 60px;
+	height: 80px;
+	background: #fff;
+	border: 1px solid #333;
+	border-radius: 4px;
+	margin: 2px;
+	padding: 4px;
+	text-align: center;
+	font-size: 12px;
+	color: #000;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+	vertical-align: top;
+}
+
+#blackjack-game .card.red {
+	color: #e74c3c;
+}
+
+#blackjack-game .card.hidden {
+	background: #444;
+	color: #666;
+}
+
+#blackjack-game .hand-area {
+	min-height: 80px;
+	margin-bottom: 1rem;
+	padding: 0.5rem;
+	background: #222;
+	border-radius: 4px;
+}
+
+#blackjack-game .score-display {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 1rem;
+	color: #fff;
+}
+
+#blackjack-game .game-status {
+	color: #2ecc71;
+	font-weight: bold;
+	margin-bottom: 1rem;
+	text-align: center;
+}
+
+#blackjack-game .button-group {
+	text-align: center;
+}
+
+#blackjack-game .button-group button {
+	margin: 0 0.5rem;
+}
+
+/* Mobile responsiveness for blackjack */
+@media screen and (max-width: 736px) {
+	#blackjack-game {
+		padding: 1rem;
+		margin: 0;
+	}
+	
+	#blackjack-game .card {
+		width: 50px;
+		height: 70px;
+		font-size: 10px;
+		margin: 1px;
+	}
+	
+	#blackjack-game .button-group {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+	
+	#blackjack-game .button-group button {
+		margin: 0;
+		width: 100%;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	#blackjack-game .card {
+		width: 45px;
+		height: 65px;
+		font-size: 9px;
+	}
+	
+	#blackjack-game .score-display {
+		flex-direction: column;
+		gap: 0.5rem;
+		text-align: center;
+	}
+}

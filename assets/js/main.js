@@ -447,3 +447,53 @@
 		}
 	});
 })();
+
+// Blackjack demo controls
+(function(){
+	function byId(id){ return document.getElementById(id); }
+	var toggle = byId('blackjack-toggle');
+	var container = byId('blackjack-container');
+	if(!toggle || !container) return;
+	
+	// Hide container initially
+	container.style.display = 'none';
+	var started = false;
+	
+	toggle.addEventListener('click', function(e){
+		e.preventDefault();
+		// Show the container when Play is clicked
+		container.style.display = 'block';
+		
+		if (!window.__blackjackLoaded) {
+			var s = document.createElement('script');
+			s.src = 'assets/js/blackjack.js?v=1';
+			s.onload = function(){ 
+				window.__blackjackLoaded = true;
+			};
+			document.body.appendChild(s);
+		}
+		started = true;
+		toggle.textContent = 'Playing';
+		toggle.classList.add('disabled');
+	});
+	
+	// Reset game when leaving Blackjack page
+	window.addEventListener('hashchange', function(){
+		if (location.hash !== '#project-blackjack') {
+			// Hide container when leaving blackjack page
+			container.style.display = 'none';
+			
+			// Reset Blackjack game state
+			if (window.__blackjackLoaded) {
+				var old = document.querySelector('script[src^="assets/js/blackjack.js"]');
+				if (old) old.remove();
+				window.__blackjackLoaded = false;
+			}
+			started = false;
+			if (toggle) {
+				toggle.textContent = 'Play Demo';
+				toggle.classList.remove('disabled');
+			}
+		}
+	});
+})();
