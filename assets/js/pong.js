@@ -270,17 +270,26 @@
       ball.dy = -ball.dy;
     }
     
-    // Ball collision with paddles
-    if (ball.x - ball.radius <= playerPaddle.x + playerPaddle.width &&
-        ball.y >= playerPaddle.y && ball.y <= playerPaddle.y + playerPaddle.height) {
-      ball.dx = Math.abs(ball.dx);
+    // Ball collision with player paddle (left side)
+    if (ball.dx < 0 && // Ball moving left
+        ball.x - ball.radius <= playerPaddle.x + playerPaddle.width &&
+        ball.x - ball.radius >= playerPaddle.x &&
+        ball.y + ball.radius >= playerPaddle.y &&
+        ball.y - ball.radius <= playerPaddle.y + playerPaddle.height) {
+      console.log('Player paddle collision');
+      ball.dx = Math.abs(ball.dx); // Reverse direction
       // Add some spin based on paddle movement
       ball.dy += playerPaddle.dy * 0.5;
     }
     
-    if (ball.x + ball.radius >= computerPaddle.x &&
-        ball.y >= computerPaddle.y && ball.y <= computerPaddle.y + computerPaddle.height) {
-      ball.dx = -Math.abs(ball.dx);
+    // Ball collision with computer paddle (right side)
+    if (ball.dx > 0 && // Ball moving right
+        ball.x + ball.radius >= computerPaddle.x &&
+        ball.x + ball.radius <= computerPaddle.x + computerPaddle.width &&
+        ball.y + ball.radius >= computerPaddle.y &&
+        ball.y - ball.radius <= computerPaddle.y + computerPaddle.height) {
+      console.log('Computer paddle collision');
+      ball.dx = -Math.abs(ball.dx); // Reverse direction
       // Add some spin based on paddle movement
       ball.dy += computerPaddle.dy * 0.5;
     }
@@ -288,11 +297,13 @@
     // Ball out of bounds
     if (ball.x < 0) {
       computerScore++;
+      console.log('Computer scores! Score:', computerScore);
       updateScores();
       checkGameOver();
       if (!gameOver) resetBall();
     } else if (ball.x > canvas.width) {
       playerScore++;
+      console.log('Player scores! Score:', playerScore);
       updateScores();
       checkGameOver();
       if (!gameOver) resetBall();

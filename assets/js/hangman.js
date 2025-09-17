@@ -31,17 +31,32 @@
   const newGameBtn = document.getElementById('hangman-new-game-btn');
   const hintBtn = document.getElementById('hangman-hint-btn');
 
-  // Hangman drawing stages
-  const hangmanStages = [
-    '', // 0 wrong guesses
-    '   +---+\n   |   |\n       |\n       |\n       |\n       |\n=========', // 1
-    '   +---+\n   |   |\n   O   |\n       |\n       |\n       |\n=========', // 2
-    '   +---+\n   |   |\n   O   |\n   |   |\n       |\n       |\n=========', // 3
-    '   +---+\n   |   |\n   O   |\n  /|   |\n       |\n       |\n=========', // 4
-    '   +---+\n   |   |\n   O   |\n  /|\\  |\n       |\n       |\n=========', // 5
-    '   +---+\n   |   |\n   O   |\n  /|\\  |\n  /    |\n       |\n=========', // 6
-    '   +---+\n   |   |\n   O   |\n  /|\\  |\n  / \\  |\n       |\n========='  // 7 (game over)
+  // Base gallows (always shown)
+  const baseGallows = '   +---+\n   |   |\n       |\n       |\n       |\n       |\n=========';
+  
+  // Body parts to add to gallows
+  const bodyParts = [
+    '', // 0 wrong guesses - just gallows
+    '   O   |', // 1 - head
+    '   |   |', // 2 - body
+    '  /|   |', // 3 - left arm
+    '  /|\\  |', // 4 - both arms
+    '  /    |', // 5 - left leg
+    '  / \\  |'  // 6 - both legs (game over)
   ];
+
+  // Build complete hangman drawing
+  function buildHangmanDrawing() {
+    const lines = baseGallows.split('\n');
+    const bodyPart = bodyParts[Math.min(wrongGuesses, 6)];
+    
+    if (bodyPart) {
+      // Replace the empty line (line 2) with the body part
+      lines[2] = bodyPart;
+    }
+    
+    return lines.join('\n');
+  }
 
   // Initialize game
   function initGame() {
@@ -112,7 +127,7 @@
     wrongCount.textContent = wrongGuesses;
     
     // Update hangman drawing
-    hangmanDrawing.textContent = hangmanStages[Math.min(wrongGuesses, 6)];
+    hangmanDrawing.textContent = buildHangmanDrawing();
     
     // Update letter buttons
     const buttons = letterButtons.querySelectorAll('button');
