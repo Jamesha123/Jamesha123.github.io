@@ -13,6 +13,8 @@
 
   let snake = [
     { x: Math.floor(tilesX / 2), y: Math.floor(tilesY / 2) },
+    { x: Math.floor(tilesX / 2) - 1, y: Math.floor(tilesY / 2) },
+    { x: Math.floor(tilesX / 2) - 2, y: Math.floor(tilesY / 2) },
   ];
   let direction = { x: 1, y: 0 };
   let nextDirection = { x: 1, y: 0 };
@@ -73,7 +75,34 @@
         const touch = e.changedTouches[0];
         touchEndX = touch.clientX;
         touchEndY = touch.clientY;
-        handleSwipe();
+        
+        // Check if it's a tap in the middle area (not a swipe)
+        const deltaX = Math.abs(touchEndX - touchStartX);
+        const deltaY = Math.abs(touchEndY - touchStartY);
+        const maxTapDistance = 10;
+        
+        if (deltaX < maxTapDistance && deltaY < maxTapDistance) {
+          // It's a tap, check if it's in the middle area
+          const rect = canvas.getBoundingClientRect();
+          const tapX = touchEndX - rect.left;
+          const tapY = touchEndY - rect.top;
+          const middleX = canvasWidth / 2;
+          const middleY = canvasHeight / 2;
+          const middleRadius = 60; // Radius around center for restart tap
+          
+          const distanceFromCenter = Math.sqrt(
+            Math.pow(tapX - middleX, 2) + Math.pow(tapY - middleY, 2)
+          );
+          
+          if (distanceFromCenter <= middleRadius) {
+            if (isGameOver) {
+              restart();
+            }
+          }
+        } else {
+          // It's a swipe, handle normally
+          handleSwipe();
+        }
       });
       
       canvas.addEventListener('touchmove', (e) => {
@@ -124,7 +153,11 @@
   }
 
   function restart() {
-    snake = [{ x: Math.floor(tilesX / 2), y: Math.floor(tilesY / 2) }];
+    snake = [
+      { x: Math.floor(tilesX / 2), y: Math.floor(tilesY / 2) },
+      { x: Math.floor(tilesX / 2) - 1, y: Math.floor(tilesY / 2) },
+      { x: Math.floor(tilesX / 2) - 2, y: Math.floor(tilesY / 2) },
+    ];
     direction = { x: 1, y: 0 };
     nextDirection = { x: 1, y: 0 };
     food = spawnFood();
@@ -201,7 +234,9 @@
       ctx.fillStyle = '#fff';
       ctx.font = '20px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('Game Over - Press Space', canvasWidth / 2, canvasHeight / 2);
+      ctx.fillText('Game Over', canvasWidth / 2, canvasHeight / 2 - 10);
+      ctx.font = '14px sans-serif';
+      ctx.fillText('Press Space or tap center', canvasWidth / 2, canvasHeight / 2 + 15);
       ctx.textAlign = 'start';
     }
   }

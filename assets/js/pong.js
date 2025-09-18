@@ -157,28 +157,34 @@
   function handleTouchEnd(e) {
     e.preventDefault();
     if (!gameRunning) return;
-    const touch = e.changedTouches[0];
-    touchEndY = touch.clientY;
-    
-    const deltaY = touchEndY - touchStartY;
-    const minSwipeDistance = 30;
-    
-    if (Math.abs(deltaY) > minSwipeDistance) {
-      if (deltaY < 0) {
-        // Swipe up
-        playerPaddle.dy = -playerPaddle.speed;
-        setTimeout(() => { playerPaddle.dy = 0; }, 100);
-      } else {
-        // Swipe down
-        playerPaddle.dy = playerPaddle.speed;
-        setTimeout(() => { playerPaddle.dy = 0; }, 100);
-      }
-    }
+    playerPaddle.dy = 0; // Stop paddle movement
   }
 
-  // Handle touch move
+  // Handle touch move - direct paddle control
   function handleTouchMove(e) {
     e.preventDefault();
+    if (!gameRunning) return;
+    
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    const touchY = touch.clientY - rect.top;
+    
+    // Convert touch position to paddle position
+    const targetY = touchY - playerPaddle.height / 2;
+    
+    // Smooth movement towards touch position
+    const paddleCenter = playerPaddle.y + playerPaddle.height / 2;
+    const error = targetY - paddleCenter;
+    
+    if (Math.abs(error) > 5) {
+      if (error < 0) {
+        playerPaddle.dy = -playerPaddle.speed;
+      } else {
+        playerPaddle.dy = playerPaddle.speed;
+      }
+    } else {
+      playerPaddle.dy = 0;
+    }
   }
 
   // Update difficulty settings
