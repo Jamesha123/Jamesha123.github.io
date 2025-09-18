@@ -2,7 +2,7 @@
 
 A responsive portfolio website showcasing various programming projects and games.
 
-## Live Demo
+## Personal Website
 https://jamesha123.github.io/
 
 ## Features
@@ -37,11 +37,6 @@ https://jamesha123.github.io/
 - HTML5 Canvas
 - jQuery
 - Font Awesome icons
-
-## Setup
-1. Clone the repository
-2. Open `index.html` in a web browser
-3. For local development, use a local server to avoid CORS issues
 
 ## Contact
 Email: jameshang123@gmail.com
