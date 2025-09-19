@@ -15,8 +15,6 @@ https://jamesha123.github.io/
 
 ### Projects Showcase
 - Monkey Boy (Java game with downloadable JAR)
-- Monopoly
-- Nyan Defender
 - NWS Updater
 - Disassembler
 - Calculator
