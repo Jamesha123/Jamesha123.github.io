@@ -4,7 +4,7 @@
  * Browser recipe parser — same logic as the Node version, using fetch for URLs.
  * URL import may fail on sites that block cross-origin requests; paste still works.
  */
-
+(function () {
 const round4 = (n) => Math.round(n * 10000) / 10000;
 
 const UNIT_WORDS = {
@@ -251,3 +251,4 @@ window.RecipeParser = {
   importFromUrl,
   parseLeadingQuantity,
 };
+})();

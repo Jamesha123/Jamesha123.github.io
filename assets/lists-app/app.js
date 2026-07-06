@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------
 // Lists — client (static build uses ListsStore + localStorage).
 // ---------------------------------------------------------------------------
+(function () {
 
 const TYPE_META = {
   todo: { label: "To-do", icon: "📝" },
@@ -232,6 +233,11 @@ let pendingAddCategory = null;
 let pendingEditCategory = null;
 let pendingEditText = null;
 
+const SEEN_KEY = "lists.activitySeen";
+let activity = [];
+let activitySeenTs = Number(localStorage.getItem(SEEN_KEY) || 0);
+let activityOpen = false;
+
 // --- category helpers --------------------------------------------------------
 
 /** Ordered [key, label] subtopics for a list: presets + custom + misc last. */
@@ -351,6 +357,32 @@ const recipeAddToList = el("recipeAddToList");
 const recipeSelCount = el("recipeSelCount");
 const recipeDelete = el("recipeDelete");
 
+// --- client identity (before API calls) ------------------------------------
+
+const ID_KEY = "lists.clientId";
+const NAME_KEY = "lists.name";
+
+const cleanUserName = (raw) =>
+  String(raw == null ? "" : raw).replace(/\s+/g, " ").trim().slice(0, 40) || "Guest";
+
+let myId = localStorage.getItem(ID_KEY);
+if (!myId) {
+  myId = (crypto.randomUUID && crypto.randomUUID()) || `c-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  localStorage.setItem(ID_KEY, myId);
+}
+let myName = localStorage.getItem(NAME_KEY) || "";
+if (!myName) {
+  myName = "Guest";
+  localStorage.setItem(NAME_KEY, myName);
+}
+
+let presence = [];
+
+const currentListId = () => {
+  const r = currentRoute();
+  return r.view === "detail" ? r.id : null;
+};
+
 // --- API --------------------------------------------------------------------
 
 async function api(method, url, body) {
@@ -428,6 +460,53 @@ function render() {
 }
 
 window.addEventListener("hashchange", render);
+
+// --- connection (run early so a later listener error can't block startup) ---
+
+function setConnected(connected) {
+  statusEl.classList.toggle("status--online", connected);
+  statusText.textContent = connected ? "Saved on this device" : "Loading…";
+}
+
+function connect() {
+  if (typeof ListsStore === "undefined") {
+    statusEl.classList.remove("status--online");
+    statusText.textContent = "Could not load the app. Refresh the page.";
+    loaded = true;
+    render();
+    console.error("ListsStore failed to load. Check that store.js loaded correctly.");
+    return;
+  }
+
+  ListsStore.connect({
+    id: myId,
+    name: myName,
+    getListId: currentListId,
+    onState: (payload) => {
+      setConnected(true);
+      loaded = true;
+      lists = payload.lists || [];
+      memory = payload.remembered || { todo: [], groceries: [] };
+      recipes = payload.recipes || [];
+      grocerySubtopics = payload.grocerySubtopics || [];
+      activity = payload.activity || [];
+
+      if (editingId) {
+        const exists = lists.some((l) => l.items.some((i) => i.id === editingId));
+        if (!exists) editingId = null;
+      }
+      render();
+    },
+    onPresence: (data) => {
+      presence = data;
+      renderPresence();
+    },
+    onConnected: setConnected,
+  });
+}
+
+connect();
+render();
 
 // --- home: list of lists ----------------------------------------------------
 
@@ -1726,30 +1805,6 @@ backBtn.addEventListener("click", goHome);
 
 // --- presence: who's online -------------------------------------------------
 
-const ID_KEY = "lists.clientId";
-const NAME_KEY = "lists.name";
-
-const cleanName = (raw) =>
-  String(raw == null ? "" : raw).replace(/\s+/g, " ").trim().slice(0, 40) || "Guest";
-
-let myId = localStorage.getItem(ID_KEY);
-if (!myId) {
-  myId = (crypto.randomUUID && crypto.randomUUID()) || `c-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-  localStorage.setItem(ID_KEY, myId);
-}
-let myName = localStorage.getItem(NAME_KEY) || "";
-if (!myName) {
-  myName = "Guest";
-  localStorage.setItem(NAME_KEY, myName);
-}
-
-let presence = [];
-
-const currentListId = () => {
-  const r = currentRoute();
-  return r.view === "detail" ? r.id : null;
-};
-
 /** Dedupe presence entries by client id (one person may have several tabs). */
 function uniqueUsers(entries) {
   const map = new Map();
@@ -1829,7 +1884,7 @@ function pushPresence() {
 function changeName() {
   const next = window.prompt("Your name (others will see this):", myName);
   if (next == null) return;
-  myName = cleanName(next);
+  myName = cleanUserName(next);
   localStorage.setItem(NAME_KEY, myName);
   pushPresence();
 }
@@ -1838,11 +1893,6 @@ presenceEl.addEventListener("click", changeName);
 window.addEventListener("hashchange", pushPresence);
 
 // --- activity feed / notifications ------------------------------------------
-
-const SEEN_KEY = "lists.activitySeen";
-let activity = [];
-let activitySeenTs = Number(localStorage.getItem(SEEN_KEY) || 0);
-let activityOpen = false;
 
 /** Changes that count as "new" for me: after my last view and not made by me. */
 function unreadActivity() {
@@ -1973,41 +2023,6 @@ activityClear.addEventListener("click", () => {
   if (confirm("Clear the activity feed for everyone?")) clearActivity();
 });
 
-// --- connection status + real-time stream -----------------------------------
-
-function setConnected(connected) {
-  statusEl.classList.toggle("status--online", connected);
-  statusText.textContent = connected ? "Saved on this device" : "Loading…";
-}
-
-function connect() {
-  ListsStore.connect({
-    id: myId,
-    name: myName,
-    getListId: currentListId,
-    onState: (payload) => {
-      setConnected(true);
-      loaded = true;
-      lists = payload.lists || [];
-      memory = payload.remembered || { todo: [], groceries: [] };
-      recipes = payload.recipes || [];
-      grocerySubtopics = payload.grocerySubtopics || [];
-      activity = payload.activity || [];
-
-      if (editingId) {
-        const exists = lists.some((l) => l.items.some((i) => i.id === editingId));
-        if (!exists) editingId = null;
-      }
-      render();
-    },
-    onPresence: (data) => {
-      presence = data;
-      renderPresence();
-    },
-    onConnected: setConnected,
-  });
-}
-
 // On phones, keep the focused field visible when the keyboard opens.
 if (window.matchMedia("(max-width: 600px)").matches) {
   document.addEventListener("focusin", (e) => {
@@ -2019,6 +2034,4 @@ if (window.matchMedia("(max-width: 600px)").matches) {
     }, 350);
   });
 }
-
-connect();
-render();
+})();

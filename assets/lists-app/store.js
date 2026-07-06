@@ -4,8 +4,7 @@
  * Browser storage layer for Lists — ports server.js logic to localStorage
  * with cross-tab sync via BroadcastChannel.
  */
-
-window.__listsStoreBoot = 1;
+(function () {
 
 const LIST_TYPES = ["todo", "groceries"];
 const DEFAULT_TYPE = "todo";
@@ -916,3 +915,4 @@ window.ListsStore = {
   connect,
   updatePresence,
 };
+})();
