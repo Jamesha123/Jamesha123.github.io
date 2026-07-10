@@ -17,22 +17,31 @@ export class CharacterAnimation {
       const animKey = prefix + "-walk-" + direction;
 
       if ((direction === "left" || direction === "right") && filenames.length === 3) {
-        scene.anims.create({
-          key: animKey + "-intro",
-          frames: [0, 1, 2].map(function (index) {
-            return { key: prefix + "-" + direction + "-" + index };
-          }),
-          frameRate: frameRate,
-          repeat: 0,
-        });
-        scene.anims.create({
-          key: animKey,
-          frames: [1, 2].map(function (index) {
-            return { key: prefix + "-" + direction + "-" + index };
-          }),
-          frameRate: frameRate,
-          repeat: -1,
-        });
+        const introKey = animKey + "-intro";
+        if (!scene.anims.exists(introKey)) {
+          scene.anims.create({
+            key: introKey,
+            frames: [0, 1, 2].map(function (index) {
+              return { key: prefix + "-" + direction + "-" + index };
+            }),
+            frameRate: frameRate,
+            repeat: 0,
+          });
+        }
+        if (!scene.anims.exists(animKey)) {
+          scene.anims.create({
+            key: animKey,
+            frames: [1, 2].map(function (index) {
+              return { key: prefix + "-" + direction + "-" + index };
+            }),
+            frameRate: frameRate,
+            repeat: -1,
+          });
+        }
+        return;
+      }
+
+      if (scene.anims.exists(animKey)) {
         return;
       }
 

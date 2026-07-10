@@ -1,0 +1,75 @@
+[
+  {
+    "id": "kitchen",
+    "bodyWidthRatio": 1,
+    "bodyHeightRatio": 0.28,
+    "hitboxLiftRatio": 0.12
+  },
+  {
+    "id": "bookshelf",
+    "bodyWidthRatio": 0.88,
+    "bodyHeightRatio": 0.32,
+    "hitboxLiftRatio": 0.05
+  },
+  {
+    "id": "couch",
+    "bodyWidthRatio": 0.55,
+    "bodyHeightRatio": 0.75,
+    "hitboxLiftRatio": -0.22,
+    "offsetX": 0.12
+  },
+  {
+    "id": "dinningTable",
+    "bodyWidthRatio": 0.90,
+    "bodyHeightRatio": 0.38,
+    "hitboxLiftRatio": 0.38
+  },
+  {
+    "id": "drawer",
+    "bodyWidthRatio": 0.85,
+    "bodyHeightRatio": 0.65,
+    "hitboxLiftRatio": -0.14
+  },
+  {
+    "id": "indoor1",
+    "bodyWidthRatio": 0.8,
+    "bodyHeightRatio": 0.35,
+    "hitboxLiftRatio": 0.1
+  },
+  {
+    "id": "indoor8",
+    "bodyWidthRatio": 0.50,
+    "bodyHeightRatio": 0.80,
+    "hitboxLiftRatio": 0.0
+  },
+  {
+    "id": "indoor9",
+    "bodyWidthRatio": 0.0,
+    "bodyHeightRatio": 0.0,
+    "hitboxLiftRatio": 0.12
+  },
+  {
+    "id": "indoor10",
+    "bodyWidthRatio": 0.42,
+    "bodyHeightRatio": 0.25,
+    "hitboxLiftRatio": 0.38
+  },
+  {
+    "id": "indoor11",
+    "bodyWidthRatio": 0.30,
+    "bodyHeightRatio": 0.60,
+    "hitboxLiftRatio": -0.12
+  },
+  {
+    "id": "chair1",
+    "bodyWidthRatio": 0.9,
+    "bodyHeightRatio": 0.5,
+    "hitboxLiftRatio": 0.08
+  },
+  {
+    "id": "chair2",
+    "bodyWidthRatio": 0.9,
+    "bodyHeightRatio": 0.5,
+    "hitboxLiftRatio": 0.08
+  }
+]

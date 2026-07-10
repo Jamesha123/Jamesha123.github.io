@@ -6250,7 +6250,7 @@
     {
       "firstgid": 1,
       "name": "monkeyboy",
-      "image": "monkeyboy-tiles.png",
+      "image": "../tilesets/monkeyboy-tiles.png",
       "imagewidth": 176,
       "imageheight": 192,
       "tilewidth": 16,
@@ -7477,6 +7477,22 @@
               "value": true
             }
           ]
+        }
+      ]
+    },
+    {
+      "firstgid": 133,
+      "name": "props",
+      "tilecount": 1,
+      "columns": 0,
+      "tilewidth": 144,
+      "tileheight": 128,
+      "tiles": [
+        {
+          "id": 0,
+          "image": "../sprites/props/house.png",
+          "imagewidth": 144,
+          "imageheight": 128
         }
       ]
     }

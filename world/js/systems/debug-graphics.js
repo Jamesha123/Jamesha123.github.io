@@ -1,7 +1,23 @@
 export class DebugGraphics {
+  static setShowHitboxes(visible) {
+    DebugGraphics.showHitboxes = visible;
+    if (typeof window !== "undefined") {
+      window.SHOW_HITBOXES = visible;
+    }
+  }
+
+  static reset() {
+    DebugGraphics.showHitboxes = false;
+  }
+
   static addHitboxOutline(scene, bodyTarget) {
     const gfx = scene.add.graphics().setDepth(11);
     const drawOutline = function () {
+      if (!DebugGraphics.showHitboxes) {
+        gfx.clear();
+        return;
+      }
+
       const go = bodyTarget;
       const body = go.body;
       if (!body) {
@@ -72,3 +88,5 @@ export class DebugGraphics {
     return gfx;
   }
 }
+
+DebugGraphics.showHitboxes = false;

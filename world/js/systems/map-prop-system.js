@@ -123,6 +123,9 @@ export class MapPropSystem {
   static spawnHitbox(scene, world, propLeft, propTop, displayWidth, displayHeight, box) {
     const width = box.w * displayWidth;
     const height = box.h * displayHeight;
+    if (width <= 0 || height <= 0) {
+      return null;
+    }
     const usesCenter = box.origin === "center" || (box.angle && box.origin !== "topleft");
     let centerX;
     let centerY;

@@ -4,7 +4,9 @@ export class ContentStore {
   }
 
   get startMapId() {
-    return this.data.startMap || this.maps[0]?.id || "default";
+    const maps = this.maps;
+    const firstMapId = maps.length > 0 && maps[0] ? maps[0].id : null;
+    return this.data.startMap || firstMapId || "default";
   }
 
   get maps() {
@@ -43,6 +45,14 @@ export class ContentStore {
     return this.sprites.props || [];
   }
 
+  get furnitureConfigs() {
+    return this.sprites.furniture || [];
+  }
+
+  get showHitboxes() {
+    return this.data.showHitboxes === true;
+  }
+
   get useTiled() {
     return this.maps.some(function (map) {
       return map.enabled;
@@ -63,6 +73,12 @@ export class ContentStore {
 
   getProp(id) {
     return this.propConfigs.find(function (item) {
+      return item.id === id;
+    });
+  }
+
+  getFurniture(id) {
+    return this.furnitureConfigs.find(function (item) {
       return item.id === id;
     });
   }

@@ -10,6 +10,8 @@
   "decorLayer": "Decor",
   "spawnLayer": "Spawn",
   "transitionsLayer": "Transitions",
+  "furnitureLayers": ["Furniture", "Furniture 2"],
+  "fillViewport": true,
   "features": {
     "avatar": false,
     "hotspotMarkers": false

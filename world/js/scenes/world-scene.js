@@ -9,6 +9,7 @@ import { Player } from "../entities/player.js";
 import { TiledWorldBuilder } from "../world/tiled-world-builder.js";
 import { FallbackWorldBuilder } from "../world/fallback-world-builder.js";
 import { cacheBust, showFatalError, hideLoading } from "../utils/helpers.js";
+import { DebugGraphics } from "../systems/debug-graphics.js";
 
 export default class WorldScene extends Phaser.Scene {
   constructor(contentStore) {
@@ -24,19 +25,21 @@ export default class WorldScene extends Phaser.Scene {
     this.activeMapId = contentStore.startMapId;
     this.spawnId = null;
     this.returnState = null;
+    this.inputReady = false;
   }
 
   init(data) {
-    this.activeMapId = data?.mapId || this.content.startMapId;
-    this.spawnId = data?.spawnId || null;
-    this.returnState = data?.returnState || null;
+    this.activeMapId = (data && data.mapId) || this.content.startMapId;
+    this.spawnId = (data && data.spawnId) || null;
+    this.returnState = (data && data.returnState) || null;
   }
 
   preload() {
     this.world.useTiled = this.content.useTiled;
     const bust = "?v=" + Date.now();
+    const assetsReady = this.registry.get("worldAssetsReady") === true;
 
-    if (this.content.playerConfig) {
+    if (!assetsReady && this.content.playerConfig) {
       const playerSprites = this.content.playerConfig;
       CharacterAnimation.preloadWalkFrames(
         this.load,
@@ -46,71 +49,103 @@ export default class WorldScene extends Phaser.Scene {
       );
     }
 
-    this.content.npcConfigs.forEach(function (npc) {
-      CharacterAnimation.preloadWalkFrames(this.load, "npc-" + npc.id, npc.folder, npc.walk);
-    }, this);
+    if (!assetsReady) {
+      this.content.npcConfigs.forEach(function (npc) {
+        CharacterAnimation.preloadWalkFrames(this.load, "npc-" + npc.id, npc.folder, npc.walk);
+      }, this);
 
-    const avatar = this.content.avatarConfig;
-    if (avatar) {
-      this.load.spritesheet(avatar.id + "-sheet", cacheBust(avatar.spritesheet), {
-        frameWidth: avatar.frameWidth,
-        frameHeight: avatar.frameHeight,
-      });
+      const avatar = this.content.avatarConfig;
+      if (avatar) {
+        this.load.spritesheet(avatar.id + "-sheet", cacheBust(avatar.spritesheet), {
+          frameWidth: avatar.frameWidth,
+          frameHeight: avatar.frameHeight,
+        });
+      }
     }
 
     if (this.world.useTiled) {
       const loadedTilesets = new Set();
+      const loadedFurniture = new Set();
+      const needsFurniture = this.content.maps.some(function (mapConfig) {
+        if (!mapConfig.enabled) {
+          return false;
+        }
+        if (mapConfig.furnitureLayers && mapConfig.furnitureLayers.length) {
+          return true;
+        }
+        return !!mapConfig.furnitureLayer;
+      });
+
       this.content.maps.forEach(function (mapConfig) {
         if (!mapConfig.enabled) {
           return;
         }
-        this.load.tilemapTiledJSON("map-" + mapConfig.id, mapConfig.file + bust);
-        if (!loadedTilesets.has(mapConfig.tilesetImage)) {
+        const mapKey = "map-" + mapConfig.id;
+        if (this.cache.tilemap.exists(mapKey)) {
+          this.cache.tilemap.remove(mapKey);
+        }
+        this.load.tilemapTiledJSON(mapKey, mapConfig.file + bust);
+
+        if (!assetsReady && !loadedTilesets.has(mapConfig.tilesetImage)) {
           loadedTilesets.add(mapConfig.tilesetImage);
           this.load.image("tileset-" + mapConfig.tilesetName, mapConfig.tilesetImage + bust);
         }
+
+        if (!assetsReady && needsFurniture) {
+          TiledWorldBuilder.FURNITURE_IMAGES.forEach(function (path, index) {
+            const key = "furniture-" + index;
+            if (loadedFurniture.has(key)) {
+              return;
+            }
+            loadedFurniture.add(key);
+            this.load.image(key, path + bust);
+          }, this);
+        }
       }, this);
     }
 
-    MapPropSystem.preload(this, this.content.propConfigs);
+    if (!assetsReady) {
+      MapPropSystem.preload(this, this.content.propConfigs);
+    }
   }
 
   create() {
-    this.world.resetRuntime();
-    this.ui.bindScene(this);
-    this.mapTransitions = new MapTransitionSystem(this, this.content, this.world);
-    this.ui.onInteract = () => this.handleInteract();
-
-    if (this.content.playerConfig) {
-      const walkFrameRate = this.content.playerConfig.walkFrameRate || 8;
-      CharacterAnimation.createWalkAnimations(
-        this,
-        "player",
-        this.content.playerConfig.walk,
-        walkFrameRate
-      );
-    }
-
-    this.textures.each(function (texture) {
-      texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
-    });
-
-    if (this.world.useTiled) {
-      this.content.maps.forEach(function (mapConfig) {
-        const tileTexture = this.textures.get("tileset-" + mapConfig.tilesetName);
-        if (!tileTexture) {
-          return;
-        }
-        tileTexture.setFilter(Phaser.Textures.FilterMode.NEAREST);
-        tileTexture.source.forEach(function (source) {
-          source.setFilter(Phaser.Textures.FilterMode.NEAREST);
-        });
-      }, this);
-    }
-
-    this.player = new Player(this, this.content.playerConfig || {});
-
     try {
+      this.world.resetRuntime();
+      DebugGraphics.setShowHitboxes(this.content.showHitboxes === true);
+      this.ui.bindScene(this);
+      this.mapTransitions = new MapTransitionSystem(this, this.content, this.world);
+      this.ui.onInteract = () => this.handleInteract();
+
+      if (this.content.playerConfig) {
+        const walkFrameRate = this.content.playerConfig.walkFrameRate || 8;
+        CharacterAnimation.createWalkAnimations(
+          this,
+          "player",
+          this.content.playerConfig.walk,
+          walkFrameRate
+        );
+      }
+
+      this.textures.each(function (texture) {
+        texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
+      });
+
+      if (this.world.useTiled) {
+        this.content.maps.forEach(function (mapConfig) {
+          const tileTexture = this.textures.get("tileset-" + mapConfig.tilesetName);
+          if (!tileTexture) {
+            return;
+          }
+          tileTexture.setFilter(Phaser.Textures.FilterMode.NEAREST);
+          tileTexture.source.forEach(function (source) {
+            source.setFilter(Phaser.Textures.FilterMode.NEAREST);
+          });
+        }, this);
+      }
+
+      this.player = new Player(this, this.content.playerConfig || {});
+
       if (this.world.useTiled) {
         const mapConfig = this.content.getMap(this.activeMapId);
         if (!mapConfig) {
@@ -132,38 +167,48 @@ export default class WorldScene extends Phaser.Scene {
       } else {
         FallbackWorldBuilder.build(this, this.content, this.world, this.hotspots, this.player);
       }
+
+      this.player.clearTouchTarget();
+      this.cursors = this.input.keyboard.createCursorKeys();
+      this.keys = this.input.keyboard.addKeys("W,S,A,D");
+
+      if (!this.inputReady) {
+        this.input.keyboard.on("keydown-E", () => this.handleInteract());
+        this.input.keyboard.on("keydown-ENTER", () => this.handleInteract());
+        this.input.keyboard.on("keydown-H", () => {
+          DebugGraphics.setShowHitboxes(!DebugGraphics.showHitboxes);
+          this.world.showHitboxes = DebugGraphics.showHitboxes;
+        });
+
+        this.input.on("pointerdown", (pointer) => {
+          if (this.ui.isModalOpen() || pointer.y < 70) {
+            return;
+          }
+          this.player.setTouchTarget(pointer.worldX, pointer.worldY);
+        });
+
+        this.input.on("pointermove", (pointer) => {
+          if (pointer.isDown && this.player.touchTarget && !this.ui.isModalOpen() && pointer.y >= 70) {
+            this.player.setTouchTarget(pointer.worldX, pointer.worldY);
+          }
+        });
+
+        this.input.on("pointerup", () => {
+          this.player.clearTouchTarget();
+        });
+
+        this.inputReady = true;
+      }
+
+      this.ui.setHint("WASD / arrows to move - tap to walk on mobile", true);
+      this.world.enterMap(this.activeMapId);
+      this.events.once("shutdown", () => this.world.leaveMap());
+      this.registry.set("worldAssetsReady", true);
+      hideLoading();
     } catch (error) {
       console.error(error);
       showFatalError("Map failed: " + error.message);
-      return;
     }
-
-    this.cursors = this.input.keyboard.createCursorKeys();
-    this.keys = this.input.keyboard.addKeys("W,S,A,D");
-    this.input.keyboard.on("keydown-E", () => this.handleInteract());
-    this.input.keyboard.on("keydown-ENTER", () => this.handleInteract());
-
-    this.input.on("pointerdown", (pointer) => {
-      if (this.ui.isModalOpen() || pointer.y < 70) {
-        return;
-      }
-      this.player.setTouchTarget(pointer.worldX, pointer.worldY);
-    });
-
-    this.input.on("pointermove", (pointer) => {
-      if (pointer.isDown && this.player.touchTarget && !this.ui.isModalOpen() && pointer.y >= 70) {
-        this.player.setTouchTarget(pointer.worldX, pointer.worldY);
-      }
-    });
-
-    this.input.on("pointerup", () => {
-      this.player.clearTouchTarget();
-    });
-
-    this.ui.setHint("WASD / arrows to move • tap to walk on mobile", true);
-    this.world.enterMap(this.activeMapId);
-    this.events.on("shutdown", () => this.world.leaveMap());
-    hideLoading();
   }
 
   handleInteract() {
@@ -177,6 +222,10 @@ export default class WorldScene extends Phaser.Scene {
   }
 
   update(_time, delta) {
+    if (!this.player || !this.cursors) {
+      return;
+    }
+
     if (this.ui.isModalOpen()) {
       this.player.stop();
     } else {
@@ -209,6 +258,10 @@ export default class WorldScene extends Phaser.Scene {
 }
 
 export function createPhaserGame(contentStore) {
+  if (typeof Phaser === "undefined") {
+    throw new Error("Phaser failed to load. Check your internet connection and refresh.");
+  }
+
   const width = window.innerWidth;
   const height = window.innerHeight;
 

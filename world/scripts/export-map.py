@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 from datetime import datetime
 import xml.etree.ElementTree as ET
+import os
 from pathlib import Path
 
 MAP_EXPORTS = [
@@ -21,16 +22,21 @@ def parse_csv_data(text: str, width: int, height: int) -> list[int]:
     return values
 
 
-def load_tileset(tsx_path: Path, firstgid: int) -> dict | None:
-    root = ET.parse(tsx_path).getroot()
-    image = root.find("image")
-    if image is None:
-        return None
+def relative_image_path(image_path: Path, maps_dir: Path) -> str:
+    return Path(
+        Path(os.path.relpath(image_path.resolve(), maps_dir.resolve())).as_posix()
+    ).as_posix()
 
-    columns = int(root.attrib["columns"])
+
+def load_tileset(tsx_path: Path, firstgid: int, maps_dir: Path) -> dict | None:
+    import os
+
+    root = ET.parse(tsx_path).getroot()
+    columns = int(root.attrib.get("columns", 0))
     tilecount = int(root.attrib["tilecount"])
     tilewidth = int(root.attrib["tilewidth"])
     tileheight = int(root.attrib["tileheight"])
+    image = root.find("image")
 
     tiles = []
     for tile in root.findall("tile"):
@@ -44,6 +50,28 @@ def load_tileset(tsx_path: Path, firstgid: int) -> dict | None:
                 if prop.attrib.get("type") == "bool":
                     value = value.lower() == "true"
                 props[name] = value
+
+        tile_image = tile.find("image")
+        if tile_image is not None:
+            image_path = (tsx_path.parent / tile_image.attrib["source"]).resolve()
+            entry = {
+                "id": tile_id,
+                "image": relative_image_path(image_path, maps_dir),
+                "imagewidth": int(tile_image.attrib["width"]),
+                "imageheight": int(tile_image.attrib["height"]),
+            }
+            if props:
+                entry["properties"] = [
+                    {
+                        "name": k,
+                        "type": "bool" if isinstance(v, bool) else "string",
+                        "value": v,
+                    }
+                    for k, v in props.items()
+                ]
+            tiles.append(entry)
+            continue
+
         if props:
             tiles.append(
                 {
@@ -59,10 +87,22 @@ def load_tileset(tsx_path: Path, firstgid: int) -> dict | None:
                 }
             )
 
+    if image is None:
+        return {
+            "firstgid": firstgid,
+            "name": root.attrib["name"],
+            "tilecount": tilecount,
+            "columns": 0,
+            "tilewidth": tilewidth,
+            "tileheight": tileheight,
+            "tiles": tiles,
+        }
+
+    image_path = (tsx_path.parent / image.attrib["source"]).resolve()
     return {
         "firstgid": firstgid,
         "name": root.attrib["name"],
-        "image": "monkeyboy-tiles.png",
+        "image": relative_image_path(image_path, maps_dir),
         "imagewidth": int(image.attrib["width"]),
         "imageheight": int(image.attrib["height"]),
         "tilewidth": tilewidth,
@@ -82,7 +122,11 @@ def convert_tmx(tmx_path: Path, output_path: Path) -> None:
     for tileset in root.findall("tileset"):
         if "source" in tileset.attrib:
             tsx_path = (tmx_path.parent / tileset.attrib["source"]).resolve()
-            loaded = load_tileset(tsx_path, int(tileset.attrib["firstgid"]))
+            loaded = load_tileset(
+                tsx_path,
+                int(tileset.attrib["firstgid"]),
+                output_path.parent,
+            )
             if loaded:
                 tilesets.append(loaded)
 

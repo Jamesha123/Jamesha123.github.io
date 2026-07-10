@@ -4,6 +4,10 @@ import { CharacterAnimation } from "../systems/character-animation.js";
 
 import { MapPropSystem } from "../systems/map-prop-system.js";
 
+import { FurnitureSystem } from "../systems/furniture-system.js";
+
+import { DebugGraphics } from "../systems/debug-graphics.js";
+
 import { AvatarNpc } from "../entities/avatar-npc.js";
 
 
@@ -30,15 +34,13 @@ export class TiledWorldBuilder {
 
     const tileSpacing = mapConfig.tileSpacing ?? 0;
 
-    const tileset = map.addTilesetImage(
+    const mapTilesets = TiledWorldBuilder.addMapTilesets(
 
-      mapConfig.tilesetName,
+      map,
+
+      mapConfig,
 
       tilesetKey,
-
-      map.tileWidth,
-
-      map.tileHeight,
 
       tileMargin,
 
@@ -46,7 +48,7 @@ export class TiledWorldBuilder {
 
     );
 
-    if (!tileset) {
+    if (mapTilesets.length === 0) {
 
       throw new Error(
 
@@ -66,9 +68,15 @@ export class TiledWorldBuilder {
 
     world.mapId = mapConfig.id;
 
+    world.mapConfig = mapConfig;
+
+    world.showHitboxes = content.showHitboxes === true;
+
+    DebugGraphics.setShowHitboxes(world.showHitboxes);
 
 
-    const groundLayer = map.createLayer(mapConfig.groundLayer, tileset, 0, 0);
+
+    const groundLayer = map.createLayer(mapConfig.groundLayer, mapTilesets, 0, 0);
 
     if (!groundLayer) {
 
@@ -84,7 +92,7 @@ export class TiledWorldBuilder {
 
     if (mapConfig.decorLayer) {
 
-      const decorLayer = map.createLayer(mapConfig.decorLayer, tileset, 0, 0);
+      const decorLayer = map.createLayer(mapConfig.decorLayer, mapTilesets, 0, 0);
 
       if (decorLayer) {
 
@@ -98,7 +106,7 @@ export class TiledWorldBuilder {
 
 
 
-    const wallsLayer = map.createLayer(mapConfig.wallsLayer, tileset, 0, 0);
+    const wallsLayer = map.createLayer(mapConfig.wallsLayer, mapTilesets, 0, 0);
 
     if (wallsLayer) {
 
@@ -111,6 +119,10 @@ export class TiledWorldBuilder {
       world.collisionLayer = wallsLayer;
 
     }
+
+
+
+    TiledWorldBuilder.spawnFurniture(scene, world, map, mapConfig, mapKey, content);
 
 
 
@@ -215,6 +227,263 @@ export class TiledWorldBuilder {
     player.setupColliders(world.collisionLayer, world.avatarNpc, world.propColliders);
 
     TiledWorldBuilder.setupCamera(scene, world, player.sprite);
+
+  }
+
+
+
+  static addMapTilesets(map, mapConfig, tilesetKey, tileMargin, tileSpacing) {
+
+    const tilesets = [];
+
+    map.tilesets.forEach(function (tiledTileset) {
+
+      const name = tiledTileset.name;
+
+      if (name === mapConfig.tilesetName) {
+
+        const tileset = map.addTilesetImage(
+
+          name,
+
+          tilesetKey,
+
+          map.tileWidth,
+
+          map.tileHeight,
+
+          tileMargin,
+
+          tileSpacing
+
+        );
+
+        if (tileset) {
+
+          tilesets.push(tileset);
+
+        }
+
+        return;
+
+      }
+
+      if (name === "interactive") {
+
+        return;
+
+      }
+
+      const tileset = map.addTilesetImage(name);
+
+      if (tileset) {
+
+        tilesets.push(tileset);
+
+      }
+
+    });
+
+    return tilesets;
+
+  }
+
+
+
+  static getInteractiveFirstGid(scene, mapKey) {
+
+    const cached = scene.cache.tilemap.get(mapKey);
+
+    const tilesets = cached?.data?.tilesets;
+
+    if (tilesets) {
+
+      const interactive = tilesets.find(function (tileset) {
+
+        return tileset.name === "interactive";
+
+      });
+
+      if (interactive) {
+
+        return interactive.firstgid;
+
+      }
+
+    }
+
+    return 133;
+
+  }
+
+
+
+  static getTiledTileFlips(obj) {
+
+    return {
+
+      flipX: obj.flippedHorizontal === true || !!(obj.gid & 0x80000000),
+
+      flipY: obj.flippedVertical === true || !!(obj.gid & 0x40000000),
+
+    };
+
+  }
+
+
+
+  static readPlacementNumber(obj, propertyName, fallback) {
+    const value = getObjectProperty(obj, propertyName);
+    if (value === null || value === undefined || value === "") {
+      return fallback;
+    }
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  }
+
+  static getPlacementOffset(obj, furnitureDef, width, height) {
+    const def = furnitureDef || {};
+    const ratioX = TiledWorldBuilder.readPlacementNumber(
+      obj,
+      "offsetXRatio",
+      def.offsetXRatio ?? def.offsetX ?? 0
+    );
+    const ratioY = TiledWorldBuilder.readPlacementNumber(
+      obj,
+      "offsetYRatio",
+      def.offsetYRatio ?? def.offsetY ?? 0
+    );
+    const pixelX = TiledWorldBuilder.readPlacementNumber(obj, "offsetX", 0);
+    const pixelY = TiledWorldBuilder.readPlacementNumber(obj, "offsetY", 0);
+
+    return {
+      offsetX: pixelX + width * ratioX,
+      offsetY: pixelY + height * ratioY,
+    };
+  }
+
+  static applyTiledTileObjectPlacement(sprite, obj, furnitureDef) {
+    const flips = TiledWorldBuilder.getTiledTileFlips(obj);
+    const width = obj.width || sprite.width;
+    const height = obj.height || sprite.height;
+    const offset = TiledWorldBuilder.getPlacementOffset(obj, furnitureDef, width, height);
+
+    if (obj.width && obj.height) {
+      sprite.setDisplaySize(obj.width, obj.height);
+    }
+
+    sprite.setOrigin(flips.flipX ? 1 : 0, flips.flipY ? 0 : 1);
+    sprite.setPosition(
+      obj.x + (flips.flipX ? width : 0) + offset.offsetX,
+      obj.y - (flips.flipY ? height : 0) + offset.offsetY
+    );
+
+    if (flips.flipX) {
+      sprite.setFlipX(true);
+    }
+
+    if (flips.flipY) {
+      sprite.setFlipY(true);
+    }
+
+    if (obj.rotation) {
+      sprite.setAngle(obj.rotation);
+    }
+  }
+
+
+
+  static spawnFurniture(scene, world, map, mapConfig, mapKey, content) {
+
+    const layerNames = mapConfig.furnitureLayers || (mapConfig.furnitureLayer ? [mapConfig.furnitureLayer] : []);
+
+    if (layerNames.length === 0) {
+
+      return;
+
+    }
+
+    const firstGid = TiledWorldBuilder.getInteractiveFirstGid(scene, mapKey);
+
+    const sprites = [];
+
+    const defaultFurnitureDef = {
+
+      bodyWidthRatio: 0.75,
+
+      bodyHeightRatio: 0.35,
+
+      hitboxLiftRatio: 0.12,
+
+    };
+
+    let stackIndex = 0;
+
+    layerNames.forEach(function (layerName) {
+
+      const objectLayer = map.getObjectLayer(layerName);
+
+      if (!objectLayer) {
+
+        return;
+
+      }
+
+      objectLayer.objects.forEach(function (obj) {
+
+        if (!obj.gid) {
+
+          return;
+
+        }
+
+        stackIndex += 1;
+
+        const localId = (obj.gid & 0x1fffffff) - firstGid;
+
+        if (localId < 0 || localId >= TiledWorldBuilder.FURNITURE_IMAGES.length) {
+
+          return;
+
+        }
+
+        const textureKey = "furniture-" + localId;
+
+        if (!scene.textures.exists(textureKey)) {
+
+          console.warn("Missing furniture texture:", textureKey, obj.name);
+
+          return;
+
+        }
+
+        const furnitureDef = content.getFurniture(obj.name) || defaultFurnitureDef;
+
+        const sprite = scene.add.image(obj.x, obj.y, textureKey);
+
+        TiledWorldBuilder.applyTiledTileObjectPlacement(sprite, obj, furnitureDef);
+
+        const depthValue = getObjectProperty(obj, "depth");
+
+        const depth =
+
+          depthValue !== null && depthValue !== "" && !Number.isNaN(Number(depthValue))
+
+            ? Number(depthValue)
+
+            : 3 + stackIndex * 0.01;
+
+        sprite.setDepth(depth);
+
+        FurnitureSystem.spawnHitbox(scene, world, obj, furnitureDef);
+
+        sprites.push(sprite);
+
+      });
+
+    });
+
+    world.furnitureSprites = sprites;
 
   }
 
@@ -516,9 +785,35 @@ export class TiledWorldBuilder {
 
     const viewportHeight = scene.scale.gameSize.height;
 
-    const visibleTilesX = 20;
+    const mapConfig = world.mapConfig;
+
+
+
+    if (mapConfig?.fillViewport) {
+
+      const mapW = world.mapWidth * world.tileSize;
+
+      const mapH = world.mapHeight * world.tileSize;
+
+      let zoom = viewportWidth / mapW;
+
+      if (mapH * zoom > viewportHeight) {
+
+        zoom = viewportHeight / mapH;
+
+      }
+
+      camera.setZoom(Math.max(1, zoom));
+
+      return;
+
+    }
+
+
 
     const visibleTilesY = 15;
+
+    const visibleTilesX = visibleTilesY * (viewportWidth / viewportHeight);
 
 
 
@@ -570,3 +865,17 @@ export class TiledWorldBuilder {
 
 }
 
+TiledWorldBuilder.FURNITURE_IMAGES = [
+  "assets/monkeyboy-source/Tiles_Interactive/kitchen.png",
+  "assets/monkeyboy-source/Tiles_Interactive/bookshelf.png",
+  "assets/monkeyboy-source/Tiles_Interactive/couch.png",
+  "assets/monkeyboy-source/Tiles_Interactive/dinningTable.png",
+  "assets/monkeyboy-source/Tiles_Interactive/drawer.png",
+  "assets/monkeyboy-source/Tiles_Interactive/indoor1.png",
+  "assets/monkeyboy-source/Tiles_Interactive/indoor8.png",
+  "assets/monkeyboy-source/Tiles_Interactive/indoor9.png",
+  "assets/monkeyboy-source/Tiles_Interactive/indoor10.png",
+  "assets/monkeyboy-source/Tiles_Interactive/indoor11.png",
+  "assets/monkeyboy-source/Tiles_Interactive/chair1.png",
+  "assets/monkeyboy-source/Tiles_Interactive/chair2.png",
+];

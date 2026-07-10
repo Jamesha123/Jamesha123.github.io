@@ -11,6 +11,10 @@ export class Player {
   }
 
   create(x, y) {
+    if (this.sprite) {
+      this.sprite.destroy();
+    }
+
     const scale = this.config.scale || 1;
     this.sprite = this.scene.physics.add.sprite(
       x,
@@ -51,15 +55,18 @@ export class Player {
     let vx = 0;
     let vy = 0;
 
-    if (input.cursors.left.isDown || input.keys.A.isDown) {
+    const keys = input.keys || {};
+    const cursors = input.cursors;
+
+    if (cursors.left.isDown || keys.A.isDown) {
       vx = -1;
-    } else if (input.cursors.right.isDown || input.keys.D.isDown) {
+    } else if (cursors.right.isDown || keys.D.isDown) {
       vx = 1;
     }
 
-    if (input.cursors.up.isDown || input.keys.W.isDown) {
+    if (cursors.up.isDown || keys.W.isDown) {
       vy = -1;
-    } else if (input.cursors.down.isDown || input.keys.S.isDown) {
+    } else if (cursors.down.isDown || keys.S.isDown) {
       vy = 1;
     }
 

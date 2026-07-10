@@ -12,6 +12,8 @@ export class WorldState {
     this.avatarNpc = null;
     this.avatarEntity = null;
     this.propColliders = [];
+    this.furnitureSprites = [];
+    this.showHitboxes = false;
   }
 
   enterMap(mapId) {
@@ -33,5 +35,6 @@ export class WorldState {
     this.avatarNpc = null;
     this.avatarEntity = null;
     this.propColliders = [];
+    this.furnitureSprites = [];
   }
 }

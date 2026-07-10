@@ -1,5 +1,6 @@
 {
-  "startMap": "portfolio",
+  "startMap": "house-interior",
+  "showHitboxes": true,
   "maps": [
     "maps/portfolio.json",
     "maps/house-interior.json"
@@ -10,7 +11,8 @@
     "npcs": [],
     "props": [
       "sprites/props/house.json"
-    ]
+    ],
+    "furniture": "sprites/furniture.json"
   },
   "hotspots": [
     "hotspots/about.json",
