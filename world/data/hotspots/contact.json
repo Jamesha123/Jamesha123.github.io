@@ -1,0 +1,14 @@
+{
+  "id": "contact",
+  "label": "Contact",
+  "x": 14,
+  "y": 10,
+  "color": "#e74c3c",
+  "title": "Get in Touch",
+  "body": "Reach out for opportunities, collaboration, or just to talk code and games.",
+  "links": [
+    { "label": "Contact Form", "url": "../index.html#contact" },
+    { "label": "GitHub", "url": "https://github.com/Jamesha123" },
+    { "label": "Email", "url": "mailto:jameshang123@gmail.com" }
+  ]
+}

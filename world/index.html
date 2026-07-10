@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>James Hang — Portfolio World (POC)</title>
+    <meta
+      name="description"
+      content="Proof of concept: explore a pixel-art world to discover James Hang's projects and experience."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="loading">Loading world...</div>
+
+    <div id="ui-layer">
+      <div class="top-bar">
+        <a href="../index.html">&larr; Classic Portfolio</a>
+        <button type="button" id="interact-btn">Interact</button>
+      </div>
+      <div id="interaction-hint" class="hint visible">WASD / arrows to move</div>
+    </div>
+
+    <div id="modal-overlay" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <h2 id="modal-title"></h2>
+        <p id="modal-body"></p>
+        <div id="modal-links" class="modal-links"></div>
+        <button type="button" id="modal-close" class="modal-close">Close (Esc)</button>
+      </div>
+    </div>
+
+    <div id="game-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+    <script type="module" src="js/main.js?v=2"></script>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "id": "portfolio",
+  "enabled": true,
+  "file": "assets/maps/world.json",
+  "tilesetImage": "assets/tilesets/monkeyboy-tiles-extruded.png",
+  "tilesetName": "monkeyboy",
+  "tileSpacing": 2,
+  "groundLayer": "Ground",
+  "wallsLayer": "Walls",
+  "decorLayer": "Decor",
+  "hotspotsLayer": "Hotspots",
+  "spawnLayer": "Spawn",
+  "propsLayer": "Props",
+  "transitionsLayer": "Transitions",
+  "features": {
+    "avatar": true,
+    "hotspotMarkers": true
+  }
+}

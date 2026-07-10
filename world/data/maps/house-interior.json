@@ -1,0 +1,17 @@
+{
+  "id": "house-interior",
+  "enabled": true,
+  "file": "assets/maps/house-interior.json",
+  "tilesetImage": "assets/tilesets/monkeyboy-tiles-extruded.png",
+  "tilesetName": "monkeyboy",
+  "tileSpacing": 2,
+  "groundLayer": "Ground",
+  "wallsLayer": "Walls",
+  "decorLayer": "Decor",
+  "spawnLayer": "Spawn",
+  "transitionsLayer": "Transitions",
+  "features": {
+    "avatar": false,
+    "hotspotMarkers": false
+  }
+}

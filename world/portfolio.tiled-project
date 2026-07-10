@@ -1,0 +1,8 @@
+{
+  "folders": [
+    "assets/maps",
+    "assets/tilesets",
+    "assets/sprites/props"
+  ],
+  "extensionsFolder": "extensions"
+}

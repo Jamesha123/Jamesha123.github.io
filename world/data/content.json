@@ -1,0 +1,22 @@
+{
+  "startMap": "portfolio",
+  "maps": [
+    "maps/portfolio.json",
+    "maps/house-interior.json"
+  ],
+  "sprites": {
+    "player": "sprites/player.json",
+    "avatar": "sprites/avatar.json",
+    "npcs": [],
+    "props": [
+      "sprites/props/house.json"
+    ]
+  },
+  "hotspots": [
+    "hotspots/about.json",
+    "hotspots/monkeyboy.json",
+    "hotspots/book-recommender.json",
+    "hotspots/games.json",
+    "hotspots/contact.json"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "games",
+  "label": "Mini Games",
+  "x": 6,
+  "y": 10,
+  "color": "#2ecc71",
+  "title": "Mini Game Demos",
+  "body": "Playable browser demos built with HTML5 Canvas — Snake, Pong, Blackjack, and Hangman. Each has touch controls for mobile.",
+  "links": [
+    { "label": "Snake Demo", "url": "../index.html#project-snake" },
+    { "label": "Pong Demo", "url": "../index.html#project-pong" },
+    { "label": "All Projects", "url": "../index.html#projects" }
+  ]
+}

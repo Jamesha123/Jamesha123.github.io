@@ -1,0 +1,43 @@
+{
+  "id": "house",
+  "image": "assets/sprites/props/house.png",
+  "width": 144,
+  "height": 128,
+  "scale": 1,
+  "depth": 4,
+  "showHitbox": true,
+  "interaction": {
+    "label": "Enter House",
+    "targetMap": "house-interior",
+    "spawnId": "from-outside",
+    "returnSpawnId": "at-house",
+    "reach": 56,
+    "offsetY": -25,
+    "offsetX": 40
+  },
+  "hitboxes": [
+    {
+      "x": 0.08,
+      "y": 0.56,
+      "w": 0.84,
+      "h": 0.4,
+      "origin": "topleft"
+    },
+    {
+      "x": 0.86,
+      "y": 0.56,
+      "w": 0.14,
+      "h": 0.4,
+      "angle": 0,
+      "origin": "center"
+    },
+    {
+      "x": 0.1,
+      "y": 0.57,
+      "w": 0.14,
+      "h": 0.4,
+      "angle": 0,
+      "origin": "center"
+    }
+  ]
+}

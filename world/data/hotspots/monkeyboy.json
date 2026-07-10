@@ -1,0 +1,13 @@
+{
+  "id": "monkeyboy",
+  "label": "Monkey Boy",
+  "x": 10,
+  "y": 4,
+  "color": "#e67e22",
+  "title": "Monkey Boy",
+  "body": "2D Java adventure game with exploration, combat, magic, quests, and boss battles. 14 playable maps with inventory, equipment, and save/load.",
+  "links": [
+    { "label": "View on GitHub", "url": "https://github.com/Jamesha123/Monkey_Boy" },
+    { "label": "Download JAR", "url": "https://raw.githubusercontent.com/Jamesha123/Monkey_Boy/main/MonkeyBoy.jar" }
+  ]
+}
