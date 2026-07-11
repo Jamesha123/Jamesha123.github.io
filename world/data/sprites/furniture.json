@@ -71,5 +71,11 @@
     "bodyWidthRatio": 0.9,
     "bodyHeightRatio": 0.5,
     "hitboxLiftRatio": 0.08
+  },
+  {
+    "id": "computerDesk",
+    "bodyWidthRatio": 0.92,
+    "bodyHeightRatio": 0.32,
+    "hitboxLiftRatio": 0.14
   }
 ]

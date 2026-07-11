@@ -32,33 +32,68 @@ export class HotspotSystem {
     this.world.runtimeHotspots.push(hotspot);
   }
 
-  checkProximity(player, ui) {
-    if (ui.isModalOpen() || !player) {
-      return;
+  isPlayerInHotspot(player, hotspot) {
+    if (hotspot.hitboxRect) {
+      const rect = hotspot.hitboxRect;
+      return (
+        player.x >= rect.left &&
+        player.x <= rect.right &&
+        player.y >= rect.top &&
+        player.y <= rect.bottom
+      );
     }
 
-    this.nearbyHotspot = null;
-    const reach = this.getReach();
+    const reach = hotspot.reach != null ? hotspot.reach : this.getReach();
+    const dx = player.x - hotspot.x;
+    const dy = player.y - hotspot.y;
+    return Math.hypot(dx, dy) <= reach;
+  }
+
+  findNearbyHotspot(player) {
+    if (!player) {
+      return null;
+    }
 
     for (const hotspot of this.world.runtimeHotspots) {
-      const dx = player.x - hotspot.x;
-      const dy = player.y - hotspot.y;
-      if (Math.hypot(dx, dy) <= reach) {
-        this.nearbyHotspot = hotspot;
-        break;
+      if (this.isPlayerInHotspot(player, hotspot)) {
+        return hotspot;
       }
     }
 
+    return null;
+  }
+
+  checkProximity(player, ui, options) {
+    options = options || {};
+
+    if (!player) {
+      return;
+    }
+
+    if (!ui.isModalOpen() && !ui.isMapFading()) {
+      this.nearbyHotspot = this.findNearbyHotspot(player);
+    }
+
+    if (ui.isModalOpen() || ui.isMapFading() || options.suppressHint) {
+      return;
+    }
+
     if (this.nearbyHotspot) {
-      ui.setHint("Press E, Enter, or Interact to open: " + this.nearbyHotspot.label, true);
-    } else {
-      ui.setHint("WASD / arrows to move • tap to walk on mobile", true);
+      ui.setHint("Press E or Interact to open: " + this.nearbyHotspot.label, true);
+    } else if (!options.transitionHintActive) {
+      ui.setHint("WASD / arrows to move • click or tap to walk", true);
     }
   }
 
-  tryInteract(ui) {
-    if (this.nearbyHotspot && !ui.isModalOpen()) {
-      ui.openModal(this.nearbyHotspot);
+  tryInteract(ui, player) {
+    if (ui.isModalOpen()) {
+      return;
+    }
+
+    const hotspot = this.findNearbyHotspot(player) || this.nearbyHotspot;
+    if (hotspot) {
+      this.nearbyHotspot = hotspot;
+      ui.openModal(hotspot);
     }
   }
 
@@ -69,41 +104,42 @@ export class HotspotSystem {
     const avatarHotspotId = this.getAvatarHotspotId();
 
     this.world.runtimeHotspots.forEach(function (hotspot) {
-      if (npcHotspotIds.indexOf(hotspot.id) === -1 && hotspot.id !== avatarHotspotId) {
-        const key = HotspotSystem.createMarkerTexture(scene, hotspot, this.world.tileSize);
-        scene.add.sprite(hotspot.x, hotspot.y, key).setDepth(5).setOrigin(0.5, 1);
+      if (npcHotspotIds.indexOf(hotspot.id) !== -1 || hotspot.id === avatarHotspotId) {
+        return;
+      }
+
+      let labelX = hotspot.x;
+      let labelY = hotspot.y;
+
+      if (hotspot.hitboxRect) {
+        DebugGraphics.addHotspotRectOutline(scene, hotspot.hitboxRect);
+        labelX = hotspot.hitboxRect.left + hotspot.hitboxRect.width / 2;
+        labelY = hotspot.hitboxRect.top - 4;
+      } else {
+        const reach = hotspot.reach != null ? hotspot.reach : this.getReach();
+        DebugGraphics.addHotspotRangeOutline(scene, hotspot.x, hotspot.y, reach);
+        labelY = hotspot.y - reach - 4;
       }
 
       scene.add
-        .text(hotspot.x, hotspot.y - this.world.tileSize * 1.2, hotspot.label, {
-          fontFamily: "Press Start 2P, monospace",
+        .text(labelX, labelY, hotspot.label, {
+          fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
           fontSize: "8px",
+          fontStyle: "bold",
           color: "#ffffff",
+          stroke: "#000000",
+          strokeThickness: 1,
           backgroundColor: "#000000aa",
-          padding: { x: 4, y: 2 },
+          padding: { x: 1, y: 0 },
         })
         .setOrigin(0.5, 1)
-        .setDepth(6);
+        .setDepth(10)
+        .setResolution(2);
     }, this);
   }
 
-  static createMarkerTexture(scene, hotspot, tileSize) {
-    const key = "hotspot-" + hotspot.id;
-    if (scene.textures.exists(key)) {
-      return key;
-    }
-
-    const marker = scene.make.graphics({ x: 0, y: 0, add: false });
-    const color = Phaser.Display.Color.HexStringToColor(hotspot.color || "#ffffff").color;
-    marker.fillStyle(color, 1);
-    marker.fillCircle(tileSize / 2, tileSize / 2, 10);
-    marker.lineStyle(2, 0xffffff, 1);
-    marker.strokeCircle(tileSize / 2, tileSize / 2, 10);
-    marker.generateTexture(key, tileSize, tileSize);
-    return key;
-  }
-
-  showRangeOutline(scene, x, y) {
-    return DebugGraphics.addHotspotRangeOutline(scene, x, y, this.getReach());
+  showRangeOutline(scene, x, y, reach) {
+    const radius = reach != null ? reach : this.getReach();
+    return DebugGraphics.addHotspotRangeOutline(scene, x, y, radius);
   }
 }

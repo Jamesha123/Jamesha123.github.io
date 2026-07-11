@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="32" height="15" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="34">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="32" height="15" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="41">
  <tileset firstgid="1" source="../tilesets/monkeyboy.tsx"/>
  <tileset firstgid="133" source="../tilesets/monkeyboy-interactive.tsx"/>
  <layer id="1" name="Ground" width="32" height="15">
@@ -12,16 +12,19 @@
 35,68,68,68,68,68,68,68,68,68,68,68,68,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,1,
 35,68,68,68,68,68,68,68,68,68,68,68,68,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,1,
 35,68,68,68,68,68,68,68,68,68,68,68,68,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,1,
-35,68,68,68,68,68,68,68,68,68,68,68,68,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,1,
-35,68,68,68,68,68,68,68,68,68,68,68,68,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,1,
-35,68,68,68,68,68,68,68,68,68,68,68,68,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,1,
-35,68,68,68,68,68,68,68,68,68,68,68,68,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,1,
-35,68,68,68,68,68,68,68,68,68,68,68,68,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,1,
-35,68,68,68,68,68,68,68,68,68,68,68,68,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,1,
+35,68,68,68,68,68,68,68,68,68,68,68,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,1,
+35,68,68,68,68,68,68,68,68,68,68,68,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,1,
+35,68,68,68,68,68,68,68,68,68,68,68,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,1,
+35,68,68,68,68,68,68,68,68,68,68,68,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,1,
+35,68,68,68,68,68,68,68,68,68,68,68,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,1,
+35,68,68,68,68,68,68,68,68,68,68,68,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,35,35,1,1,1,1,1,1,1,1,1,1,1
 </data>
  </layer>
  <layer id="2" name="Walls" width="32" height="15">
+  <properties>
+   <property name="depth" type="int" value="0"/>
+  </properties>
   <data encoding="csv">
 45,55,44,44,44,44,44,44,44,44,44,44,47,1,45,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,54,47,
 50,43,43,43,43,43,43,43,43,43,43,43,51,1,50,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,51,
@@ -35,7 +38,7 @@
 50,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,51,
 50,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,51,
 50,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,51,
-50,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,51,
+50,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,35,0,0,0,0,0,0,0,0,0,0,51,
 50,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,51,
 46,49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,0,0,49,49,49,49,49,49,49,49,49,49,48
 </data>
@@ -67,7 +70,7 @@
   <object id="14" name="drawer" gid="137" x="448.75" y="71.75" width="21.5" height="48"/>
   <object id="13" name="dinningTable" gid="136" x="59.5" y="216" width="78" height="64">
    <properties>
-    <property name="depth" type="int" value="1"/>
+    <property name="depth" type="int" value="2"/>
    </properties>
   </object>
   <object id="26" name="indoor1" gid="138" x="380.25" y="75" width="35" height="43.25"/>
@@ -89,9 +92,14 @@
     <property name="depth" type="int" value="0"/>
    </properties>
   </object>
+  <object id="39" name="computerDesk" gid="145" x="239.334" y="87.6667" width="62.6667" height="68.8889">
+   <properties>
+    <property name="depth" type="int" value="3"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="4" name="Transitions">
-  <object id="1" name="Exit" x="296.667" y="210.5" width="48" height="29.3333">
+  <object id="1" name="Exit" x="295.167" y="208.5" width="50" height="36.3333">
    <properties>
     <property name="label" value="Exit House"/>
     <property name="returnSpawnId" value="from-outside"/>
@@ -110,17 +118,22 @@
  <objectgroup id="8" name="Furniture 2">
   <object id="21" name="chair2" gid="144" x="90.8333" y="197.091" width="17" height="24">
    <properties>
-    <property name="depth" type="int" value="2"/>
+    <property name="depth" type="int" value="3"/>
    </properties>
   </object>
   <object id="24" name="chair2" gid="144" x="69.5152" y="196.97" width="17" height="24">
    <properties>
-    <property name="depth" type="int" value="2"/>
+    <property name="depth" type="int" value="3"/>
    </properties>
   </object>
   <object id="25" name="chair2" gid="144" x="111.636" y="197.152" width="17" height="24">
    <properties>
-    <property name="depth" type="int" value="2"/>
+    <property name="depth" type="int" value="3"/>
+   </properties>
+  </object>
+  <object id="40" name="chair2" gid="144" x="259.636" y="80.8187" width="23.6667" height="31.3333">
+   <properties>
+    <property name="depth" type="int" value="4"/>
    </properties>
   </object>
   <object id="17" name="indoor9" gid="140" x="406.318" y="161.136" width="33.5" height="64"/>
@@ -128,5 +141,19 @@
   <object id="28" name="indoor11" gid="142" x="166.75" y="72.75" width="27.5" height="64.5"/>
   <object id="29" name="indoor11" gid="142" x="471.25" y="64.5" width="29" height="62"/>
   <object id="32" name="indoor11" gid="142" x="472.25" y="224.5" width="29" height="62"/>
+ </objectgroup>
+ <objectgroup id="9" name="Hotspots">
+  <object id="36" name="Book Recommender" x="320.167" y="22.5" width="54.5" height="63.125">
+   <properties>
+    <property name="hitboxShape" value="rect"/>
+    <property name="hotspotId" value="book-recommender"/>
+   </properties>
+  </object>
+  <object id="37" name="Mini Games" x="240.543" y="26.1251" width="59.5" height="53.125">
+   <properties>
+    <property name="hitboxShape" value="rect"/>
+    <property name="hotspotId" value="games"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

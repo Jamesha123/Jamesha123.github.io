@@ -25,19 +25,28 @@ export default class WorldScene extends Phaser.Scene {
     this.activeMapId = contentStore.startMapId;
     this.spawnId = null;
     this.returnState = null;
-    this.inputReady = false;
   }
 
   init(data) {
     this.activeMapId = (data && data.mapId) || this.content.startMapId;
     this.spawnId = (data && data.spawnId) || null;
     this.returnState = (data && data.returnState) || null;
+    this.fadeIn = !!(data && data.fadeIn);
   }
 
   preload() {
     this.world.useTiled = this.content.useTiled;
-    const bust = "?v=" + Date.now();
     const assetsReady = this.registry.get("worldAssetsReady") === true;
+    const initialMapOnly = !assetsReady;
+    const activeMapId = this.activeMapId || this.content.startMapId;
+
+    if (!this._worldLoadErrorsBound) {
+      this._worldLoadErrorsBound = true;
+      this.load.on("loaderror", function (file) {
+        const src = file && (file.url || file.src) ? file.url || file.src : "unknown asset";
+        showFatalError("Failed to load asset: " + src);
+      });
+    }
 
     if (!assetsReady && this.content.playerConfig) {
       const playerSprites = this.content.playerConfig;
@@ -80,25 +89,31 @@ export default class WorldScene extends Phaser.Scene {
         if (!mapConfig.enabled) {
           return;
         }
+        if (initialMapOnly && mapConfig.id !== activeMapId) {
+          return;
+        }
         const mapKey = "map-" + mapConfig.id;
         if (this.cache.tilemap.exists(mapKey)) {
           this.cache.tilemap.remove(mapKey);
         }
-        this.load.tilemapTiledJSON(mapKey, mapConfig.file + bust);
+        this.load.tilemapTiledJSON(mapKey, cacheBust(mapConfig.file));
 
         if (!assetsReady && !loadedTilesets.has(mapConfig.tilesetImage)) {
           loadedTilesets.add(mapConfig.tilesetImage);
-          this.load.image("tileset-" + mapConfig.tilesetName, mapConfig.tilesetImage + bust);
+          this.load.image("tileset-" + mapConfig.tilesetName, cacheBust(mapConfig.tilesetImage));
         }
 
-        if (!assetsReady && needsFurniture) {
+        if (needsFurniture) {
           TiledWorldBuilder.FURNITURE_IMAGES.forEach(function (path, index) {
             const key = "furniture-" + index;
             if (loadedFurniture.has(key)) {
               return;
             }
             loadedFurniture.add(key);
-            this.load.image(key, path + bust);
+            if (this.textures.exists(key)) {
+              this.textures.remove(key);
+            }
+            this.load.image(key, cacheBust(path));
           }, this);
         }
       }, this);
@@ -111,8 +126,11 @@ export default class WorldScene extends Phaser.Scene {
 
   create() {
     try {
+      this.transitionOutlineGfx = null;
+      this.debugOutlineGfx = null;
       this.world.resetRuntime();
-      DebugGraphics.setShowHitboxes(this.content.showHitboxes === true);
+      DebugGraphics.reset();
+      this.hotspots.nearbyHotspot = null;
       this.ui.bindScene(this);
       this.mapTransitions = new MapTransitionSystem(this, this.content, this.world);
       this.ui.onInteract = () => this.handleInteract();
@@ -171,54 +189,84 @@ export default class WorldScene extends Phaser.Scene {
       this.player.clearTouchTarget();
       this.cursors = this.input.keyboard.createCursorKeys();
       this.keys = this.input.keyboard.addKeys("W,S,A,D");
+      this.setupPointerInput();
 
-      if (!this.inputReady) {
-        this.input.keyboard.on("keydown-E", () => this.handleInteract());
-        this.input.keyboard.on("keydown-ENTER", () => this.handleInteract());
-        this.input.keyboard.on("keydown-H", () => {
-          DebugGraphics.setShowHitboxes(!DebugGraphics.showHitboxes);
-          this.world.showHitboxes = DebugGraphics.showHitboxes;
-        });
-
-        this.input.on("pointerdown", (pointer) => {
-          if (this.ui.isModalOpen() || pointer.y < 70) {
-            return;
-          }
-          this.player.setTouchTarget(pointer.worldX, pointer.worldY);
-        });
-
-        this.input.on("pointermove", (pointer) => {
-          if (pointer.isDown && this.player.touchTarget && !this.ui.isModalOpen() && pointer.y >= 70) {
-            this.player.setTouchTarget(pointer.worldX, pointer.worldY);
-          }
-        });
-
-        this.input.on("pointerup", () => {
-          this.player.clearTouchTarget();
-        });
-
-        this.inputReady = true;
-      }
-
-      this.ui.setHint("WASD / arrows to move - tap to walk on mobile", true);
+      this.ui.setHint("WASD / arrows to move • click or tap to walk", true);
       this.world.enterMap(this.activeMapId);
       this.events.once("shutdown", () => this.world.leaveMap());
       this.registry.set("worldAssetsReady", true);
       hideLoading();
+      window.dispatchEvent(new Event("world-ready"));
+
+      if (this.fadeIn) {
+        this.ui.fadeInFromMapTransition();
+      } else {
+        this.ui.resetMapFade();
+      }
     } catch (error) {
       console.error(error);
       showFatalError("Map failed: " + error.message);
     }
   }
 
+  setupPointerInput() {
+    if (this._onPointerDown) {
+      this.input.off("pointerdown", this._onPointerDown);
+      this.input.off("pointermove", this._onPointerMove);
+    }
+
+    this._onPointerDown = (pointer) => {
+      if (
+        this.ui.isModalOpen() ||
+        this.ui.isMapFading() ||
+        !this.player ||
+        pointer.button > 0 ||
+        this.isPointerOnUi(pointer)
+      ) {
+        return;
+      }
+      this.player.setTouchTarget(pointer.worldX, pointer.worldY);
+    };
+
+    this._onPointerMove = (pointer) => {
+      if (
+        !pointer.isDown ||
+        this.ui.isModalOpen() ||
+        this.ui.isMapFading() ||
+        !this.player ||
+        this.isPointerOnUi(pointer)
+      ) {
+        return;
+      }
+      this.player.setTouchTarget(pointer.worldX, pointer.worldY);
+    };
+
+    this.input.on("pointerdown", this._onPointerDown);
+    this.input.on("pointermove", this._onPointerMove);
+  }
+
   handleInteract() {
-    if (this.ui.isModalOpen()) {
+    if (this.ui.isModalOpen() || this.ui.isMapFading() || !this.player || !this.player.sprite) {
       return;
     }
-    if (this.mapTransitions.tryTransition()) {
+
+    const player = this.player.sprite;
+
+    if (this.hotspots.findNearbyHotspot(player)) {
+      this.hotspots.tryInteract(this.ui, player);
       return;
     }
-    this.hotspots.tryInteract(this.ui);
+
+    this.mapTransitions.tryTransition();
+  }
+
+  isPointerOnUi(pointer) {
+    const topBar = document.querySelector(".top-bar");
+    if (!topBar) {
+      return pointer.y < 70;
+    }
+    const bounds = topBar.getBoundingClientRect();
+    return pointer.x >= bounds.left && pointer.x <= bounds.right && pointer.y >= bounds.top && pointer.y <= bounds.bottom;
   }
 
   update(_time, delta) {
@@ -226,7 +274,7 @@ export default class WorldScene extends Phaser.Scene {
       return;
     }
 
-    if (this.ui.isModalOpen()) {
+    if (this.ui.isModalOpen() || this.ui.isMapFading()) {
       this.player.stop();
     } else {
       this.player.update(
@@ -251,9 +299,10 @@ export default class WorldScene extends Phaser.Scene {
     }
 
     this.mapTransitions.checkProximity(this.player.sprite, this.ui);
-    if (!this.mapTransitions.nearbyTarget) {
-      this.hotspots.checkProximity(this.player.sprite, this.ui);
-    }
+    this.hotspots.checkProximity(this.player.sprite, this.ui, {
+      suppressHint: !!this.mapTransitions.nearbyTarget,
+      transitionHintActive: !!this.mapTransitions.nearbyTarget,
+    });
   }
 }
 
@@ -292,6 +341,10 @@ export function createPhaserGame(contentStore) {
     },
     scene: new WorldScene(contentStore),
   });
+
+  if (game.canvas) {
+    game.canvas.setAttribute("tabindex", "0");
+  }
 
   window.addEventListener("pageshow", function (event) {
     if (!event.persisted) {

@@ -435,7 +435,7 @@
 		
 		if (!window.__snakeLoaded) {
 			var s = document.createElement('script');
-			s.src = 'assets/js/snake.js?v=3';
+			s.src = 'assets/js/snake.js?v=4';
 			s.onload = function(){ 
 				window.__snakeLoaded = true;
 			};
@@ -485,7 +485,7 @@
 		
 		if (!window.__blackjackLoaded) {
 			var s = document.createElement('script');
-			s.src = 'assets/js/blackjack.js?v=1';
+			s.src = 'assets/js/blackjack.js?v=6';
 			s.onload = function(){ 
 				window.__blackjackLoaded = true;
 			};
@@ -535,7 +535,7 @@ $(document).ready(function(){
 		
 		if (!window.__hangmanLoaded) {
 			var s = document.createElement('script');
-			s.src = 'assets/js/hangman.js?v=5';
+			s.src = 'assets/js/hangman.js?v=9';
 			s.onload = function(){ 
 				window.__hangmanLoaded = true;
 			};
@@ -585,7 +585,7 @@ $(document).ready(function(){
 		
 		if (!window.__pongLoaded) {
 			var s = document.createElement('script');
-			s.src = 'assets/js/pong.js?v=8';
+			s.src = 'assets/js/pong.js?v=10';
 			s.onload = function(){ 
 				window.__pongLoaded = true;
 			};

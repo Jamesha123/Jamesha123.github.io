@@ -13,7 +13,6 @@ export class WorldState {
     this.avatarEntity = null;
     this.propColliders = [];
     this.furnitureSprites = [];
-    this.showHitboxes = false;
   }
 
   enterMap(mapId) {

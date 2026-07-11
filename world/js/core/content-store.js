@@ -49,10 +49,6 @@ export class ContentStore {
     return this.sprites.furniture || [];
   }
 
-  get showHitboxes() {
-    return this.data.showHitboxes === true;
-  }
-
   get useTiled() {
     return this.maps.some(function (map) {
       return map.enabled;

@@ -42,9 +42,9 @@ export class MapPropSystem {
     const feetPos = getObjectFeetPosition(obj, world.tileSize);
     const feetX = feetPos.x;
     const feetY = feetPos.y;
-    const extraScale = MapPropSystem.readNumber(obj, "scale", propDef.scale ?? 1);
-    const originX = propDef.originX ?? 0.5;
-    const originY = propDef.originY ?? 1;
+    const extraScale = MapPropSystem.readNumber(obj, "scale", propDef.scale != null ? propDef.scale : 1);
+    const originX = propDef.originX != null ? propDef.originX : 0.5;
+    const originY = propDef.originY != null ? propDef.originY : 1;
     const displayWidth = placementWidth * extraScale;
     const displayHeight = placementHeight * extraScale;
 
@@ -53,12 +53,17 @@ export class MapPropSystem {
     const nativeHeight = sprite.frame.height || propDef.height || placementHeight;
     sprite.setOrigin(originX, originY);
     sprite.setDisplaySize(displayWidth, displayHeight);
-    sprite.setDepth(propDef.depth ?? 4);
+    sprite.setDepth(propDef.depth != null ? propDef.depth : 4);
 
-    const hitboxOffsetX = MapPropSystem.readNumber(obj, "hitboxOffsetX", propDef.hitboxOffsetX ?? 0);
-    const hitboxOffsetY = MapPropSystem.readNumber(obj, "hitboxOffsetY", propDef.hitboxOffsetY ?? 0);
+    const hitboxOffsetX = MapPropSystem.readNumber(obj, "hitboxOffsetX", propDef.hitboxOffsetX != null ? propDef.hitboxOffsetX : 0);
+    const hitboxOffsetY = MapPropSystem.readNumber(obj, "hitboxOffsetY", propDef.hitboxOffsetY != null ? propDef.hitboxOffsetY : 0);
+    const showHitboxProp = getObjectProperty(obj, "showHitbox");
     const showHitbox =
-      getObjectProperty(obj, "showHitbox") ?? propDef.showHitbox ?? true;
+      showHitboxProp != null
+        ? showHitboxProp
+        : propDef.showHitbox != null
+          ? propDef.showHitbox
+          : true;
     const propLeft = feetX - displayWidth * originX + hitboxOffsetX;
     const propTop = feetY - displayHeight * originY + hitboxOffsetY;
     const hitboxes = [];
@@ -75,14 +80,14 @@ export class MapPropSystem {
       const bodyWidth = MapPropSystem.readNumber(
         obj,
         "bodyWidth",
-        (propDef.defaultBodyWidth ?? nativeWidth * 0.67) * sizeScaleX
+        (propDef.defaultBodyWidth != null ? propDef.defaultBodyWidth : nativeWidth * 0.67) * sizeScaleX
       );
       const bodyHeight = MapPropSystem.readNumber(
         obj,
         "bodyHeight",
-        (propDef.defaultBodyHeight ?? 28) * sizeScaleY
+        (propDef.defaultBodyHeight != null ? propDef.defaultBodyHeight : 28) * sizeScaleY
       );
-      const hitboxLift = MapPropSystem.readNumber(obj, "hitboxLift", propDef.hitboxLift ?? 8);
+      const hitboxLift = MapPropSystem.readNumber(obj, "hitboxLift", propDef.hitboxLift != null ? propDef.hitboxLift : 8);
       const hitbox = scene.add.zone(
         feetX + hitboxOffsetX,
         feetY - bodyHeight - hitboxLift + hitboxOffsetY,
@@ -103,9 +108,9 @@ export class MapPropSystem {
     const interaction = propDef.interaction;
     if (interaction && interaction.targetMap && mapTransitions) {
       mapTransitions.registerPropInteraction({
-        x: feetX + (interaction.offsetX ?? 0),
-        y: feetY + (interaction.offsetY ?? -32),
-        reach: interaction.reach ?? 48,
+        x: feetX + (interaction.offsetX != null ? interaction.offsetX : 0),
+        y: feetY + (interaction.offsetY != null ? interaction.offsetY : -32),
+        reach: interaction.reach != null ? interaction.reach : 48,
         label: interaction.label || "Enter",
         targetMap: interaction.targetMap,
         spawnId: interaction.spawnId || "default",

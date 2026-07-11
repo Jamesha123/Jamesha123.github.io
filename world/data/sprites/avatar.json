@@ -22,7 +22,6 @@
   "bodyWidth": 18,
   "bodyHeight": 26,
   "showHitbox": true,
-  "showHotspotRange": true,
   "hotspotReach": 2,
   "hotspotOffsetX": 0,
   "hotspotOffsetY": -16

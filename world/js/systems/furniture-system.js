@@ -27,10 +27,15 @@ export class FurnitureSystem {
     const height = obj.height || 16;
     const feetX = obj.x + width / 2;
     const feetY = obj.y;
-    const hitboxOffsetX = FurnitureSystem.readNumber(obj, "hitboxOffsetX", furnitureDef.hitboxOffsetX ?? 0);
-    const hitboxOffsetY = FurnitureSystem.readNumber(obj, "hitboxOffsetY", furnitureDef.hitboxOffsetY ?? 0);
+    const hitboxOffsetX = FurnitureSystem.readNumber(obj, "hitboxOffsetX", furnitureDef.hitboxOffsetX != null ? furnitureDef.hitboxOffsetX : 0);
+    const hitboxOffsetY = FurnitureSystem.readNumber(obj, "hitboxOffsetY", furnitureDef.hitboxOffsetY != null ? furnitureDef.hitboxOffsetY : 0);
+    const showHitboxProp = getObjectProperty(obj, "showHitbox");
     const showHitbox =
-      getObjectProperty(obj, "showHitbox") ?? furnitureDef.showHitbox ?? true;
+      showHitboxProp != null
+        ? showHitboxProp
+        : furnitureDef.showHitbox != null
+          ? furnitureDef.showHitbox
+          : true;
     const propLeft = obj.x + hitboxOffsetX;
     const propTop = obj.y - height + hitboxOffsetY;
     const hitboxes = [];
@@ -46,12 +51,12 @@ export class FurnitureSystem {
       const bodyWidth = FurnitureSystem.readNumber(
         obj,
         "bodyWidth",
-        width * (furnitureDef.bodyWidthRatio ?? 0.75)
+        width * (furnitureDef.bodyWidthRatio != null ? furnitureDef.bodyWidthRatio : 0.75)
       );
       const bodyHeight = FurnitureSystem.readNumber(
         obj,
         "bodyHeight",
-        height * (furnitureDef.bodyHeightRatio ?? 0.35)
+        height * (furnitureDef.bodyHeightRatio != null ? furnitureDef.bodyHeightRatio : 0.35)
       );
 
       if (bodyWidth <= 0 || bodyHeight <= 0) {
@@ -61,7 +66,7 @@ export class FurnitureSystem {
       const hitboxLift = FurnitureSystem.readNumber(
         obj,
         "hitboxLift",
-        height * (furnitureDef.hitboxLiftRatio ?? 0.12)
+        height * (furnitureDef.hitboxLiftRatio != null ? furnitureDef.hitboxLiftRatio : 0.12)
       );
       const hitbox = scene.add.zone(
         feetX + hitboxOffsetX,

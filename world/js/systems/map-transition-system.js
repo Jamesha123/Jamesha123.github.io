@@ -1,10 +1,12 @@
+import { showHitboxesEnabled } from "./debug-graphics.js";
+
 export class MapTransitionSystem {
   constructor(scene, content, world) {
     this.scene = scene;
     this.content = content;
     this.world = world;
     this.nearbyTarget = null;
-    this.showOutlines = true;
+    this.pendingTransition = false;
   }
 
   registerTransition(transition) {
@@ -33,7 +35,7 @@ export class MapTransitionSystem {
   }
 
   shouldShowOutline(target) {
-    if (!this.showOutlines) {
+    if (!showHitboxesEnabled()) {
       return false;
     }
     return target.showOutline !== false;
@@ -42,7 +44,7 @@ export class MapTransitionSystem {
   checkProximity(playerSprite, ui) {
     this.nearbyTarget = null;
 
-    if (ui.isModalOpen() || !playerSprite) {
+    if (ui.isModalOpen() || ui.isMapFading() || !playerSprite) {
       return;
     }
 
@@ -52,7 +54,7 @@ export class MapTransitionSystem {
     for (const interaction of this.world.propInteractions) {
       if (this.isWithinReach(playerX, playerY, interaction)) {
         this.nearbyTarget = interaction;
-        ui.setHint("Press E, Enter, or Interact to " + interaction.label, true);
+        ui.setHint("Press E or Interact to " + interaction.label, true);
         return;
       }
     }
@@ -60,7 +62,7 @@ export class MapTransitionSystem {
     for (const transition of this.world.transitions) {
       if (this.isWithinReach(playerX, playerY, transition)) {
         this.nearbyTarget = transition;
-        ui.setHint("Press E, Enter, or Interact to " + transition.label, true);
+        ui.setHint("Press E or Interact to " + transition.label, true);
         return;
       }
     }
@@ -80,7 +82,7 @@ export class MapTransitionSystem {
   }
 
   tryTransition() {
-    if (!this.nearbyTarget) {
+    if (!this.nearbyTarget || this.pendingTransition) {
       return false;
     }
 
@@ -99,10 +101,26 @@ export class MapTransitionSystem {
       return;
     }
 
-    this.scene.scene.restart({
-      mapId: targetMapId,
-      spawnId: spawnId || null,
-      returnState: returnState || null,
+    if (this.pendingTransition) {
+      return;
+    }
+
+    this.pendingTransition = true;
+    this.nearbyTarget = null;
+
+    const scene = this.scene;
+    if (scene.player) {
+      scene.player.stop();
+    }
+
+    const ui = scene.ui;
+    ui.fadeOutForMapTransition().then(function () {
+      scene.scene.restart({
+        mapId: targetMapId,
+        spawnId: spawnId || null,
+        returnState: returnState || null,
+        fadeIn: true,
+      });
     });
   }
 
@@ -113,29 +131,60 @@ export class MapTransitionSystem {
     };
   }
 
+  static redrawOutlines(scene, world) {
+    if (scene.transitionOutlineGfx) {
+      scene.transitionOutlineGfx.clear();
+    }
+
+    if (!showHitboxesEnabled()) {
+      return;
+    }
+
+    world.propInteractions.forEach(function (interaction) {
+      if (interaction.showOutline === false) {
+        return;
+      }
+      MapTransitionSystem.drawReachOutline(
+        scene,
+        interaction.x,
+        interaction.y,
+        interaction.reach || world.tileSize * 1.5
+      );
+    });
+
+    world.transitions.forEach(function (transition) {
+      if (transition.showOutline === false) {
+        return;
+      }
+      MapTransitionSystem.drawRectOutline(
+        scene,
+        transition.x,
+        transition.y,
+        transition.width,
+        transition.height
+      );
+    });
+  }
+
   static drawReachOutline(scene, x, y, reach) {
-    const gfx = scene.add.graphics().setDepth(11);
-    const drawOutline = function () {
-      gfx.clear();
-      gfx.fillStyle(0xff0000, 0.08);
-      gfx.fillCircle(x, y, reach);
-      gfx.lineStyle(2, 0xff0000, 1);
-      gfx.strokeCircle(x, y, reach);
-    };
-    scene.events.on(Phaser.Scenes.Events.POST_UPDATE, drawOutline);
-    drawOutline();
-    return gfx;
+    if (!scene.transitionOutlineGfx) {
+      scene.transitionOutlineGfx = scene.add.graphics().setDepth(11);
+    }
+
+    const gfx = scene.transitionOutlineGfx;
+    gfx.fillStyle(0xff0000, 0.08);
+    gfx.fillCircle(x, y, reach);
+    gfx.lineStyle(2, 0xff0000, 1);
+    gfx.strokeCircle(x, y, reach);
   }
 
   static drawRectOutline(scene, centerX, centerY, width, height) {
-    const gfx = scene.add.graphics().setDepth(11);
-    const drawOutline = function () {
-      gfx.clear();
-      gfx.lineStyle(2, 0xff0000, 1);
-      gfx.strokeRect(centerX - width / 2, centerY - height / 2, width, height);
-    };
-    scene.events.on(Phaser.Scenes.Events.POST_UPDATE, drawOutline);
-    drawOutline();
-    return gfx;
+    if (!scene.transitionOutlineGfx) {
+      scene.transitionOutlineGfx = scene.add.graphics().setDepth(11);
+    }
+
+    const gfx = scene.transitionOutlineGfx;
+    gfx.lineStyle(2, 0xff0000, 1);
+    gfx.strokeRect(centerX - width / 2, centerY - height / 2, width, height);
   }
 }

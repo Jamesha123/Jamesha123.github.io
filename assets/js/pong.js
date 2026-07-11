@@ -1,454 +1,516 @@
 // Pong Game Demo
 (() => {
-  // Game state
+  const ARENA_W = 672;
+  const ARENA_H = 288;
+  const WIN_SCORE = 7;
+
   let gameRunning = false;
   let gamePaused = false;
   let animationId = null;
   let gameOver = false;
-  let difficulty = 'medium'; // easy, medium, hard
+  let difficulty = "medium";
 
-  // Canvas and context
   let canvas;
   let ctx;
-
-  // Game objects
   let ball;
   let playerPaddle;
   let computerPaddle;
-
-  // Scores
   let playerScore = 0;
   let computerScore = 0;
 
-  // Touch/swipe support
   let touchStartY = 0;
-  let touchEndY = 0;
 
-  // DOM elements
-  let statusEl = document.getElementById('pong-status');
-  let playerScoreEl = document.getElementById('pong-player-score');
-  let computerScoreEl = document.getElementById('pong-computer-score');
-  let startBtn = document.getElementById('pong-start-btn');
-  let resetBtn = document.getElementById('pong-reset-btn');
-  let difficultySelect = document.getElementById('pong-difficulty');
+  const retroTheme = !!document.querySelector(".game-pong");
 
-  // Initialize canvas and game objects
+  let statusEl = document.getElementById("pong-status");
+  let playerScoreEl = document.getElementById("pong-player-score");
+  let computerScoreEl = document.getElementById("pong-computer-score");
+  let startBtn = document.getElementById("pong-start-btn");
+  let resetBtn = document.getElementById("pong-reset-btn");
+  let difficultySelect = document.getElementById("pong-difficulty");
+
+  function setStatus(message, tone) {
+    if (!statusEl) {
+      return;
+    }
+
+    if (!message || tone === "running") {
+      statusEl.textContent = "";
+      statusEl.hidden = true;
+      statusEl.classList.remove("is-running", "is-win", "is-lose");
+      return;
+    }
+
+    statusEl.hidden = false;
+    statusEl.textContent = message;
+
+    if (!retroTheme) {
+      if (tone === "win") {
+        statusEl.style.color = "#2ecc71";
+      } else if (tone === "lose") {
+        statusEl.style.color = "#e74c3c";
+      } else {
+        statusEl.style.color = "#2ecc71";
+      }
+      return;
+    }
+
+    statusEl.classList.remove("is-running", "is-win", "is-lose");
+    if (tone === "win") {
+      statusEl.classList.add("is-win");
+    } else if (tone === "lose") {
+      statusEl.classList.add("is-lose");
+    }
+  }
+
+  function layoutObjects() {
+    const w = canvas.width;
+    const h = canvas.height;
+    const paddleW = Math.max(10, Math.round(w * 0.016));
+    const paddleH = Math.max(64, Math.round(h * 0.32));
+    const margin = Math.round(w * 0.035);
+    const ballSize = Math.max(10, Math.round(h * 0.048));
+    const ballSpeed = Math.max(2.5, w * 0.0045);
+
+    ball.size = ballSize;
+    ball.half = ballSize / 2;
+    ball.x = w / 2;
+    ball.y = h / 2;
+    if (!ball.dx && !ball.dy) {
+      ball.dx = ballSpeed;
+      ball.dy = ballSpeed * 0.85;
+    } else {
+      ball.dx = ball.dx > 0 ? ballSpeed : -ballSpeed;
+      ball.dy = ball.dy > 0 ? ballSpeed * 0.85 : -(ballSpeed * 0.85);
+    }
+
+    playerPaddle.width = paddleW;
+    playerPaddle.height = paddleH;
+    playerPaddle.x = margin;
+    playerPaddle.y = h / 2 - paddleH / 2;
+    playerPaddle.speed = Math.max(4, h * 0.022);
+
+    computerPaddle.width = paddleW;
+    computerPaddle.height = paddleH;
+    computerPaddle.x = w - margin - paddleW;
+    computerPaddle.y = h / 2 - paddleH / 2;
+    computerPaddle.speed = Math.max(3, h * 0.018);
+  }
+
   function initCanvas() {
-    canvas = document.getElementById('pong-canvas');
-    ctx = canvas.getContext('2d');
-    
-    // Re-get DOM elements in case they weren't available before
-    playerScoreEl = document.getElementById('pong-player-score');
-    computerScoreEl = document.getElementById('pong-computer-score');
-    statusEl = document.getElementById('pong-status');
-    startBtn = document.getElementById('pong-start-btn');
-    resetBtn = document.getElementById('pong-reset-btn');
-    difficultySelect = document.getElementById('pong-difficulty');
-    
-    console.log('DOM elements found:', {
-      canvas: !!canvas,
-      playerScoreEl: !!playerScoreEl,
-      computerScoreEl: !!computerScoreEl,
-      statusEl: !!statusEl
-    });
-    
-    if (!canvas || !ctx) {
-      console.error('Canvas not found or context not available');
+    canvas = document.getElementById("pong-canvas");
+    if (!canvas) {
       return false;
     }
-    
-    // Initialize game objects
-    ball = {
-      x: canvas.width / 2,
-      y: canvas.height / 2,
-      dx: 2,
-      dy: 2,
-      radius: 8
-    };
 
-    playerPaddle = {
-      x: 20,
-      y: canvas.height / 2 - 40,
-      width: 10,
-      height: 80,
-      dy: 0,
-      speed: 5
-    };
+    ctx = canvas.getContext("2d");
+    canvas.width = ARENA_W;
+    canvas.height = ARENA_H;
+    ctx.imageSmoothingEnabled = false;
 
+    playerScoreEl = document.getElementById("pong-player-score");
+    computerScoreEl = document.getElementById("pong-computer-score");
+    statusEl = document.getElementById("pong-status");
+    startBtn = document.getElementById("pong-start-btn");
+    resetBtn = document.getElementById("pong-reset-btn");
+    difficultySelect = document.getElementById("pong-difficulty");
+
+    ball = { x: 0, y: 0, dx: 0, dy: 0, size: 12, half: 6 };
+    playerPaddle = { x: 0, y: 0, width: 10, height: 80, dy: 0, speed: 5 };
     computerPaddle = {
-      x: canvas.width - 30,
-      y: canvas.height / 2 - 40,
+      x: 0,
+      y: 0,
       width: 10,
       height: 80,
       dy: 0,
       speed: 4,
-      reactionTime: 0.8
+      reactionTime: 0.8,
     };
-    
+
+    layoutObjects();
     return true;
   }
 
-  // Initialize game
   function init() {
     if (!initCanvas()) {
-      console.error('Failed to initialize canvas');
       return;
     }
-    
     resetGame();
     setupEventListeners();
     draw();
   }
 
-  // Setup event listeners
   function setupEventListeners() {
-    // Keyboard controls
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('keyup', handleKeyUp);
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
 
-    // Touch controls
-    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
-    canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
-    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+    canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
+    canvas.addEventListener("touchend", handleTouchEnd, { passive: false });
+    canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
 
-    // Button controls
-    startBtn.addEventListener('click', startGame);
-    resetBtn.addEventListener('click', resetGame);
-    
-    // Difficulty selection
-    difficultySelect.addEventListener('change', updateDifficulty);
+    if (startBtn) {
+      startBtn.addEventListener("click", startGame);
+    }
+    if (resetBtn) {
+      resetBtn.addEventListener("click", resetGame);
+    }
+    if (difficultySelect) {
+      difficultySelect.addEventListener("change", updateDifficulty);
+    }
   }
 
-  // Handle key down
   function handleKeyDown(e) {
-    if (!gameRunning) return;
-    
-    switch(e.key.toLowerCase()) {
-      case 'w':
+    if (!gameRunning) {
+      return;
+    }
+    switch (e.key.toLowerCase()) {
+      case "w":
         playerPaddle.dy = -playerPaddle.speed;
         break;
-      case 's':
+      case "s":
         playerPaddle.dy = playerPaddle.speed;
+        break;
+      default:
         break;
     }
   }
 
-  // Handle key up
   function handleKeyUp(e) {
-    if (!gameRunning) return;
-    
-    switch(e.key.toLowerCase()) {
-      case 'w':
-      case 's':
+    if (!gameRunning) {
+      return;
+    }
+    switch (e.key.toLowerCase()) {
+      case "w":
+      case "s":
         playerPaddle.dy = 0;
         break;
+      default:
+        break;
     }
   }
 
-  // Handle touch start
   function handleTouchStart(e) {
     e.preventDefault();
-    if (!gameRunning) return;
-    const touch = e.touches[0];
-    touchStartY = touch.clientY;
+    if (!gameRunning) {
+      return;
+    }
+    touchStartY = e.touches[0].clientY;
   }
 
-  // Handle touch end
   function handleTouchEnd(e) {
     e.preventDefault();
-    if (!gameRunning) return;
-    playerPaddle.dy = 0; // Stop paddle movement
+    if (!gameRunning) {
+      return;
+    }
+    playerPaddle.dy = 0;
   }
 
-  // Handle touch move - direct paddle control
   function handleTouchMove(e) {
     e.preventDefault();
-    if (!gameRunning) return;
-    
+    if (!gameRunning) {
+      return;
+    }
+
     const touch = e.touches[0];
     const rect = canvas.getBoundingClientRect();
-    const touchY = touch.clientY - rect.top;
-    
-    // Convert touch position to paddle position
+    const touchY = ((touch.clientY - rect.top) / rect.height) * canvas.height;
     const targetY = touchY - playerPaddle.height / 2;
-    
-    // Smooth movement towards touch position
     const paddleCenter = playerPaddle.y + playerPaddle.height / 2;
     const error = targetY - paddleCenter;
-    
+
     if (Math.abs(error) > 5) {
-      if (error < 0) {
-        playerPaddle.dy = -playerPaddle.speed;
-      } else {
-        playerPaddle.dy = playerPaddle.speed;
-      }
+      playerPaddle.dy = error < 0 ? -playerPaddle.speed : playerPaddle.speed;
     } else {
       playerPaddle.dy = 0;
     }
   }
 
-  // Update difficulty settings
   function updateDifficulty() {
-    difficulty = difficultySelect.value;
-    
-    switch(difficulty) {
-      case 'easy':
-        computerPaddle.speed = 2;
+    if (difficultySelect) {
+      difficulty = difficultySelect.value;
+    }
+
+    switch (difficulty) {
+      case "easy":
+        computerPaddle.speed = Math.max(2, canvas.height * 0.012);
         computerPaddle.reactionTime = 0.3;
         break;
-      case 'medium':
-        computerPaddle.speed = 4;
-        computerPaddle.reactionTime = 0.8;
-        break;
-      case 'hard':
-        computerPaddle.speed = 6;
+      case "hard":
+        computerPaddle.speed = Math.max(5, canvas.height * 0.028);
         computerPaddle.reactionTime = 1.2;
+        break;
+      default:
+        computerPaddle.speed = Math.max(3, canvas.height * 0.018);
+        computerPaddle.reactionTime = 0.8;
         break;
     }
   }
 
-  // Start game
   function startGame() {
-    if (gameRunning) return;
-    
-    // If game is over, reset first
+    if (gameRunning) {
+      return;
+    }
+
     if (gameOver) {
       resetGame();
       return;
     }
-    
+
     gameRunning = true;
     gamePaused = false;
     gameOver = false;
-    statusEl.textContent = 'Game Running!';
-    statusEl.style.color = '#2ecc71';
-    
-    startBtn.disabled = true;
-    startBtn.textContent = 'Start Game';
-    resetBtn.disabled = false;
-    
+    setStatus("Playing", "running");
+
+    if (startBtn) {
+      startBtn.disabled = true;
+      startBtn.textContent = "Start";
+    }
+    if (resetBtn) {
+      resetBtn.disabled = false;
+    }
+
     gameLoop();
   }
 
-
-  // Reset game
   function resetGame() {
     gameRunning = false;
     gamePaused = false;
     gameOver = false;
-    
-    // Update difficulty settings
+
+    layoutObjects();
     updateDifficulty();
-    
-    // Reset ball
+
     ball.x = canvas.width / 2;
     ball.y = canvas.height / 2;
-    ball.dx = 2;
-    ball.dy = 2;
-    
-    // Reset paddles
-    playerPaddle.y = canvas.height / 2 - 40;
-    computerPaddle.y = canvas.height / 2 - 40;
+    const speed = Math.abs(ball.dx) || canvas.width * 0.0045;
+    ball.dx = speed;
+    ball.dy = speed * 0.85;
+
+    playerPaddle.y = canvas.height / 2 - playerPaddle.height / 2;
+    computerPaddle.y = canvas.height / 2 - computerPaddle.height / 2;
     playerPaddle.dy = 0;
     computerPaddle.dy = 0;
-    
-    // Reset scores
+
     playerScore = 0;
     computerScore = 0;
     updateScores();
-    
-    // Reset UI
-    statusEl.textContent = 'Click "Start Game" to begin!';
-    statusEl.style.color = '#2ecc71';
-    
-    startBtn.disabled = false;
-    resetBtn.disabled = true;
-    
+
+    setStatus("", "");
+
+    if (startBtn) {
+      startBtn.disabled = false;
+      startBtn.textContent = retroTheme ? "Start" : "Start Game";
+    }
+    if (resetBtn) {
+      resetBtn.disabled = true;
+    }
+
     if (animationId) {
       cancelAnimationFrame(animationId);
+      animationId = null;
     }
-    
+
     draw();
   }
 
-  // Game loop
   function gameLoop() {
-    if (!gameRunning || gamePaused || gameOver) return;
-    
+    if (!gameRunning || gamePaused || gameOver) {
+      return;
+    }
+
     update();
     draw();
     animationId = requestAnimationFrame(gameLoop);
   }
 
-  // Update game state
   function update() {
-    // Update ball position
     ball.x += ball.dx;
     ball.y += ball.dy;
-    
-    // Ball collision with top and bottom walls
-    if (ball.y - ball.radius <= 0 || ball.y + ball.radius >= canvas.height) {
+
+    if (ball.y - ball.half <= 0 || ball.y + ball.half >= canvas.height) {
       ball.dy = -ball.dy;
     }
-    
-    // Ball collision with player paddle (left side)
-    if (ball.dx < 0 && // Ball moving left
-        ball.x - ball.radius <= playerPaddle.x + playerPaddle.width &&
-        ball.x - ball.radius >= playerPaddle.x &&
-        ball.y + ball.radius >= playerPaddle.y &&
-        ball.y - ball.radius <= playerPaddle.y + playerPaddle.height) {
-      ball.dx = Math.abs(ball.dx); // Reverse direction
-      // Add some spin based on paddle movement
+
+    if (
+      ball.dx < 0 &&
+      ball.x - ball.half <= playerPaddle.x + playerPaddle.width &&
+      ball.x - ball.half >= playerPaddle.x &&
+      ball.y + ball.half >= playerPaddle.y &&
+      ball.y - ball.half <= playerPaddle.y + playerPaddle.height
+    ) {
+      ball.dx = Math.abs(ball.dx);
       ball.dy += playerPaddle.dy * 0.5;
     }
-    
-    // Ball collision with computer paddle (right side)
-    if (ball.dx > 0 && // Ball moving right
-        ball.x + ball.radius >= computerPaddle.x &&
-        ball.x + ball.radius <= computerPaddle.x + computerPaddle.width &&
-        ball.y + ball.radius >= computerPaddle.y &&
-        ball.y - ball.radius <= computerPaddle.y + computerPaddle.height) {
-      console.log('Computer paddle collision');
-      ball.dx = -Math.abs(ball.dx); // Reverse direction
-      // Add some spin based on paddle movement
+
+    if (
+      ball.dx > 0 &&
+      ball.x + ball.half >= computerPaddle.x &&
+      ball.x + ball.half <= computerPaddle.x + computerPaddle.width &&
+      ball.y + ball.half >= computerPaddle.y &&
+      ball.y - ball.half <= computerPaddle.y + computerPaddle.height
+    ) {
+      ball.dx = -Math.abs(ball.dx);
       ball.dy += computerPaddle.dy * 0.5;
     }
-    
-    // Ball out of bounds
+
     if (ball.x < 0) {
-      computerScore++;
+      computerScore += 1;
       updateScores();
       checkGameOver();
-      if (!gameOver) resetBall();
+      if (!gameOver) {
+        resetBall();
+      }
     } else if (ball.x > canvas.width) {
-      playerScore++;
+      playerScore += 1;
       updateScores();
       checkGameOver();
-      if (!gameOver) resetBall();
+      if (!gameOver) {
+        resetBall();
+      }
     }
-    
-    // Update player paddle
+
     playerPaddle.y += playerPaddle.dy;
-    if (playerPaddle.y < 0) playerPaddle.y = 0;
+    if (playerPaddle.y < 0) {
+      playerPaddle.y = 0;
+    }
     if (playerPaddle.y + playerPaddle.height > canvas.height) {
       playerPaddle.y = canvas.height - playerPaddle.height;
     }
-    
-    // Update computer paddle (AI with difficulty levels)
+
     const paddleCenter = computerPaddle.y + computerPaddle.height / 2;
-    const ballCenter = ball.y;
     const ballDistance = Math.abs(ball.x - computerPaddle.x);
-    
-    // Only react when ball is coming towards computer paddle
+
     if (ball.dx > 0 && ballDistance < canvas.width * computerPaddle.reactionTime) {
-      const targetY = ballCenter;
-      const error = targetY - paddleCenter;
-      
+      const error = ball.y - paddleCenter;
       if (Math.abs(error) > 5) {
-        if (error < 0) {
-          computerPaddle.dy = -computerPaddle.speed;
-        } else {
-          computerPaddle.dy = computerPaddle.speed;
-        }
+        computerPaddle.dy = error < 0 ? -computerPaddle.speed : computerPaddle.speed;
+      } else {
+        computerPaddle.dy = 0;
+      }
+    } else if (difficulty === "hard") {
+      const centerError = canvas.height / 2 - paddleCenter;
+      if (Math.abs(centerError) > 10) {
+        computerPaddle.dy = centerError > 0 ? computerPaddle.speed * 0.5 : -computerPaddle.speed * 0.5;
       } else {
         computerPaddle.dy = 0;
       }
     } else {
-      // Move towards center when ball is far away (harder difficulty)
-      if (difficulty === 'hard') {
-        const centerY = canvas.height / 2;
-        const centerError = centerY - paddleCenter;
-        if (Math.abs(centerError) > 10) {
-          computerPaddle.dy = centerError > 0 ? computerPaddle.speed * 0.5 : -computerPaddle.speed * 0.5;
-        } else {
-          computerPaddle.dy = 0;
-        }
-      } else {
-        computerPaddle.dy = 0;
-      }
+      computerPaddle.dy = 0;
     }
-    
+
     computerPaddle.y += computerPaddle.dy;
-    if (computerPaddle.y < 0) computerPaddle.y = 0;
+    if (computerPaddle.y < 0) {
+      computerPaddle.y = 0;
+    }
     if (computerPaddle.y + computerPaddle.height > canvas.height) {
       computerPaddle.y = canvas.height - computerPaddle.height;
     }
   }
 
-  // Check if game is over
   function checkGameOver() {
-    if (playerScore >= 7) {
+    if (playerScore >= WIN_SCORE) {
       gameOver = true;
       gameRunning = false;
-      statusEl.textContent = 'You Win! Congratulations!';
-      statusEl.style.color = '#2ecc71';
-      startBtn.disabled = false;
-      startBtn.textContent = 'Play Again';
-    } else if (computerScore >= 7) {
+      setStatus("You Win!", "win");
+      if (startBtn) {
+        startBtn.disabled = false;
+        startBtn.textContent = "Play Again";
+      }
+    } else if (computerScore >= WIN_SCORE) {
       gameOver = true;
       gameRunning = false;
-      statusEl.textContent = 'You Lose! Better luck next time!';
-      statusEl.style.color = '#e74c3c';
-      startBtn.disabled = false;
-      startBtn.textContent = 'Play Again';
+      setStatus("You Lose", "lose");
+      if (startBtn) {
+        startBtn.disabled = false;
+        startBtn.textContent = "Play Again";
+      }
     }
   }
 
-  // Reset ball to center
   function resetBall() {
     ball.x = canvas.width / 2;
     ball.y = canvas.height / 2;
-    ball.dx = (Math.random() > 0.5 ? 1 : -1) * 2;
-    ball.dy = (Math.random() > 0.5 ? 1 : -1) * 2;
+    const speed = Math.abs(ball.dx);
+    ball.dx = (Math.random() > 0.5 ? 1 : -1) * speed;
+    ball.dy = (Math.random() > 0.5 ? 1 : -1) * speed * 0.85;
   }
 
-  // Update scores display
   function updateScores() {
-    // Force update by getting elements again
-    const playerEl = document.getElementById('pong-player-score');
-    const computerEl = document.getElementById('pong-computer-score');
-    
-    if (playerEl) {
-      playerEl.textContent = playerScore;
-    } else {
-      console.error('Player score element not found!');
+    if (playerScoreEl) {
+      playerScoreEl.textContent = String(playerScore);
     }
-    
-    if (computerEl) {
-      computerEl.textContent = computerScore;
-    } else {
-      console.error('Computer score element not found!');
+    if (computerScoreEl) {
+      computerScoreEl.textContent = String(computerScore);
     }
   }
 
-  // Draw game
-  function draw() {
-    // Clear canvas
-    ctx.fillStyle = '#111';
+  function drawRetroField() {
+    const w = canvas.width;
+    const h = canvas.height;
+
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([10, 14]);
+    ctx.beginPath();
+    ctx.moveTo(w / 2 + 0.5, 0);
+    ctx.lineTo(w / 2 + 0.5, h);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(
+      Math.round(ball.x - ball.half),
+      Math.round(ball.y - ball.half),
+      ball.size,
+      ball.size
+    );
+
+    ctx.fillRect(
+      Math.round(playerPaddle.x),
+      Math.round(playerPaddle.y),
+      playerPaddle.width,
+      playerPaddle.height
+    );
+    ctx.fillRect(
+      Math.round(computerPaddle.x),
+      Math.round(computerPaddle.y),
+      computerPaddle.width,
+      computerPaddle.height
+    );
+  }
+
+  function drawLegacyField() {
+    ctx.fillStyle = "#111";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw center line
+
     ctx.setLineDash([5, 5]);
-    ctx.strokeStyle = '#333';
+    ctx.strokeStyle = "#333";
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(canvas.width / 2, 0);
     ctx.lineTo(canvas.width / 2, canvas.height);
     ctx.stroke();
     ctx.setLineDash([]);
-    
-    // Draw ball
-    ctx.fillStyle = '#fff';
+
+    ctx.fillStyle = "#fff";
     ctx.beginPath();
-    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+    ctx.arc(ball.x, ball.y, ball.half, 0, Math.PI * 2);
     ctx.fill();
-    
-    // Draw paddles
-    ctx.fillStyle = '#fff';
+
     ctx.fillRect(playerPaddle.x, playerPaddle.y, playerPaddle.width, playerPaddle.height);
     ctx.fillRect(computerPaddle.x, computerPaddle.y, computerPaddle.width, computerPaddle.height);
   }
 
-  // Initialize the game
+  function draw() {
+    if (retroTheme) {
+      drawRetroField();
+    } else {
+      drawLegacyField();
+    }
+  }
+
   init();
 })();

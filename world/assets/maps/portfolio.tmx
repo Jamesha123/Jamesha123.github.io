@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="50" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="9">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="50" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="12">
  <tileset firstgid="1" source="../tilesets/monkeyboy.tsx"/>
  <tileset firstgid="133" source="../tilesets/props.tsx"/>
  <layer id="1" name="Ground" width="50" height="40">
@@ -134,30 +134,10 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="4" name="Hotspots">
-  <object id="1" name="About Me" x="430" y="357" width="16" height="15.5">
-   <properties>
-    <property name="hotspotId" value="about"/>
-   </properties>
-  </object>
-  <object id="2" name="Monkey Boy" x="441" y="284" width="15" height="14.5">
+ <objectgroup id="7" name="Hotspots">
+  <object id="10" name="Monkey Boy" x="113" y="543.333" width="15" height="14.5">
    <properties>
     <property name="hotspotId" value="monkeyboy"/>
-   </properties>
-  </object>
-  <object id="3" name="Book Recommender" x="460.5" y="321" width="16" height="16">
-   <properties>
-    <property name="hotspotId" value="book-recommender"/>
-   </properties>
-  </object>
-  <object id="4" name="Mini Games" x="404.5" y="322" width="16" height="16">
-   <properties>
-    <property name="hotspotId" value="games"/>
-   </properties>
-  </object>
-  <object id="5" name="Contact" x="435" y="323" width="16" height="16">
-   <properties>
-    <property name="hotspotId" value="contact"/>
    </properties>
   </object>
  </objectgroup>

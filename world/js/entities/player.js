@@ -6,8 +6,10 @@ export class Player {
     this.config = config || {};
     this.sprite = null;
     this.facing = { current: "down" };
-    this.speed = this.config.speed ?? 140;
+    this.speed = this.config.speed != null ? this.config.speed : 140;
     this.touchTarget = null;
+    this.touchStuckFrames = 0;
+    this.lastTouchDistance = null;
   }
 
   create(x, y) {
@@ -52,6 +54,8 @@ export class Player {
       return;
     }
 
+    const deltaSec = deltaMs / 1000;
+
     let vx = 0;
     let vy = 0;
 
@@ -70,40 +74,67 @@ export class Player {
       vy = 1;
     }
 
-    if (vx !== 0 || vy !== 0) {
+    const usingKeyboard = vx !== 0 || vy !== 0;
+
+    if (usingKeyboard) {
+      this.touchTarget = null;
+      this.touchStuckFrames = 0;
       const length = Math.hypot(vx, vy);
       vx = (vx / length) * this.speed;
       vy = (vy / length) * this.speed;
-    }
-
-    if (!vx && !vy && this.touchTarget) {
+    } else if (this.touchTarget) {
       const dx = this.touchTarget.x - this.sprite.x;
       const dy = this.touchTarget.y - this.sprite.y;
       const distance = Math.hypot(dx, dy);
+
       if (distance > 8) {
         vx = (dx / distance) * this.speed;
         vy = (dy / distance) * this.speed;
+
+        if (
+          this.lastTouchDistance != null &&
+          distance >= this.lastTouchDistance - 0.5 &&
+          distance > 12
+        ) {
+          this.touchStuckFrames += 1;
+        } else {
+          this.touchStuckFrames = 0;
+        }
+
+        if (this.touchStuckFrames > 12) {
+          this.touchTarget = null;
+          this.touchStuckFrames = 0;
+          this.lastTouchDistance = null;
+          vx = 0;
+          vy = 0;
+        } else {
+          this.lastTouchDistance = distance;
+        }
       } else {
         this.touchTarget = null;
+        this.touchStuckFrames = 0;
+        this.lastTouchDistance = null;
       }
+    } else {
+      this.touchStuckFrames = 0;
+      this.lastTouchDistance = null;
     }
 
     if (world.useTiled && world.collisionLayer) {
       this.sprite.body.setVelocity(vx, vy);
-      CharacterAnimation.update(this.sprite, "player", vx, vy, this.facing);
-      return;
+    } else {
+      const nextX = this.sprite.x + vx * deltaSec;
+      const nextY = this.sprite.y + vy * deltaSec;
+
+      if (Player.canMoveTo(nextX, this.sprite.y, world)) {
+        this.sprite.x = nextX;
+      }
+      if (Player.canMoveTo(this.sprite.x, nextY, world)) {
+        this.sprite.y = nextY;
+      }
+      this.sprite.body.setVelocity(0, 0);
     }
 
-    const nextX = this.sprite.x + vx * (deltaMs / 1000);
-    const nextY = this.sprite.y + vy * (deltaMs / 1000);
-
-    if (Player.canMoveTo(nextX, this.sprite.y, world)) {
-      this.sprite.x = nextX;
-    }
-    if (Player.canMoveTo(this.sprite.x, nextY, world)) {
-      this.sprite.y = nextY;
-    }
-    this.sprite.body.setVelocity(0, 0);
     CharacterAnimation.update(this.sprite, "player", vx, vy, this.facing);
   }
 
@@ -151,6 +182,8 @@ export class Player {
 
   clearTouchTarget() {
     this.touchTarget = null;
+    this.touchStuckFrames = 0;
+    this.lastTouchDistance = null;
   }
 
   stop() {

@@ -160,6 +160,298 @@ body {
   filter: brightness(1.1);
 }
 
+#modal-overlay.games-mode {
+  padding: 0.35rem;
+}
+
+#modal-overlay.games-mode .modal {
+  width: min(98vw, 940px);
+  height: min(96vh, 900px);
+  max-height: 96vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+  background: #2b2b2b;
+  border-color: #888;
+}
+
+#modal-games-desktop {
+  flex: 1;
+  min-height: 0;
+  display: none;
+  flex-direction: column;
+}
+
+#modal-games-desktop:not([hidden]) {
+  display: flex;
+}
+
+#modal-overlay.games-mode .modal-close {
+  flex-shrink: 0;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.games-monitor {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.games-monitor-bezel {
+  background: linear-gradient(180deg, #4a4a4a 0%, #2f2f2f 100%);
+  border: 3px solid #1a1a1a;
+  border-radius: 10px;
+  padding: 0.45rem;
+  box-shadow: inset 0 0 0 2px #666;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.games-workspace {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border: 2px inset #555;
+  background: #000;
+}
+
+.games-desktop-screen {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, transparent 35%),
+    linear-gradient(180deg, #2f73c8 0%, #4f9fd8 38%, #6fbf6a 62%, #3f8f3f 100%);
+  overflow: hidden;
+}
+
+.games-desktop-icons {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.85rem;
+  height: 100%;
+}
+
+.games-desktop-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  width: 96px;
+  padding: 0.45rem 0.3rem;
+  border: 1px dotted transparent;
+  background: transparent;
+  color: #fff;
+  font-family: "Tahoma", "Segoe UI", sans-serif;
+  font-size: 0.76rem;
+  line-height: 1.15;
+  cursor: pointer;
+  text-shadow: 1px 1px 1px #000;
+}
+
+.games-desktop-icon:hover,
+.games-desktop-icon:focus-visible {
+  background: rgba(11, 97, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.65);
+  outline: none;
+}
+
+.games-desktop-icon img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 0;
+  border-radius: 0;
+  image-rendering: auto;
+  background: transparent;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+.games-window-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.games-app-window {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #fff #808080 #808080 #fff;
+  box-shadow: 1px 1px 0 #000;
+  pointer-events: auto;
+  min-height: 0;
+}
+
+.games-app-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background: linear-gradient(180deg, #0997ff 0%, #0053ee 8%, #0050ee 40%, #06f 88%, #06f 93%, #005cee 95%, #005cee 96%, #003cdb 98%, #003cdb 100%);
+  color: #fff;
+  font-family: "Tahoma", "Segoe UI", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.2rem 0.15rem 0.35rem;
+  flex-shrink: 0;
+}
+
+.games-app-title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.games-app-buttons {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.win-btn {
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 1px solid;
+  border-color: #fff #222 #222 #fff;
+  background: #c0c0c0;
+  color: #111;
+  font-size: 0.65rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  font-family: "Marlett", "Tahoma", sans-serif;
+}
+
+.win-btn:active {
+  border-color: #222 #fff #fff #222;
+}
+
+.win-btn-close {
+  font-weight: 700;
+}
+
+.games-app-frame {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  border: 0;
+  background: #000;
+  display: block;
+}
+
+.games-taskbar {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  height: 30px;
+  padding: 0 0.2rem;
+  background: linear-gradient(180deg, #3da5ff 0%, #245edc 18%, #245edc 100%);
+  border-top: 1px solid #0a58d0;
+  flex-shrink: 0;
+}
+
+.games-start {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  height: 24px;
+  padding: 0 0.55rem 0 0.35rem;
+  border: 1px solid;
+  border-color: #fff #1f5f1f #1f5f1f #fff;
+  border-radius: 0 8px 8px 0;
+  background: linear-gradient(180deg, #5cb85c 0%, #3d943d 45%, #2e7d2e 100%);
+  color: #fff;
+  font-family: "Tahoma", "Segoe UI", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: default;
+  flex-shrink: 0;
+}
+
+.games-start-icon {
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  background:
+    linear-gradient(135deg, #ff3b30 0 48%, transparent 48%),
+    linear-gradient(225deg, #34c759 0 48%, transparent 48%),
+    linear-gradient(45deg, #007aff 0 48%, transparent 48%),
+    linear-gradient(315deg, #ffcc00 0 48%, transparent 48%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
+.games-taskbar-apps {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.games-taskbar-app {
+  height: 22px;
+  max-width: 160px;
+  padding: 0 0.5rem;
+  border: 1px solid;
+  border-color: #163a86 #163a86 #0f2870 #0f2870;
+  background: linear-gradient(180deg, #3b7be0 0%, #1f5fbf 100%);
+  color: #fff;
+  font-family: "Tahoma", "Segoe UI", sans-serif;
+  font-size: 0.65rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.games-taskbar-app.active {
+  border-color: #0f2870 #3b7be0 #3b7be0 #0f2870;
+  background: linear-gradient(180deg, #1f5fbf 0%, #164ea0 100%);
+}
+
+.games-taskbar-tray {
+  flex-shrink: 0;
+  height: 22px;
+  padding: 0 0.45rem;
+  border: 1px solid;
+  border-color: #1a4eb0 #0d3588 #0d3588 #1a4eb0;
+  background: linear-gradient(180deg, #3b7be0 0%, #245edc 100%);
+  color: #fff;
+  font-family: "Tahoma", "Segoe UI", sans-serif;
+  font-size: 0.62rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+@media (max-width: 640px) {
+  #modal-overlay.games-mode .modal {
+    width: 100%;
+    height: 96vh;
+  }
+
+  .games-desktop-icons {
+    gap: 0.65rem;
+    padding: 0.55rem;
+  }
+}
+
 #loading {
   position: fixed;
   inset: 0;
@@ -176,6 +468,21 @@ body {
 
 #loading.hidden {
   display: none;
+}
+
+#map-fade {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 15;
+  transition: opacity 0.35s ease;
+}
+
+#map-fade.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 @media (max-width: 640px) {

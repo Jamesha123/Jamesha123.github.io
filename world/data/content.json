@@ -1,6 +1,5 @@
 {
   "startMap": "house-interior",
-  "showHitboxes": true,
   "maps": [
     "maps/portfolio.json",
     "maps/house-interior.json"
@@ -18,7 +17,6 @@
     "hotspots/about.json",
     "hotspots/monkeyboy.json",
     "hotspots/book-recommender.json",
-    "hotspots/games.json",
-    "hotspots/contact.json"
+    "hotspots/games.json"
   ]
 }

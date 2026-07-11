@@ -6044,7 +6044,7 @@
       ]
     },
     {
-      "id": 4,
+      "id": 7,
       "name": "Hotspots",
       "type": "objectgroup",
       "visible": true,
@@ -6053,27 +6053,10 @@
       "y": 0,
       "objects": [
         {
-          "id": 1,
-          "name": "About Me",
-          "x": 430.0,
-          "y": 357.0,
-          "width": 16.0,
-          "height": 15.5,
-          "visible": true,
-          "rotation": 0,
-          "properties": [
-            {
-              "name": "hotspotId",
-              "type": "string",
-              "value": "about"
-            }
-          ]
-        },
-        {
-          "id": 2,
+          "id": 10,
           "name": "Monkey Boy",
-          "x": 441.0,
-          "y": 284.0,
+          "x": 113.0,
+          "y": 543.333,
           "width": 15.0,
           "height": 14.5,
           "visible": true,
@@ -6083,57 +6066,6 @@
               "name": "hotspotId",
               "type": "string",
               "value": "monkeyboy"
-            }
-          ]
-        },
-        {
-          "id": 3,
-          "name": "Book Recommender",
-          "x": 460.5,
-          "y": 321.0,
-          "width": 16.0,
-          "height": 16.0,
-          "visible": true,
-          "rotation": 0,
-          "properties": [
-            {
-              "name": "hotspotId",
-              "type": "string",
-              "value": "book-recommender"
-            }
-          ]
-        },
-        {
-          "id": 4,
-          "name": "Mini Games",
-          "x": 404.5,
-          "y": 322.0,
-          "width": 16.0,
-          "height": 16.0,
-          "visible": true,
-          "rotation": 0,
-          "properties": [
-            {
-              "name": "hotspotId",
-              "type": "string",
-              "value": "games"
-            }
-          ]
-        },
-        {
-          "id": 5,
-          "name": "Contact",
-          "x": 435.0,
-          "y": 323.0,
-          "width": 16.0,
-          "height": 16.0,
-          "visible": true,
-          "rotation": 0,
-          "properties": [
-            {
-              "name": "hotspotId",
-              "type": "string",
-              "value": "contact"
             }
           ]
         }
@@ -6239,8 +6171,8 @@
       ]
     }
   ],
-  "nextlayerid": 7,
-  "nextobjectid": 9,
+  "nextlayerid": 8,
+  "nextobjectid": 12,
   "orientation": "orthogonal",
   "renderorder": "right-down",
   "tiledversion": "1.12.2",

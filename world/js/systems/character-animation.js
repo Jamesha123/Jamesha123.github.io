@@ -61,25 +61,43 @@ export class CharacterAnimation {
   }
 
   static applyIdlePose(sprite, prefix, direction) {
+    CharacterAnimation.clearWalkListeners(sprite);
     sprite.anims.stop();
     sprite.setFlipY(false);
     sprite.setTexture(CharacterAnimation.getIdleFrameKey(prefix, direction));
+  }
+
+  static clearWalkListeners(sprite) {
+    if (sprite._walkAnimCompleteHandler) {
+      sprite.off(Phaser.Animations.Events.ANIMATION_COMPLETE, sprite._walkAnimCompleteHandler);
+      sprite._walkAnimCompleteHandler = null;
+    }
   }
 
   static playWalkAnimation(sprite, prefix, direction) {
     const animKey = prefix + "-walk-" + direction;
     const introKey = animKey + "-intro";
 
+    CharacterAnimation.clearWalkListeners(sprite);
     sprite.setFlipY(false);
 
     if (sprite.scene.anims.exists(introKey)) {
-      sprite.play(introKey);
-      sprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE, function (animation) {
+      const handler = function (animation) {
         if (animation.key !== introKey) {
           return;
         }
-        sprite.play(animKey, true);
-      });
+        CharacterAnimation.clearWalkListeners(sprite);
+        if (sprite.scene.anims.exists(animKey)) {
+          sprite.play(animKey, true);
+        }
+      };
+      sprite._walkAnimCompleteHandler = handler;
+      sprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE, handler);
+      sprite.play(introKey);
+      return;
+    }
+
+    if (!sprite.scene.anims.exists(animKey)) {
       return;
     }
 
@@ -87,7 +105,9 @@ export class CharacterAnimation {
   }
 
   static update(sprite, prefix, vx, vy, facingState) {
-    if (vx === 0 && vy === 0) {
+    const isMoving = Math.abs(vx) >= 1 || Math.abs(vy) >= 1;
+
+    if (!isMoving) {
       CharacterAnimation.applyIdlePose(sprite, prefix, facingState.current);
       return;
     }
@@ -100,11 +120,29 @@ export class CharacterAnimation {
     }
 
     facingState.current = direction;
+
     const animKey = prefix + "-walk-" + direction;
     const introKey = animKey + "-intro";
     const currentKey = sprite.anims.currentAnim ? sprite.anims.currentAnim.key : null;
 
-    if (currentKey === animKey || currentKey === introKey) {
+    if (currentKey === introKey && sprite.anims.isPlaying) {
+      return;
+    }
+
+    if (currentKey === introKey && !sprite.anims.isPlaying) {
+      CharacterAnimation.clearWalkListeners(sprite);
+      if (sprite.scene.anims.exists(animKey)) {
+        sprite.play(animKey, true);
+      }
+      return;
+    }
+
+    if (currentKey === animKey && sprite.anims.isPlaying) {
+      return;
+    }
+
+    if (currentKey === animKey && !sprite.anims.isPlaying) {
+      sprite.play(animKey, true);
       return;
     }
 

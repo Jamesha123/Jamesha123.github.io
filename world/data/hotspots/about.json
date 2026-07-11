@@ -5,8 +5,10 @@
   "y": 3,
   "color": "#4a90d9",
   "title": "About James Hang",
-  "body": "Software engineer with a passion for coding. I built my first PC at ten, fell in love with how games work, and never looked back. Texas State CS grad — fluent in C++, Java, JavaScript, Python, HTML, and Go.",
+  "body": "Software engineer with a passion for coding. I built my first PC at ten, fell in love with how games work, and never looked back. Texas State CS grad — fluent in C++, Java, JavaScript, Python, HTML, and Go.\n\nReach out for opportunities, collaboration, or just to talk code and games.",
   "links": [
-    { "label": "Contact", "url": "../index.html#contact" }
+    { "label": "Contact Form", "url": "../index.html#contact" },
+    { "label": "GitHub", "url": "https://github.com/Jamesha123" },
+    { "label": "Email", "url": "mailto:jameshang123@gmail.com" }
   ]
 }

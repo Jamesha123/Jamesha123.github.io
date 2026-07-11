@@ -1,0 +1,110 @@
+.game-snake {
+  background: linear-gradient(180deg, #1f3f18 0%, #142910 100%);
+}
+
+.game-snake .game-body {
+  flex-direction: column;
+}
+
+.game-snake .snake-topbar {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem 0.75rem;
+  padding: 0.45rem 0.65rem;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.03) 0,
+      rgba(255, 255, 255, 0.03) 2px,
+      transparent 2px,
+      transparent 6px
+    ),
+    linear-gradient(180deg, #4a8a3c 0%, #356b2c 100%);
+  border-bottom: 3px solid #1e3a18;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.game-snake .snake-score {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.18rem 0.55rem;
+  border-radius: 0.25rem;
+  background: rgba(0, 0, 0, 0.22);
+  border: 2px solid rgba(0, 0, 0, 0.28);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.08);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #eaffd0;
+}
+
+.game-snake .snake-score-value {
+  min-width: 1.4rem;
+  text-align: right;
+  color: #fff;
+  font-size: 0.82rem;
+}
+
+.game-snake .snake-controls-hint {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.22rem 0.35rem;
+  margin: 0;
+  font-size: 0.64rem;
+  font-weight: 600;
+  color: rgba(234, 255, 208, 0.88);
+}
+
+.game-snake .snake-controls-hint kbd {
+  display: inline-block;
+  min-width: 1.15rem;
+  padding: 0.08rem 0.28rem;
+  border-radius: 0.15rem;
+  border: 1px solid #1e3a18;
+  border-bottom-width: 2px;
+  background: #2f5829;
+  color: #f4ffe8;
+  font: inherit;
+  font-size: 0.58rem;
+  text-align: center;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.game-snake .snake-hint-sep {
+  opacity: 0.55;
+}
+
+.game-snake .game-playfield {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.06), transparent 55%),
+    #2f6a28;
+}
+
+.game-snake .game-playfield canvas {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border: 3px solid #1e3a18;
+  border-radius: 0.2rem;
+  box-shadow:
+    0 0 0 2px #5a9c48,
+    0 8px 18px rgba(0, 0, 0, 0.35);
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  touch-action: none;
+}

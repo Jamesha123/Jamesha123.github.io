@@ -1,4 +1,4 @@
-import { getObjectProperty, getObjectFeetPosition } from "../utils/helpers.js";
+import { getObjectProperty, getObjectFeetPosition, getObjectRectHitbox } from "../utils/helpers.js";
 
 import { CharacterAnimation } from "../systems/character-animation.js";
 
@@ -6,13 +6,15 @@ import { MapPropSystem } from "../systems/map-prop-system.js";
 
 import { FurnitureSystem } from "../systems/furniture-system.js";
 
-import { DebugGraphics } from "../systems/debug-graphics.js";
-
 import { AvatarNpc } from "../entities/avatar-npc.js";
 
 
 
 export class TiledWorldBuilder {
+
+  // Tile layers use 0 (ground), 1 (decor), 2 (walls). Furniture `depth` in Tiled is
+  // a relative layer on top of this base so 0 draws behind 2, etc.
+  static FURNITURE_DEPTH_BASE = 3;
 
   static build(scene, content, world, hotspots, player, mapConfig, mapTransitions, spawnOptions) {
 
@@ -30,9 +32,9 @@ export class TiledWorldBuilder {
 
 
 
-    const tileMargin = mapConfig.tileMargin ?? 0;
+    const tileMargin = mapConfig.tileMargin != null ? mapConfig.tileMargin : 0;
 
-    const tileSpacing = mapConfig.tileSpacing ?? 0;
+    const tileSpacing = mapConfig.tileSpacing != null ? mapConfig.tileSpacing : 0;
 
     const mapTilesets = TiledWorldBuilder.addMapTilesets(
 
@@ -69,12 +71,6 @@ export class TiledWorldBuilder {
     world.mapId = mapConfig.id;
 
     world.mapConfig = mapConfig;
-
-    world.showHitboxes = content.showHitboxes === true;
-
-    DebugGraphics.setShowHitboxes(world.showHitboxes);
-
-
 
     const groundLayer = map.createLayer(mapConfig.groundLayer, mapTilesets, 0, 0);
 
@@ -158,11 +154,23 @@ export class TiledWorldBuilder {
 
 
 
-          hotspots.registerRuntimeHotspot(
+          const position = getObjectFeetPosition(obj, world.tileSize);
+          const runtimeHotspot = Object.assign({}, hotspotContent, position);
+          const reachTiles = getObjectProperty(obj, "reach");
+          if (reachTiles != null && reachTiles !== "") {
+            runtimeHotspot.reach = world.tileSize * Number(reachTiles);
+          }
 
-            Object.assign({}, hotspotContent, getObjectFeetPosition(obj, world.tileSize))
+          const hitboxShape = getObjectProperty(obj, "hitboxShape");
+          const usesRectHitbox =
+            hitboxShape === "rect" ||
+            hotspotIdValue === "book-recommender" ||
+            hotspotIdValue === "games";
+          if (usesRectHitbox) {
+            runtimeHotspot.hitboxRect = getObjectRectHitbox(obj, world.tileSize);
+          }
 
-          );
+          hotspots.registerRuntimeHotspot(runtimeHotspot);
 
         });
 
@@ -174,7 +182,7 @@ export class TiledWorldBuilder {
 
     world.runtimeHotspots = hotspots.filterAvatarHotspot(world.runtimeHotspots);
 
-    if (mapConfig.features?.hotspotMarkers !== false && mapConfig.hotspotsLayer) {
+    if (mapConfig.features && mapConfig.features.hotspotMarkers !== false && mapConfig.hotspotsLayer) {
 
       hotspots.addMarkers(scene);
 
@@ -214,9 +222,9 @@ export class TiledWorldBuilder {
 
       world,
 
-      spawnOptions?.spawnId,
+      spawnOptions && spawnOptions.spawnId,
 
-      spawnOptions?.returnState
+      spawnOptions && spawnOptions.returnState
 
     );
 
@@ -294,7 +302,7 @@ export class TiledWorldBuilder {
 
     const cached = scene.cache.tilemap.get(mapKey);
 
-    const tilesets = cached?.data?.tilesets;
+    const tilesets = cached && cached.data && cached.data.tilesets;
 
     if (tilesets) {
 
@@ -346,12 +354,12 @@ export class TiledWorldBuilder {
     const ratioX = TiledWorldBuilder.readPlacementNumber(
       obj,
       "offsetXRatio",
-      def.offsetXRatio ?? def.offsetX ?? 0
+      def.offsetXRatio != null ? def.offsetXRatio : def.offsetX != null ? def.offsetX : 0
     );
     const ratioY = TiledWorldBuilder.readPlacementNumber(
       obj,
       "offsetYRatio",
-      def.offsetYRatio ?? def.offsetY ?? 0
+      def.offsetYRatio != null ? def.offsetYRatio : def.offsetY != null ? def.offsetY : 0
     );
     const pixelX = TiledWorldBuilder.readPlacementNumber(obj, "offsetX", 0);
     const pixelY = TiledWorldBuilder.readPlacementNumber(obj, "offsetY", 0);
@@ -464,14 +472,16 @@ export class TiledWorldBuilder {
         TiledWorldBuilder.applyTiledTileObjectPlacement(sprite, obj, furnitureDef);
 
         const depthValue = getObjectProperty(obj, "depth");
+        let depth;
 
-        const depth =
+        if (depthValue !== null && depthValue !== "" && !Number.isNaN(Number(depthValue))) {
+          depth = TiledWorldBuilder.FURNITURE_DEPTH_BASE + Number(depthValue);
+        } else {
+          depth = TiledWorldBuilder.FURNITURE_DEPTH_BASE + stackIndex * 0.01;
+        }
 
-          depthValue !== null && depthValue !== "" && !Number.isNaN(Number(depthValue))
-
-            ? Number(depthValue)
-
-            : 3 + stackIndex * 0.01;
+        // Tiny tie-breaker when multiple objects share the same depth value.
+        depth += stackIndex * 0.00001;
 
         sprite.setDepth(depth);
 
@@ -698,11 +708,8 @@ export class TiledWorldBuilder {
 
 
   static configureTileLayer(layer) {
-
     layer.setPosition(0, 0);
-
-    layer.setCullPadding(2);
-
+    layer.setCullPadding(1);
   }
 
 
@@ -759,6 +766,16 @@ export class TiledWorldBuilder {
 
       });
 
+      window.addEventListener("orientationchange", function () {
+
+        window.setTimeout(function () {
+
+          TiledWorldBuilder.applyCameraZoom(scene, world);
+
+        }, 150);
+
+      });
+
     }
 
 
@@ -787,9 +804,13 @@ export class TiledWorldBuilder {
 
     const mapConfig = world.mapConfig;
 
+    const isMobile = TiledWorldBuilder.isMobileDevice();
+
+    const isPortrait = viewportHeight > viewportWidth;
 
 
-    if (mapConfig?.fillViewport) {
+
+    if (mapConfig && mapConfig.fillViewport) {
 
       const mapW = world.mapWidth * world.tileSize;
 
@@ -803,6 +824,16 @@ export class TiledWorldBuilder {
 
       }
 
+      if (isMobile && isPortrait) {
+
+        zoom *= 0.92;
+
+      } else if (isMobile) {
+
+        zoom *= 1.05;
+
+      }
+
       camera.setZoom(Math.max(1, zoom));
 
       return;
@@ -811,7 +842,13 @@ export class TiledWorldBuilder {
 
 
 
-    const visibleTilesY = 15;
+    let visibleTilesY = 15;
+
+    if (isMobile) {
+
+      visibleTilesY = isPortrait ? 11 : 9;
+
+    }
 
     const visibleTilesX = visibleTilesY * (viewportWidth / viewportHeight);
 
@@ -833,14 +870,38 @@ export class TiledWorldBuilder {
 
 
 
+  static isMobileDevice() {
+
+    if (typeof window === "undefined") {
+
+      return false;
+
+    }
+
+    if (window.matchMedia("(pointer: coarse)").matches) {
+
+      return true;
+
+    }
+
+    return /Android|iPhone|iPad|iPod|Mobile|Tablet/i.test(navigator.userAgent);
+
+  }
+
+
+
   static setupPixelPerfectFollow(camera) {
+    let lastScrollX = null;
+    let lastScrollY = null;
 
     camera.on(Phaser.Cameras.Scene2D.Events.PRE_RENDER, function () {
-
+      if (lastScrollX === camera.scrollX && lastScrollY === camera.scrollY) {
+        return;
+      }
       TiledWorldBuilder.snapCameraToPixels(camera);
-
+      lastScrollX = camera.scrollX;
+      lastScrollY = camera.scrollY;
     });
-
   }
 
 
@@ -878,4 +939,5 @@ TiledWorldBuilder.FURNITURE_IMAGES = [
   "assets/monkeyboy-source/Tiles_Interactive/indoor11.png",
   "assets/monkeyboy-source/Tiles_Interactive/chair1.png",
   "assets/monkeyboy-source/Tiles_Interactive/chair2.png",
+  "assets/monkeyboy-source/Tiles_Interactive/computerDesk.png",
 ];
