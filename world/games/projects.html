@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Projects</title>
+    <link rel="stylesheet" href="games-shell.css" />
+    <link rel="stylesheet" href="projects.css" />
+  </head>
+  <body>
+    <div class="game-shell game-projects">
+      <div class="projects-shell" id="projects-shell">
+        <div class="projects-toolbar">
+          <h1 class="projects-toolbar-title" id="projects-toolbar-title">Projects</h1>
+        </div>
+        <div class="projects-body">
+          <div id="projects-list-view" class="projects-list-view">
+            <div id="projects-grid" class="projects-grid"></div>
+          </div>
+          <article id="projects-detail" class="projects-detail" aria-live="polite">
+            <div id="projects-detail-hero" class="projects-detail-hero"></div>
+            <h2 id="projects-detail-title"></h2>
+            <ul id="projects-detail-list"></ul>
+            <div class="projects-detail-actions">
+              <a id="projects-detail-repo" href="#" target="_blank" rel="noopener noreferrer">View Source on GitHub</a>
+            </div>
+          </article>
+        </div>
+        <footer class="projects-github-bar">
+          <a
+            class="projects-github-link"
+            href="https://github.com/Jamesha123"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img class="projects-github-avatar" src="../../images/james.jpeg" alt="" />
+            <img class="projects-github-logo" src="../../images/github.svg" alt="" />
+            <span class="projects-github-copy">
+              <strong>My GitHub</strong>
+              <span>github.com/Jamesha123</span>
+            </span>
+            <span class="projects-github-cta">Open Profile</span>
+          </a>
+        </footer>
+      </div>
+    </div>
+    <script src="projects-focus.js"></script>
+    <script src="projects.js"></script>
+  </body>
+</html>

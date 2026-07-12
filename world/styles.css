@@ -103,17 +103,20 @@ body {
 }
 
 .modal {
+  position: relative;
   width: min(100%, 520px);
   max-height: min(80vh, 640px);
   overflow: auto;
   background: #16213e;
   border: 4px solid #fff;
   padding: 1.25rem;
+  padding-top: 2.75rem;
   box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.45);
 }
 
 .modal h2 {
   margin: 0 0 1rem;
+  padding-right: 2rem;
   font-size: 0.85rem;
   line-height: 1.5;
   color: #f1c40f;
@@ -150,7 +153,20 @@ body {
 }
 
 .modal-close {
-  margin-top: 1rem;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
+  margin: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  line-height: 1;
+  font-weight: 700;
   background: #555;
   cursor: pointer;
 }
@@ -160,11 +176,13 @@ body {
   filter: brightness(1.1);
 }
 
-#modal-overlay.games-mode {
+#modal-overlay.games-mode,
+#modal-overlay.app-mode {
   padding: 0.35rem;
 }
 
-#modal-overlay.games-mode .modal {
+#modal-overlay.games-mode .modal,
+#modal-overlay.app-mode .modal {
   width: min(98vw, 940px);
   height: min(96vh, 900px);
   max-height: 96vh;
@@ -172,8 +190,21 @@ body {
   display: flex;
   flex-direction: column;
   padding: 0.5rem;
+  padding-top: 2.25rem;
   background: #2b2b2b;
   border-color: #888;
+}
+
+#modal-overlay.games-mode .modal-close,
+#modal-overlay.app-mode .modal-close {
+  top: 0.35rem;
+  right: 0.35rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.9rem;
+  border-color: #fff #404040 #404040 #fff;
+  background: #c0c0c0;
+  color: #111;
 }
 
 #modal-games-desktop {
@@ -187,10 +218,23 @@ body {
   display: flex;
 }
 
-#modal-overlay.games-mode .modal-close {
-  flex-shrink: 0;
-  margin-top: 0.5rem;
+#modal-app-view {
+  flex: 1;
+  min-height: 0;
+  display: none;
+  flex-direction: column;
+}
+
+#modal-app-view:not([hidden]) {
+  display: flex;
+}
+
+.modal-app-frame {
+  flex: 1;
+  min-height: 0;
   width: 100%;
+  border: 0;
+  background: #0f172a;
 }
 
 .games-monitor {
@@ -274,8 +318,14 @@ body {
   border: 0;
   border-radius: 0;
   image-rendering: auto;
-  background: transparent;
+  background: #fff;
   box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+.games-desktop-icon img[src$=".svg"] {
+  object-fit: contain;
+  padding: 6px;
+  background: #fff;
 }
 
 .games-window-layer {
@@ -429,7 +479,7 @@ body {
 .games-taskbar-tray {
   flex-shrink: 0;
   height: 22px;
-  padding: 0 0.45rem;
+  padding: 0 0.2rem 0 0.35rem;
   border: 1px solid;
   border-color: #1a4eb0 #0d3588 #0d3588 #1a4eb0;
   background: linear-gradient(180deg, #3b7be0 0%, #245edc 100%);
@@ -438,10 +488,45 @@ body {
   font-size: 0.62rem;
   display: inline-flex;
   align-items: center;
+  gap: 0.35rem;
+}
+
+.games-taskbar-github {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  height: 18px;
+  padding: 0 0.35rem 0 0.15rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #fff;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.games-taskbar-github:hover,
+.games-taskbar-github:focus-visible {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.35);
+  outline: none;
+}
+
+.games-taskbar-github img {
+  width: 16px;
+  height: 16px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 2px;
+}
+
+.games-taskbar-label {
+  padding-right: 0.25rem;
 }
 
 @media (max-width: 640px) {
-  #modal-overlay.games-mode .modal {
+  #modal-overlay.games-mode .modal,
+  #modal-overlay.app-mode .modal {
     width: 100%;
     height: 96vh;
   }

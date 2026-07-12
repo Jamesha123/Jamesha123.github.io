@@ -1,0 +1,8 @@
+{
+  "id": "todo-lists",
+  "label": "To-Do Lists",
+  "color": "#6366f1",
+  "view": "app",
+  "page": "apps/lists.html",
+  "title": "To-Do Lists"
+}

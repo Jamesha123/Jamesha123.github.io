@@ -17,6 +17,7 @@
     "hotspots/about.json",
     "hotspots/monkeyboy.json",
     "hotspots/book-recommender.json",
-    "hotspots/games.json"
+    "hotspots/games.json",
+    "hotspots/todo-lists.json"
   ]
 }

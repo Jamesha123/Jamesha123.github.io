@@ -77,5 +77,12 @@
     "bodyWidthRatio": 0.92,
     "bodyHeightRatio": 0.32,
     "hitboxLiftRatio": 0.14
+  },
+  {
+    "id": "stickyNote",
+    "bodyWidthRatio": 0,
+    "bodyHeightRatio": 0,
+    "hitboxLiftRatio": 0,
+    "collides": false
   }
 ]

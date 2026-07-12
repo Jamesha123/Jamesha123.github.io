@@ -165,7 +165,8 @@ export class TiledWorldBuilder {
           const usesRectHitbox =
             hitboxShape === "rect" ||
             hotspotIdValue === "book-recommender" ||
-            hotspotIdValue === "games";
+            hotspotIdValue === "games" ||
+            hotspotIdValue === "todo-lists";
           if (usesRectHitbox) {
             runtimeHotspot.hitboxRect = getObjectRectHitbox(obj, world.tileSize);
           }
@@ -940,4 +941,5 @@ TiledWorldBuilder.FURNITURE_IMAGES = [
   "assets/monkeyboy-source/Tiles_Interactive/chair1.png",
   "assets/monkeyboy-source/Tiles_Interactive/chair2.png",
   "assets/monkeyboy-source/Tiles_Interactive/computerDesk.png",
+  "assets/monkeyboy-source/Tiles_Interactive/stickyNote.png",
 ];

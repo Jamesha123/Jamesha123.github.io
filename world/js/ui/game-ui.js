@@ -10,12 +10,17 @@ export class GameUI {
     this.modalLinks = document.getElementById("modal-links");
     this.modalStandard = document.getElementById("modal-standard");
     this.modalGamesDesktop = document.getElementById("modal-games-desktop");
+    this.modalAppView = document.getElementById("modal-app-view");
     this.modalEl = this.modalOverlay ? this.modalOverlay.querySelector(".modal") : null;
     this.modalOpen = false;
     this.mapFading = false;
     this.activeHotspot = null;
     this.gamesDesktop = null;
+    this.appFrame = null;
     this.scene = null;
+
+    this.handleModalMessage = this.handleModalMessage.bind(this);
+    window.addEventListener("message", this.handleModalMessage);
 
     if (!this.modalOverlay || !this.modalCloseButton()) {
       throw new Error("Game UI markup is missing. Hard refresh the page.");
@@ -71,6 +76,21 @@ export class GameUI {
     this.scene = scene;
   }
 
+  handleModalMessage(event) {
+    if (!event.data) {
+      return;
+    }
+
+    if (event.data.type === "games-desktop-escape" && this.gamesDesktop && this.gamesDesktop.hasOpenApp()) {
+      this.gamesDesktop.closeApp();
+      return;
+    }
+
+    if (event.data.type === "world-modal-close" && this.modalOpen) {
+      this.closeModal();
+    }
+  }
+
   modalCloseButton() {
     return document.getElementById("modal-close");
   }
@@ -91,7 +111,14 @@ export class GameUI {
       return;
     }
 
+    if (hotspot.view === "app") {
+      this.openAppView(hotspot);
+      this.modalOverlay.classList.add("open", "app-mode");
+      return;
+    }
+
     this.closeGamesDesktop();
+    this.closeAppView();
     this.modalStandard.hidden = false;
     this.modalTitle.textContent = hotspot.title;
     this.modalBody.textContent = hotspot.body;
@@ -115,10 +142,47 @@ export class GameUI {
 
   openGamesDesktop(hotspot) {
     this.modalStandard.hidden = true;
+    this.closeAppView();
     if (this.gamesDesktop) {
       this.gamesDesktop.destroy();
     }
     this.gamesDesktop = new GamesDesktop(this.modalGamesDesktop, hotspot);
+  }
+
+  openAppView(hotspot) {
+    this.closeGamesDesktop();
+    this.closeAppView();
+    this.modalStandard.hidden = true;
+
+    if (!this.modalAppView || !hotspot.page) {
+      return;
+    }
+
+    this.modalAppView.hidden = false;
+
+    const frame = document.createElement("iframe");
+    frame.className = "modal-app-frame";
+    frame.src = hotspot.page;
+    frame.title = hotspot.title || hotspot.label || "App";
+    frame.tabIndex = 0;
+    frame.addEventListener("load", function () {
+      frame.focus();
+    });
+
+    this.modalAppView.appendChild(frame);
+    this.appFrame = frame;
+  }
+
+  closeAppView() {
+    if (this.appFrame) {
+      this.appFrame.remove();
+      this.appFrame = null;
+    }
+
+    if (this.modalAppView) {
+      this.modalAppView.hidden = true;
+      this.modalAppView.innerHTML = "";
+    }
   }
 
   closeGamesDesktop() {
@@ -133,7 +197,7 @@ export class GameUI {
       this.modalStandard.hidden = false;
     }
     if (this.modalOverlay) {
-      this.modalOverlay.classList.remove("games-mode");
+      this.modalOverlay.classList.remove("games-mode", "app-mode");
     }
   }
 
@@ -141,7 +205,8 @@ export class GameUI {
     this.modalOpen = false;
     this.activeHotspot = null;
     this.closeGamesDesktop();
-    this.modalOverlay.classList.remove("open", "games-mode");
+    this.closeAppView();
+    this.modalOverlay.classList.remove("open", "games-mode", "app-mode");
 
     const canvas = this.scene && this.scene.game ? this.scene.game.canvas : null;
     if (canvas && typeof canvas.focus === "function") {

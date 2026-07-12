@@ -1,0 +1,242 @@
+.game-projects {
+  background: #ece9d8;
+  color: #111;
+}
+
+.projects-shell {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: #ece9d8;
+}
+
+.projects-toolbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.55rem;
+  border-bottom: 1px solid #808080;
+  background: linear-gradient(180deg, #fff 0%, #ece9d8 100%);
+}
+
+.projects-list-view {
+  display: block;
+}
+
+.projects-shell.is-detail .projects-list-view {
+  display: none;
+}
+
+.projects-detail {
+  display: none;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 42rem;
+}
+
+.projects-shell.is-detail .projects-detail {
+  display: flex;
+}
+
+.projects-toolbar-title {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.projects-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 0.75rem;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+  gap: 0.85rem 0.65rem;
+}
+
+.project-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
+  padding: 0.35rem 0.25rem;
+  border: 1px dotted transparent;
+  background: transparent;
+  color: #111;
+  font: inherit;
+  font-size: 0.72rem;
+  line-height: 1.15;
+  text-align: center;
+  cursor: pointer;
+}
+
+.project-tile:hover,
+.project-tile:focus-visible {
+  background: rgba(11, 97, 255, 0.18);
+  border-color: rgba(0, 0, 0, 0.35);
+  outline: none;
+}
+
+.project-tile img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 1px solid #808080;
+  background: #fff;
+  box-shadow: 1px 1px 0 #fff inset, -1px -1px 0 #404040 inset;
+}
+
+.project-tile img.is-svg {
+  object-fit: contain;
+  padding: 6px;
+}
+
+.projects-detail-hero {
+  width: 100%;
+  max-width: 220px;
+  border: 2px inset #808080;
+  background: #fff;
+}
+
+.projects-detail-hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.projects-detail-hero img.is-svg {
+  padding: 1rem;
+  object-fit: contain;
+}
+
+.projects-detail h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.projects-detail ul {
+  margin: 0;
+  padding-left: 1.15rem;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.projects-detail li + li {
+  margin-top: 0.5rem;
+}
+
+.projects-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.projects-detail-actions a {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid;
+  border-color: #fff #404040 #404040 #fff;
+  background: #ece9d8;
+  color: #111;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.projects-detail-actions a:hover,
+.projects-detail-actions a:focus-visible {
+  outline: 1px dotted #000;
+  outline-offset: -4px;
+}
+
+.projects-github-bar {
+  flex-shrink: 0;
+  padding: 0.45rem 0.55rem;
+  border-top: 2px solid #808080;
+  background: linear-gradient(180deg, #245edc 0%, #1a4eb0 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.projects-github-link {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 0.45rem 0.55rem;
+  border: 2px solid;
+  border-color: #fff #0d3588 #0d3588 #fff;
+  background: linear-gradient(180deg, #3b7be0 0%, #245edc 100%);
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.35);
+}
+
+.projects-github-link:hover,
+.projects-github-link:focus-visible {
+  background: linear-gradient(180deg, #4f8fe8 0%, #2f6ed4 100%);
+  outline: 2px dotted #fff;
+  outline-offset: 2px;
+}
+
+.projects-github-avatar {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border: 2px solid #fff;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.projects-github-logo {
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid #c0c0c0;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.projects-github-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+  flex: 1;
+  font-size: 0.72rem;
+  line-height: 1.2;
+}
+
+.projects-github-copy strong {
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
+
+.projects-github-copy span {
+  opacity: 0.92;
+}
+
+.projects-github-cta {
+  flex-shrink: 0;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid;
+  border-color: #fff #0d3588 #0d3588 #fff;
+  background: #ece9d8;
+  color: #111;
+  font-size: 0.74rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.projects-github-link:hover .projects-github-cta,
+.projects-github-link:focus-visible .projects-github-cta {
+  background: #fff;
+}

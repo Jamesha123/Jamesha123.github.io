@@ -47,7 +47,13 @@ export class GamesDesktop {
       '        <span class="games-start-icon" aria-hidden="true"></span>' +
       "      </button>" +
       '      <div class="games-taskbar-apps"></div>' +
-      '      <div class="games-taskbar-tray">James PC</div>' +
+      '      <div class="games-taskbar-tray">' +
+      '        <button type="button" class="games-taskbar-github" aria-label="Open GitHub profile">' +
+      '          <img src="../images/james.jpeg" alt="" loading="lazy">' +
+      '          <span>GitHub</span>' +
+      '        </button>' +
+      '        <span class="games-taskbar-label">James PC</span>' +
+      '      </div>' +
       "    </div>" +
       "  </div>" +
       "</div>";
@@ -65,7 +71,7 @@ export class GamesDesktop {
           "<span>" +
           escapeHtml(app.label) +
           "</span>";
-        icon.addEventListener("click", () => this.openApp(app));
+        icon.addEventListener("click", () => this.launchApp(app));
         iconsEl.appendChild(icon);
       }.bind(this)
     );
@@ -73,6 +79,22 @@ export class GamesDesktop {
     this.rootEl.appendChild(monitor);
     this.windowLayer = monitor.querySelector(".games-window-layer");
     this.taskbarApps = monitor.querySelector(".games-taskbar-apps");
+
+    const githubBtn = monitor.querySelector(".games-taskbar-github");
+    if (githubBtn) {
+      githubBtn.addEventListener("click", () => {
+        window.open("https://github.com/Jamesha123", "_blank", "noopener,noreferrer");
+      });
+    }
+  }
+
+  launchApp(app) {
+    if (app.url) {
+      window.open(app.url, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    this.openApp(app);
   }
 
   openApp(app) {
@@ -111,15 +133,19 @@ export class GamesDesktop {
     frame.className = "games-app-frame";
     frame.src = app.page;
     frame.title = app.label;
-    frame.scrolling = "no";
-    frame.tabIndex = 0;
+    frame.scrolling = app.page === "games/projects.html" ? "auto" : "no";
+    if (app.page !== "games/projects.html") {
+      frame.tabIndex = 0;
+    }
 
     win.appendChild(titlebar);
     win.appendChild(frame);
 
     closeBtn.addEventListener("click", () => this.closeApp());
-    win.addEventListener("mousedown", () => this.focusGameFrame(frame));
-    frame.addEventListener("load", () => this.focusGameFrame(frame));
+    if (app.page !== "games/projects.html") {
+      titlebar.addEventListener("mousedown", () => this.focusGameFrame(frame));
+      frame.addEventListener("load", () => this.focusGameFrame(frame));
+    }
 
     this.windowLayer.appendChild(win);
     this.openWindow = win;
@@ -133,15 +159,15 @@ export class GamesDesktop {
     this.taskbarApps.appendChild(taskBtn);
     this.taskbarButton = taskBtn;
 
-    window.requestAnimationFrame(() => this.focusGameFrame(frame));
+    if (app.page !== "games/projects.html") {
+      window.requestAnimationFrame(() => this.focusGameFrame(frame));
+    }
   }
 
   focusGameFrame(frame) {
     if (!frame) {
       return;
     }
-
-    frame.focus();
 
     try {
       if (frame.contentWindow) {

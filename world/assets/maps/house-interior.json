@@ -1889,6 +1889,24 @@
           "visible": true,
           "rotation": 0,
           "gid": 142
+        },
+        {
+          "id": 42,
+          "name": "stickyNote",
+          "x": 38.0,
+          "y": 60.0,
+          "width": 9.66667,
+          "height": 10.0,
+          "visible": true,
+          "rotation": 0,
+          "properties": [
+            {
+              "name": "depth",
+              "type": "int",
+              "value": "4"
+            }
+          ],
+          "gid": 146
         }
       ]
     },
@@ -1907,7 +1925,7 @@
           "x": 320.167,
           "y": 22.5,
           "width": 54.5,
-          "height": 63.125,
+          "height": 68.625,
           "visible": true,
           "rotation": 0,
           "properties": [
@@ -1929,7 +1947,7 @@
           "x": 240.543,
           "y": 26.1251,
           "width": 59.5,
-          "height": 53.125,
+          "height": 64.625,
           "visible": true,
           "rotation": 0,
           "properties": [
@@ -1944,12 +1962,34 @@
               "value": "games"
             }
           ]
+        },
+        {
+          "id": 41,
+          "name": "To-Do List",
+          "x": 17.3333,
+          "y": 48.6667,
+          "width": 43.6667,
+          "height": 42.3333,
+          "visible": true,
+          "rotation": 0,
+          "properties": [
+            {
+              "name": "hitboxShape",
+              "type": "string",
+              "value": "rect"
+            },
+            {
+              "name": "hotspotId",
+              "type": "string",
+              "value": "todo-lists"
+            }
+          ]
         }
       ]
     }
   ],
   "nextlayerid": 10,
-  "nextobjectid": 41,
+  "nextobjectid": 43,
   "orientation": "orthogonal",
   "renderorder": "right-down",
   "tiledversion": "1.12.2",
@@ -3192,7 +3232,7 @@
     {
       "firstgid": 133,
       "name": "interactive",
-      "tilecount": 13,
+      "tilecount": 14,
       "columns": 0,
       "tilewidth": 16,
       "tileheight": 16,
@@ -3274,6 +3314,12 @@
           "image": "../monkeyboy-source/Tiles_Interactive/computerDesk.png",
           "imagewidth": 48,
           "imageheight": 64
+        },
+        {
+          "id": 13,
+          "image": "../monkeyboy-source/Tiles_Interactive/stickyNote.png",
+          "imagewidth": 16,
+          "imageheight": 16
         }
       ]
     }

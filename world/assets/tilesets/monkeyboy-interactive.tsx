@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.12.2" name="interactive" tilewidth="16" tileheight="16" tilecount="13" columns="0">
+<tileset version="1.10" tiledversion="1.12.2" name="interactive" tilewidth="16" tileheight="16" tilecount="14" columns="0">
  <grid orientation="orthogonal" width="16" height="16"/>
  <tile id="0">
   <image source="../monkeyboy-source/Tiles_Interactive/kitchen.png" width="128" height="64"/>
@@ -39,5 +39,8 @@
  </tile>
  <tile id="12">
   <image source="../monkeyboy-source/Tiles_Interactive/computerDesk.png" width="48" height="64"/>
+ </tile>
+ <tile id="13">
+  <image source="../monkeyboy-source/Tiles_Interactive/stickyNote.png" width="16" height="16"/>
  </tile>
 </tileset>
