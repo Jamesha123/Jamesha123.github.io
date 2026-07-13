@@ -1,9 +1,10 @@
 import { ContentStore } from "./core/content-store.js";
 import { loadContent } from "./core/load-content.js";
-import { createPhaserGame } from "./scenes/world-scene.js?v=41";
+import { createPhaserGame } from "./scenes/world-scene.js";
 import { setBootStage, showFatalError } from "./utils/helpers.js";
-import { bindFullscreenControls } from "./utils/fullscreen.js?v=41";
-import { bindMobileControls } from "./ui/mobile-controls.js?v=41";
+import { bindFullscreenControls } from "./utils/fullscreen.js";
+import { bindMobileControls } from "./ui/mobile-controls.js";
+import { ASSET_VERSION } from "./version.js";
 
 const BOOT_TIMEOUT_MS = 25000;
 
@@ -69,3 +70,5 @@ loadContent()
   });
 
 window.addEventListener("world-ready", clearBootTimeout);
+
+export { ASSET_VERSION };

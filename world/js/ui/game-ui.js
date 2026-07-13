@@ -1,10 +1,11 @@
 import { GamesDesktop } from "./games-desktop.js";
-import { isMobileDevice } from "../utils/device.js?v=41";
+import { isMobileDevice } from "../utils/device.js?v=43";
 
 export class GameUI {
   constructor() {
     this.hintEl = document.getElementById("interaction-hint");
     this.mobileInteractBtn = document.getElementById("mobile-interact-btn");
+    this.bottomHud = document.getElementById("bottom-hud");
     this.isMobile = isMobileDevice();
     this.modalOverlay = document.getElementById("modal-overlay");
     this.mapFadeEl = document.getElementById("map-fade");
@@ -60,11 +61,7 @@ export class GameUI {
         return;
       }
 
-      if (this.modalOpen) {
-        return;
-      }
-
-      if (this.mapFading) {
+      if (this.modalOpen || this.mapFading) {
         return;
       }
 
@@ -84,19 +81,29 @@ export class GameUI {
   }
 
   getDefaultHintText() {
-    return this.isMobile ? "Use joystick to move" : "WASD or click to move";
+    return "WASD or click to move";
   }
 
   setDefaultHint() {
     this.hideInteractPrompt();
+
+    if (this.isMobile) {
+      this.setHint("", false);
+      return;
+    }
+
     this.setHint(this.getDefaultHintText(), true);
   }
 
   setInteractPrompt(actionText) {
     if (this.isMobile) {
-      this.setHint("Interact", true);
+      this.setHint("", false);
       if (this.mobileInteractBtn) {
         this.mobileInteractBtn.hidden = false;
+        this.mobileInteractBtn.textContent = "Interact";
+      }
+      if (this.bottomHud) {
+        this.bottomHud.classList.add("has-interact");
       }
       return;
     }
@@ -109,6 +116,10 @@ export class GameUI {
   hideInteractPrompt() {
     if (this.mobileInteractBtn) {
       this.mobileInteractBtn.hidden = true;
+    }
+
+    if (this.bottomHud) {
+      this.bottomHud.classList.remove("has-interact");
     }
   }
 

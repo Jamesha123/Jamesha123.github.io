@@ -1,5 +1,6 @@
 import { refreshPhaserScale } from "./viewport.js";
-import { isMobileDevice } from "./device.js";
+import { isMobileDevice } from "./device.js?v=43";
+import { refreshCamera } from "../world/camera-controller.js?v=43";
 
 let fullscreenButton = null;
 let wantsFullscreen = false;
@@ -19,7 +20,7 @@ export function isFullscreenActive() {
     return false;
   }
 
-  return wantsFullscreen;
+  return wantsFullscreen || !!getFullscreenElement();
 }
 
 export function isFullscreenSupported() {
@@ -36,6 +37,12 @@ function refreshGameScale() {
 
   window.requestAnimationFrame(function () {
     refreshPhaserScale(game);
+
+    const scene = game && game.scene ? game.scene.getScene("WorldScene") : null;
+    if (scene && scene.world) {
+      refreshCamera(scene, scene.world, { recenter: true });
+    }
+
     window.dispatchEvent(new Event("world-viewport-change"));
   });
 }

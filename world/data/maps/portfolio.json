@@ -14,9 +14,7 @@
   "transitionsLayer": "Transitions",
   "camera": {
     "mode": "follow",
-    "visibleTilesY": 15,
-    "mobilePortraitTilesY": 11,
-    "mobileLandscapeTilesY": 9
+    "visibleTilesY": 15
   },
   "features": {
     "avatar": true,

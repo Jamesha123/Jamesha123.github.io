@@ -1,8 +1,8 @@
 import { ContentStore } from "../core/content-store.js";
 import { WorldState } from "../core/world-state.js";
-import { GameUI } from "../ui/game-ui.js?v=41";
-import { HotspotSystem } from "../systems/hotspot-system.js?v=41";
-import { MapTransitionSystem } from "../systems/map-transition-system.js?v=41";
+import { GameUI } from "../ui/game-ui.js?v=43";
+import { HotspotSystem } from "../systems/hotspot-system.js?v=43";
+import { MapTransitionSystem } from "../systems/map-transition-system.js?v=43";
 import { MapPropSystem } from "../systems/map-prop-system.js";
 import { CharacterAnimation } from "../systems/character-animation.js";
 import { Player } from "../entities/player.js";
@@ -10,8 +10,8 @@ import { TiledWorldBuilder } from "../world/tiled-world-builder.js";
 import { FallbackWorldBuilder } from "../world/fallback-world-builder.js";
 import { cacheBust, showFatalError, hideLoading } from "../utils/helpers.js";
 import { DebugGraphics } from "../systems/debug-graphics.js";
-import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=41";
-import { getMobileJoystick } from "../ui/mobile-controls.js?v=41";
+import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=43";
+import { getMobileJoystick } from "../ui/mobile-controls.js?v=43";
 
 export default class WorldScene extends Phaser.Scene {
   constructor(contentStore) {

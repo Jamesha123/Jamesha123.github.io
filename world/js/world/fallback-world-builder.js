@@ -1,6 +1,6 @@
 import { FALLBACK_MAP } from "../config/fallback-map.js";
 import { AvatarNpc } from "../entities/avatar-npc.js";
-import { TiledWorldBuilder } from "./tiled-world-builder.js";
+import { setupCamera } from "./camera-controller.js?v=43";
 
 export class FallbackWorldBuilder {
   static build(scene, content, world, hotspots, player) {
@@ -32,7 +32,7 @@ export class FallbackWorldBuilder {
     new AvatarNpc(scene, content, world, hotspots).spawn();
     player.create(9 * 32 + 16, 7 * 32 + 16);
     player.setupColliders(null, world.avatarNpc);
-    TiledWorldBuilder.setupCamera(scene, world, player.sprite);
+    setupCamera(scene, world, player.sprite);
   }
 
   static createTiles(scene) {
