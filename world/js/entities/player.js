@@ -61,27 +61,40 @@ export class Player {
 
     const keys = input.keys || {};
     const cursors = input.cursors;
+    const joystick = input.joystick;
 
-    if (cursors.left.isDown || keys.A.isDown) {
-      vx = -1;
-    } else if (cursors.right.isDown || keys.D.isDown) {
-      vx = 1;
+    let usingJoystick = false;
+
+    if (joystick && (joystick.x !== 0 || joystick.y !== 0)) {
+      vx = joystick.x;
+      vy = joystick.y;
+      usingJoystick = true;
+    } else {
+      if (cursors.left.isDown || keys.A.isDown) {
+        vx = -1;
+      } else if (cursors.right.isDown || keys.D.isDown) {
+        vx = 1;
+      }
+
+      if (cursors.up.isDown || keys.W.isDown) {
+        vy = -1;
+      } else if (cursors.down.isDown || keys.S.isDown) {
+        vy = 1;
+      }
     }
 
-    if (cursors.up.isDown || keys.W.isDown) {
-      vy = -1;
-    } else if (cursors.down.isDown || keys.S.isDown) {
-      vy = 1;
-    }
-
-    const usingKeyboard = vx !== 0 || vy !== 0;
+    const usingKeyboard = usingJoystick || vx !== 0 || vy !== 0;
 
     if (usingKeyboard) {
+      if (usingJoystick || vx !== 0 || vy !== 0) {
+        const length = Math.hypot(vx, vy);
+        if (length > 0) {
+          vx = (vx / length) * this.speed;
+          vy = (vy / length) * this.speed;
+        }
+      }
       this.touchTarget = null;
       this.touchStuckFrames = 0;
-      const length = Math.hypot(vx, vy);
-      vx = (vx / length) * this.speed;
-      vy = (vy / length) * this.speed;
     } else if (this.touchTarget) {
       const dx = this.touchTarget.x - this.sprite.x;
       const dy = this.touchTarget.y - this.sprite.y;

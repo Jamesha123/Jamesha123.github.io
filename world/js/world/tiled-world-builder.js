@@ -1,5 +1,6 @@
 import { getObjectProperty, getObjectFeetPosition, getObjectRectHitbox } from "../utils/helpers.js";
 import { isFullscreenActive } from "../utils/fullscreen.js";
+import { isMobileDevice } from "../utils/device.js";
 
 import { CharacterAnimation } from "../systems/character-animation.js";
 
@@ -746,7 +747,7 @@ export class TiledWorldBuilder {
 
     scene._cameraFollowTarget = playerSprite;
 
-    if (!cameraSettings.fillViewport) {
+    if (!cameraSettings.fillViewport || isMobileDevice()) {
       camera.startFollow(playerSprite, true, 1, 1);
     }
 
@@ -797,6 +798,10 @@ export class TiledWorldBuilder {
   }
 
   static resolveFillFit(cameraSettings) {
+    if (isMobileDevice()) {
+      return "cover";
+    }
+
     if (isFullscreenActive()) {
       return cameraSettings.fullscreenFit;
     }
@@ -818,7 +823,7 @@ export class TiledWorldBuilder {
   static applyFillCameraFollow(scene, camera, mapW, mapH) {
     const playerSprite = scene._cameraFollowTarget;
 
-    if (isFullscreenActive() && playerSprite) {
+    if ((isFullscreenActive() || isMobileDevice()) && playerSprite) {
       if (camera.followTarget !== playerSprite) {
         camera.startFollow(playerSprite, true, 1, 1);
       }
@@ -843,7 +848,7 @@ export class TiledWorldBuilder {
     const viewportHeight = scene.scale.gameSize.height;
     const mapConfig = world.mapConfig;
     const cameraSettings = TiledWorldBuilder.getCameraSettings(mapConfig);
-    const isMobile = TiledWorldBuilder.isMobileDevice();
+    const isMobile = isMobileDevice();
     const isPortrait = viewportHeight > viewportWidth;
 
     if (cameraSettings.fillViewport) {
@@ -875,26 +880,6 @@ export class TiledWorldBuilder {
     );
 
     camera.setZoom(Phaser.Math.Clamp(zoom, 1, cameraSettings.maxZoom));
-  }
-
-
-
-  static isMobileDevice() {
-
-    if (typeof window === "undefined") {
-
-      return false;
-
-    }
-
-    if (window.matchMedia("(pointer: coarse)").matches) {
-
-      return true;
-
-    }
-
-    return /Android|iPhone|iPad|iPod|Mobile|Tablet/i.test(navigator.userAgent);
-
   }
 
 

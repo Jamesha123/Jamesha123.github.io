@@ -10,6 +10,8 @@ import { TiledWorldBuilder } from "../world/tiled-world-builder.js";
 import { FallbackWorldBuilder } from "../world/fallback-world-builder.js";
 import { cacheBust, showFatalError, hideLoading } from "../utils/helpers.js";
 import { DebugGraphics } from "../systems/debug-graphics.js";
+import { isMobileDevice, isMobileLandscape } from "../utils/device.js";
+import { getMobileJoystick } from "../ui/mobile-controls.js";
 
 export default class WorldScene extends Phaser.Scene {
   constructor(contentStore) {
@@ -22,6 +24,7 @@ export default class WorldScene extends Phaser.Scene {
     this.player = null;
     this.cursors = null;
     this.keys = null;
+    this.mobileControls = isMobileDevice();
     this.activeMapId = contentStore.startMapId;
     this.spawnId = null;
     this.returnState = null;
@@ -189,9 +192,13 @@ export default class WorldScene extends Phaser.Scene {
       this.player.clearTouchTarget();
       this.cursors = this.input.keyboard.createCursorKeys();
       this.keys = this.input.keyboard.addKeys("W,S,A,D");
-      this.setupPointerInput();
 
-      this.ui.setHint("WASD / arrows to move • click or tap to walk", true);
+      if (this.mobileControls) {
+        this.ui.setHint("Use the joystick to move • tap Interact when nearby", true);
+      } else {
+        this.setupPointerInput();
+        this.ui.setHint("WASD / arrows to move • click or tap to walk", true);
+      }
       this.world.enterMap(this.activeMapId);
       this.events.once("shutdown", () => this.world.leaveMap());
       this.registry.set("worldAssetsReady", true);
@@ -210,6 +217,10 @@ export default class WorldScene extends Phaser.Scene {
   }
 
   setupPointerInput() {
+    if (this.mobileControls) {
+      return;
+    }
+
     if (this._onPointerDown) {
       this.input.off("pointerdown", this._onPointerDown);
       this.input.off("pointermove", this._onPointerMove);
@@ -261,6 +272,19 @@ export default class WorldScene extends Phaser.Scene {
   }
 
   isPointerOnUi(pointer) {
+    const joystick = document.getElementById("virtual-joystick");
+    if (joystick && !joystick.hidden) {
+      const joyBounds = joystick.getBoundingClientRect();
+      if (
+        pointer.x >= joyBounds.left &&
+        pointer.x <= joyBounds.right &&
+        pointer.y >= joyBounds.top &&
+        pointer.y <= joyBounds.bottom
+      ) {
+        return true;
+      }
+    }
+
     const topBar = document.querySelector(".top-bar");
     if (!topBar) {
       return pointer.y < 70;
@@ -274,11 +298,16 @@ export default class WorldScene extends Phaser.Scene {
       return;
     }
 
-    if (this.ui.isModalOpen() || this.ui.isMapFading()) {
+    if (this.ui.isModalOpen() || this.ui.isMapFading() || isMobileLandscape()) {
       this.player.stop();
     } else {
+      const joystick = getMobileJoystick();
       this.player.update(
-        { cursors: this.cursors, keys: this.keys },
+        {
+          cursors: this.cursors,
+          keys: this.keys,
+          joystick: joystick ? joystick.getVector() : null,
+        },
         this.world,
         delta
       );

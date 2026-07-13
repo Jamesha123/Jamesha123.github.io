@@ -68,7 +68,8 @@ body {
   flex-shrink: 0;
 }
 
-#fullscreen-btn[hidden] {
+#fullscreen-btn[hidden],
+html.mobile-user #fullscreen-btn {
   display: none;
 }
 
@@ -96,6 +97,92 @@ body {
 
 .hint.visible {
   opacity: 1;
+}
+
+#virtual-joystick {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  width: 7rem;
+  height: 7rem;
+  pointer-events: auto;
+  touch-action: none;
+  z-index: 12;
+}
+
+#virtual-joystick[hidden] {
+  display: none;
+}
+
+.joystick-base {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  border: 2px solid rgba(255, 255, 255, 0.55);
+}
+
+.joystick-stick {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-left: -1.375rem;
+  margin-top: -1.375rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  transform: translate(0, 0);
+  will-change: transform;
+}
+
+html.mobile-user .hint {
+  bottom: 8.5rem;
+  max-width: calc(100% - 10rem);
+}
+
+#mobile-rotate-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(18, 18, 35, 0.94);
+  pointer-events: auto;
+}
+
+#mobile-rotate-overlay[hidden] {
+  display: none;
+}
+
+.mobile-rotate-card {
+  text-align: center;
+  max-width: 18rem;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.55);
+  padding: 1.5rem 1rem;
+}
+
+.mobile-rotate-icon {
+  margin: 0 0 1rem;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.mobile-rotate-title {
+  margin: 0 0 0.75rem;
+  font-size: 0.7rem;
+  line-height: 1.7;
+}
+
+.mobile-rotate-body {
+  margin: 0;
+  font-size: 0.55rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 #modal-overlay {
@@ -589,6 +676,7 @@ html:-webkit-full-screen {
   inset: 0;
   width: 100%;
   height: 100%;
+  height: 100dvh;
   overflow: hidden;
   background: #1a1a2e;
 }
@@ -609,6 +697,7 @@ html:-webkit-full-screen #game-container {
   inset: 0;
   width: 100%;
   height: 100%;
+  height: 100dvh;
 }
 
 html.is-fullscreen #game-container {

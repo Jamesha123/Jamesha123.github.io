@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>James Hang — Portfolio World (POC)</title>
     <meta
       name="description"
@@ -47,6 +47,18 @@
         </div>
       </div>
       <div id="interaction-hint" class="hint visible">WASD / arrows to move</div>
+      <div id="virtual-joystick" hidden aria-hidden="true">
+        <div class="joystick-base"></div>
+        <div class="joystick-stick"></div>
+      </div>
+    </div>
+
+    <div id="mobile-rotate-overlay" hidden aria-hidden="true">
+      <div class="mobile-rotate-card">
+        <p class="mobile-rotate-icon" aria-hidden="true">↻</p>
+        <p class="mobile-rotate-title">Rotate your device</p>
+        <p class="mobile-rotate-body">This world plays best in portrait mode.</p>
+      </div>
     </div>
 
     <div id="modal-overlay" aria-hidden="true">
@@ -67,6 +79,6 @@
     <div id="game-container"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
-    <script type="module" src="js/main.js?v=36"></script>
+    <script type="module" src="js/main.js?v=38"></script>
   </body>
 </html>

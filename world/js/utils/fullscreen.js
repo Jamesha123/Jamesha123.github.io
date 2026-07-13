@@ -1,4 +1,5 @@
 import { refreshPhaserScale } from "./viewport.js";
+import { isMobileDevice } from "./device.js";
 
 let fullscreenButton = null;
 let wantsFullscreen = false;
@@ -14,10 +15,18 @@ function getFullscreenElement() {
 }
 
 export function isFullscreenActive() {
+  if (isMobileDevice()) {
+    return false;
+  }
+
   return wantsFullscreen;
 }
 
 export function isFullscreenSupported() {
+  if (isMobileDevice()) {
+    return false;
+  }
+
   const root = document.documentElement;
   return !!(root.requestFullscreen || root.webkitRequestFullscreen || root.msRequestFullscreen);
 }
@@ -99,6 +108,10 @@ async function exitFullscreen() {
 }
 
 export async function toggleFullscreen() {
+  if (isMobileDevice()) {
+    return;
+  }
+
   if (isFullscreenActive()) {
     await exitFullscreen();
   } else {
@@ -107,6 +120,10 @@ export async function toggleFullscreen() {
 }
 
 async function handleFullscreenChange() {
+  if (isMobileDevice()) {
+    return;
+  }
+
   const nativeActive = !!getFullscreenElement();
 
   if (nativeActive) {
@@ -145,6 +162,11 @@ function isModalOpen() {
 export function bindFullscreenControls() {
   fullscreenButton = document.getElementById("fullscreen-btn");
   if (!fullscreenButton) {
+    return;
+  }
+
+  if (isMobileDevice()) {
+    fullscreenButton.hidden = true;
     return;
   }
 
