@@ -1,8 +1,16 @@
 export class VirtualJoystick {
   constructor(rootEl) {
+    if (!rootEl) {
+      throw new Error("VirtualJoystick requires a root element.");
+    }
+
     this.root = rootEl;
     this.base = rootEl.querySelector(".joystick-base");
     this.stick = rootEl.querySelector(".joystick-stick");
+
+    if (!this.base || !this.stick) {
+      throw new Error("VirtualJoystick markup is missing base or stick elements.");
+    }
     this.x = 0;
     this.y = 0;
     this.active = false;

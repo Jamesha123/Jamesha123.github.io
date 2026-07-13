@@ -79,9 +79,9 @@ export class HotspotSystem {
     }
 
     if (this.nearbyHotspot) {
-      ui.setHint("Press E or Interact to open: " + this.nearbyHotspot.label, true);
+      ui.setInteractPrompt("open " + this.nearbyHotspot.label);
     } else if (!options.transitionHintActive) {
-      ui.setHint("WASD / arrows to move • click or tap to walk", true);
+      ui.setDefaultHint();
     }
   }
 

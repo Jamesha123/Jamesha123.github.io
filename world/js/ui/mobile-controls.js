@@ -1,5 +1,5 @@
-import { isMobileDevice, isMobileLandscape } from "../utils/device.js";
-import { VirtualJoystick } from "./virtual-joystick.js";
+import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=41";
+import { VirtualJoystick } from "./virtual-joystick.js?v=41";
 
 let joystick = null;
 

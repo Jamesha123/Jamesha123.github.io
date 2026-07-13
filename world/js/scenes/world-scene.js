@@ -1,8 +1,8 @@
 import { ContentStore } from "../core/content-store.js";
 import { WorldState } from "../core/world-state.js";
-import { GameUI } from "../ui/game-ui.js";
-import { HotspotSystem } from "../systems/hotspot-system.js";
-import { MapTransitionSystem } from "../systems/map-transition-system.js";
+import { GameUI } from "../ui/game-ui.js?v=41";
+import { HotspotSystem } from "../systems/hotspot-system.js?v=41";
+import { MapTransitionSystem } from "../systems/map-transition-system.js?v=41";
 import { MapPropSystem } from "../systems/map-prop-system.js";
 import { CharacterAnimation } from "../systems/character-animation.js";
 import { Player } from "../entities/player.js";
@@ -10,8 +10,8 @@ import { TiledWorldBuilder } from "../world/tiled-world-builder.js";
 import { FallbackWorldBuilder } from "../world/fallback-world-builder.js";
 import { cacheBust, showFatalError, hideLoading } from "../utils/helpers.js";
 import { DebugGraphics } from "../systems/debug-graphics.js";
-import { isMobileDevice, isMobileLandscape } from "../utils/device.js";
-import { getMobileJoystick } from "../ui/mobile-controls.js";
+import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=41";
+import { getMobileJoystick } from "../ui/mobile-controls.js?v=41";
 
 export default class WorldScene extends Phaser.Scene {
   constructor(contentStore) {
@@ -194,10 +194,10 @@ export default class WorldScene extends Phaser.Scene {
       this.keys = this.input.keyboard.addKeys("W,S,A,D");
 
       if (this.mobileControls) {
-        this.ui.setHint("Use the joystick to move • tap Interact when nearby", true);
+        this.ui.setDefaultHint();
       } else {
         this.setupPointerInput();
-        this.ui.setHint("WASD / arrows to move • click or tap to walk", true);
+        this.ui.setDefaultHint();
       }
       this.world.enterMap(this.activeMapId);
       this.events.once("shutdown", () => this.world.leaveMap());
@@ -272,6 +272,19 @@ export default class WorldScene extends Phaser.Scene {
   }
 
   isPointerOnUi(pointer) {
+    const bottomHud = document.getElementById("bottom-hud");
+    if (bottomHud) {
+      const hudBounds = bottomHud.getBoundingClientRect();
+      if (
+        pointer.x >= hudBounds.left &&
+        pointer.x <= hudBounds.right &&
+        pointer.y >= hudBounds.top &&
+        pointer.y <= hudBounds.bottom
+      ) {
+        return true;
+      }
+    }
+
     const joystick = document.getElementById("virtual-joystick");
     if (joystick && !joystick.hidden) {
       const joyBounds = joystick.getBoundingClientRect();

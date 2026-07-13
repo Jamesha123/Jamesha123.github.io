@@ -54,7 +54,7 @@ export class MapTransitionSystem {
     for (const interaction of this.world.propInteractions) {
       if (this.isWithinReach(playerX, playerY, interaction)) {
         this.nearbyTarget = interaction;
-        ui.setHint("Press E or Interact to " + interaction.label, true);
+        ui.setInteractPrompt(interaction.label.toLowerCase());
         return;
       }
     }
@@ -62,7 +62,7 @@ export class MapTransitionSystem {
     for (const transition of this.world.transitions) {
       if (this.isWithinReach(playerX, playerY, transition)) {
         this.nearbyTarget = transition;
-        ui.setHint("Press E or Interact to " + transition.label, true);
+        ui.setInteractPrompt(transition.label.toLowerCase());
         return;
       }
     }

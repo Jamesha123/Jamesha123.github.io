@@ -1,8 +1,11 @@
 import { GamesDesktop } from "./games-desktop.js";
+import { isMobileDevice } from "../utils/device.js?v=41";
 
 export class GameUI {
   constructor() {
     this.hintEl = document.getElementById("interaction-hint");
+    this.mobileInteractBtn = document.getElementById("mobile-interact-btn");
+    this.isMobile = isMobileDevice();
     this.modalOverlay = document.getElementById("modal-overlay");
     this.mapFadeEl = document.getElementById("map-fade");
     this.modalTitle = document.getElementById("modal-title");
@@ -26,17 +29,25 @@ export class GameUI {
       throw new Error("Game UI markup is missing. Hard refresh the page.");
     }
 
+    if (!this.hintEl) {
+      throw new Error('Missing "#interaction-hint". Hard refresh the page.');
+    }
+
     this.modalCloseButton().addEventListener("click", () => this.closeModal());
     this.modalOverlay.addEventListener("click", (event) => {
       if (event.target === this.modalOverlay) {
         this.closeModal();
       }
     });
-    document.getElementById("interact-btn").addEventListener("click", () => {
-      if (this.onInteract) {
-        this.onInteract();
-      }
-    });
+
+    if (this.mobileInteractBtn) {
+      this.mobileInteractBtn.addEventListener("click", () => {
+        if (this.onInteract) {
+          this.onInteract();
+        }
+      });
+    }
+
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && this.modalOpen) {
         if (this.gamesDesktop && this.gamesDesktop.hasOpenApp()) {
@@ -72,6 +83,35 @@ export class GameUI {
     });
   }
 
+  getDefaultHintText() {
+    return this.isMobile ? "Use joystick to move" : "WASD or click to move";
+  }
+
+  setDefaultHint() {
+    this.hideInteractPrompt();
+    this.setHint(this.getDefaultHintText(), true);
+  }
+
+  setInteractPrompt(actionText) {
+    if (this.isMobile) {
+      this.setHint("Interact", true);
+      if (this.mobileInteractBtn) {
+        this.mobileInteractBtn.hidden = false;
+      }
+      return;
+    }
+
+    this.hideInteractPrompt();
+    const action = actionText || "interact";
+    this.setHint("Press E to " + action, true);
+  }
+
+  hideInteractPrompt() {
+    if (this.mobileInteractBtn) {
+      this.mobileInteractBtn.hidden = true;
+    }
+  }
+
   bindScene(scene) {
     this.scene = scene;
   }
@@ -96,6 +136,10 @@ export class GameUI {
   }
 
   setHint(text, visible) {
+    if (!this.hintEl) {
+      return;
+    }
+
     this.hintEl.textContent = text;
     this.hintEl.classList.toggle("visible", visible);
   }
@@ -104,6 +148,7 @@ export class GameUI {
     this.modalOpen = true;
     this.activeHotspot = hotspot;
     this.setHint("", false);
+    this.hideInteractPrompt();
 
     if (hotspot.view === "desktop") {
       this.openGamesDesktop(hotspot);
@@ -237,6 +282,7 @@ export class GameUI {
 
     this.mapFading = true;
     this.setHint("", false);
+    this.hideInteractPrompt();
 
     return new Promise((resolve) => {
       let settled = false;

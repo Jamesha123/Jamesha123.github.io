@@ -1,9 +1,9 @@
 import { ContentStore } from "./core/content-store.js";
 import { loadContent } from "./core/load-content.js";
-import { createPhaserGame } from "./scenes/world-scene.js";
+import { createPhaserGame } from "./scenes/world-scene.js?v=41";
 import { setBootStage, showFatalError } from "./utils/helpers.js";
-import { bindFullscreenControls } from "./utils/fullscreen.js";
-import { bindMobileControls } from "./ui/mobile-controls.js";
+import { bindFullscreenControls } from "./utils/fullscreen.js?v=41";
+import { bindMobileControls } from "./ui/mobile-controls.js?v=41";
 
 const BOOT_TIMEOUT_MS = 25000;
 
