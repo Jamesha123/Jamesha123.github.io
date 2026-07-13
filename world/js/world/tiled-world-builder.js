@@ -1,5 +1,5 @@
 import { getObjectProperty, getObjectFeetPosition, getObjectRectHitbox } from "../utils/helpers.js";
-import { setupCamera } from "./camera-controller.js?v=43";
+import { setupCamera } from "./camera-controller.js?v=44";
 
 import { CharacterAnimation } from "../systems/character-animation.js";
 
@@ -7,7 +7,7 @@ import { MapPropSystem } from "../systems/map-prop-system.js";
 
 import { FurnitureSystem } from "../systems/furniture-system.js";
 
-import { AvatarNpc } from "../entities/avatar-npc.js";
+import { AvatarNpc } from "../entities/avatar-npc.js?v=72";
 
 
 

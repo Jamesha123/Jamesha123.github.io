@@ -1,6 +1,6 @@
 import { FALLBACK_MAP } from "../config/fallback-map.js";
-import { AvatarNpc } from "../entities/avatar-npc.js";
-import { setupCamera } from "./camera-controller.js?v=43";
+import { AvatarNpc } from "../entities/avatar-npc.js?v=72";
+import { setupCamera } from "./camera-controller.js?v=44";
 
 export class FallbackWorldBuilder {
   static build(scene, content, world, hotspots, player) {

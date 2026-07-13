@@ -2,6 +2,39 @@ function isGameMap(fileName) {
   return fileName.endsWith(".tmx");
 }
 
+function runExportScript(scriptPath) {
+  var commands = ["py", "python3", "python"];
+  var lastError = "";
+
+  for (var index = 0; index < commands.length; index += 1) {
+    var process = new Process();
+    process.start(commands[index], [scriptPath]);
+    process.waitForFinished(-1);
+
+    var stderr = process.readAllStderr();
+    var stdout = process.readAllStandardOutput();
+
+    if (process.exitCode() === 0) {
+      return {
+        ok: true,
+        command: commands[index],
+        output: (stdout || stderr || "Exported maps for Phaser.").trim(),
+      };
+    }
+
+    lastError = (stderr || stdout || "Unknown export error.").trim();
+  }
+
+  return {
+    ok: false,
+    output:
+      "Phaser export failed. Install Python, then run:\n" +
+      scriptPath +
+      "\n\nLast error:\n" +
+      lastError,
+  };
+}
+
 function exportForPhaser() {
   if (!tiled.projectFileName) {
     tiled.warn("Open world/portfolio.tiled-project before editing the map.");
@@ -10,18 +43,14 @@ function exportForPhaser() {
 
   var projectDir = FileInfo.path(tiled.projectFileName);
   var scriptPath = FileInfo.joinPath(projectDir, "scripts/export-map.py");
-  var process = new Process();
-  process.start("python", [scriptPath]);
-  process.waitForFinished(-1);
+  var result = runExportScript(scriptPath);
 
-  var stderr = process.readAllStderr();
-  var stdout = process.readAllStandardOutput();
-  if (process.exitCode() !== 0) {
-    tiled.error("Phaser export failed:\n" + (stderr || stdout));
+  if (!result.ok) {
+    tiled.error(result.output);
     return;
   }
 
-  tiled.log((stdout || "Exported maps for Phaser.").trim());
+  tiled.log(result.output);
 }
 
 tiled.registerAction("ExportForPhaser", function () {
@@ -43,4 +72,4 @@ tiled.assetSaved.connect(function (asset) {
   exportForPhaser();
 });
 
-tiled.log("Map auto-export enabled (Ctrl+S -> world.json).");
+tiled.log("Map auto-export enabled. Save a .tmx to update world.json / house-interior.json.");

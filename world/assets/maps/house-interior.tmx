@@ -148,19 +148,19 @@
   </object>
  </objectgroup>
  <objectgroup id="9" name="Hotspots">
-  <object id="36" name="Book Recommender" x="320.167" y="22.5" width="54.5" height="68.625">
+  <object id="36" name="Book Recommender" x="319.985" y="21.9545" width="54.5" height="69.5341">
    <properties>
     <property name="hitboxShape" value="rect"/>
     <property name="hotspotId" value="book-recommender"/>
    </properties>
   </object>
-  <object id="37" name="Mini Games" x="240.543" y="26.1251" width="59.5" height="64.625">
+  <object id="37" name="Mini Games" x="241.27" y="29.5796" width="59.1364" height="61.7159">
    <properties>
     <property name="hitboxShape" value="rect"/>
     <property name="hotspotId" value="games"/>
    </properties>
   </object>
-  <object id="41" name="To-Do List" x="17.3333" y="48.6667" width="43.6667" height="42.3333">
+  <object id="41" name="To-Do List" x="16.2424" y="53.5758" width="42.2122" height="36.8788">
    <properties>
     <property name="hitboxShape" value="rect"/>
     <property name="hotspotId" value="todo-lists"/>

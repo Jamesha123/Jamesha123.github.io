@@ -1,5 +1,5 @@
-import { isMobileDevice } from "../utils/device.js?v=43";
-import { isFullscreenActive } from "../utils/fullscreen.js?v=43";
+import { isMobileDevice } from "../utils/device.js?v=44";
+import { isFullscreenActive } from "../utils/fullscreen.js?v=44";
 
 /** Tile size of house-interior.json — used to match outside-map zoom on mobile. */
 export const MOBILE_ZOOM_REFERENCE = {

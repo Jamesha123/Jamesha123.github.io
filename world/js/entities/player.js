@@ -69,7 +69,7 @@ export class Player {
       vx = joystick.x;
       vy = joystick.y;
       usingJoystick = true;
-    } else {
+    } else if (cursors) {
       if (cursors.left.isDown || keys.A.isDown) {
         vx = -1;
       } else if (cursors.right.isDown || keys.D.isDown) {

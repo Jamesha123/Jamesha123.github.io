@@ -1,8 +1,8 @@
 import { ContentStore } from "../core/content-store.js";
 import { WorldState } from "../core/world-state.js";
-import { GameUI } from "../ui/game-ui.js?v=43";
-import { HotspotSystem } from "../systems/hotspot-system.js?v=43";
-import { MapTransitionSystem } from "../systems/map-transition-system.js?v=43";
+import { GameUI } from "../ui/game-ui.js?v=72";
+import { HotspotSystem } from "../systems/hotspot-system.js?v=72";
+import { MapTransitionSystem } from "../systems/map-transition-system.js?v=72";
 import { MapPropSystem } from "../systems/map-prop-system.js";
 import { CharacterAnimation } from "../systems/character-animation.js";
 import { Player } from "../entities/player.js";
@@ -10,8 +10,10 @@ import { TiledWorldBuilder } from "../world/tiled-world-builder.js";
 import { FallbackWorldBuilder } from "../world/fallback-world-builder.js";
 import { cacheBust, showFatalError, hideLoading } from "../utils/helpers.js";
 import { DebugGraphics } from "../systems/debug-graphics.js";
-import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=43";
-import { getMobileJoystick } from "../ui/mobile-controls.js?v=43";
+import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=72";
+import { getMobileJoystick } from "../ui/mobile-controls.js?v=72";
+import { preloadWorldLabelFont } from "../ui/world-label.js";
+import { ASSET_VERSION } from "../version.js";
 
 export default class WorldScene extends Phaser.Scene {
   constructor(contentStore) {
@@ -123,6 +125,7 @@ export default class WorldScene extends Phaser.Scene {
     }
 
     if (!assetsReady) {
+      preloadWorldLabelFont(this.load, ASSET_VERSION);
       MapPropSystem.preload(this, this.content.propConfigs);
     }
   }
@@ -307,19 +310,24 @@ export default class WorldScene extends Phaser.Scene {
   }
 
   update(_time, delta) {
-    if (!this.player || !this.cursors) {
+    if (!this.player) {
+      return;
+    }
+
+    const mobileJoystick = this.mobileControls ? getMobileJoystick() : null;
+
+    if (!this.cursors && !mobileJoystick) {
       return;
     }
 
     if (this.ui.isModalOpen() || this.ui.isMapFading() || isMobileLandscape()) {
       this.player.stop();
     } else {
-      const joystick = getMobileJoystick();
       this.player.update(
         {
           cursors: this.cursors,
           keys: this.keys,
-          joystick: joystick ? joystick.getVector() : null,
+          joystick: mobileJoystick ? mobileJoystick.getVector() : null,
         },
         this.world,
         delta

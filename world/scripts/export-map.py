@@ -227,7 +227,15 @@ if __name__ == "__main__":
             raise FileNotFoundError(f"Missing map file: {source_path.name}")
 
         export_map(source_path, output_path)
-        modified = datetime.fromtimestamp(source_path.stat().st_mtime).strftime("%Y-%m-%d %H:%M:%S")
-        print(f"Exported {output_path.name} from {source_path.name} ({modified})")
+        source_mtime = datetime.fromtimestamp(source_path.stat().st_mtime).strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
+        output_mtime = datetime.fromtimestamp(output_path.stat().st_mtime).strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
+        print(
+            f"Exported {output_path.name} from {source_path.name} "
+            f"(source {source_mtime}, json {output_mtime})"
+        )
 
     print("Refresh the browser to see map changes.")

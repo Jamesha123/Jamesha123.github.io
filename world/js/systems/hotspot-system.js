@@ -1,10 +1,12 @@
 import { DebugGraphics } from "./debug-graphics.js";
+import { createWorldLabel } from "../ui/world-label.js";
 
 export class HotspotSystem {
   constructor(content, world) {
     this.content = content;
     this.world = world;
     this.nearbyHotspot = null;
+    this.markerLabels = [];
   }
 
   getAvatarHotspotId() {
@@ -97,7 +99,16 @@ export class HotspotSystem {
     }
   }
 
+  clearMarkers() {
+    this.markerLabels.forEach(function (label) {
+      label.destroy();
+    });
+    this.markerLabels = [];
+  }
+
   addMarkers(scene) {
+    this.clearMarkers();
+
     const npcHotspotIds = this.content.npcConfigs.map(function (npc) {
       return npc.hotspotId;
     });
@@ -121,20 +132,10 @@ export class HotspotSystem {
         labelY = hotspot.y - reach - 4;
       }
 
-      scene.add
-        .text(labelX, labelY, hotspot.label, {
-          fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-          fontSize: "8px",
-          fontStyle: "bold",
-          color: "#ffffff",
-          stroke: "#000000",
-          strokeThickness: 1,
-          backgroundColor: "#000000aa",
-          padding: { x: 1, y: 0 },
-        })
-        .setOrigin(0.5, 1)
-        .setDepth(10)
-        .setResolution(2);
+      const label = createWorldLabel(scene, labelX, labelY, hotspot.label);
+      if (label) {
+        this.markerLabels.push(label);
+      }
     }, this);
   }
 

@@ -11,21 +11,29 @@ export class VirtualJoystick {
     if (!this.base || !this.stick) {
       throw new Error("VirtualJoystick markup is missing base or stick elements.");
     }
+
     this.x = 0;
     this.y = 0;
     this.active = false;
     this.pointerId = null;
     this.maxRadius = 42;
-    this.baseCenter = { x: 0, y: 0 };
 
     this.onPointerDown = this.onPointerDown.bind(this);
     this.onPointerMove = this.onPointerMove.bind(this);
     this.onPointerUp = this.onPointerUp.bind(this);
+    this.onTouchStart = this.onTouchStart.bind(this);
+    this.onTouchMove = this.onTouchMove.bind(this);
+    this.onTouchEnd = this.onTouchEnd.bind(this);
 
-    this.root.addEventListener("pointerdown", this.onPointerDown);
-    window.addEventListener("pointermove", this.onPointerMove);
-    window.addEventListener("pointerup", this.onPointerUp);
-    window.addEventListener("pointercancel", this.onPointerUp);
+    this.root.addEventListener("pointerdown", this.onPointerDown, { passive: false });
+    window.addEventListener("pointermove", this.onPointerMove, { passive: false });
+    window.addEventListener("pointerup", this.onPointerUp, { passive: false });
+    window.addEventListener("pointercancel", this.onPointerUp, { passive: false });
+
+    this.root.addEventListener("touchstart", this.onTouchStart, { passive: false });
+    window.addEventListener("touchmove", this.onTouchMove, { passive: false });
+    window.addEventListener("touchend", this.onTouchEnd, { passive: false });
+    window.addEventListener("touchcancel", this.onTouchEnd, { passive: false });
   }
 
   show() {
@@ -54,14 +62,23 @@ export class VirtualJoystick {
   }
 
   onPointerDown(event) {
+    if (event.pointerType === "mouse" && event.button !== 0) {
+      return;
+    }
+
     if (!this.containsPoint(event.clientX, event.clientY)) {
       return;
     }
 
     event.preventDefault();
+    event.stopPropagation();
     this.active = true;
     this.pointerId = event.pointerId;
-    this.root.setPointerCapture(event.pointerId);
+
+    if (this.root.setPointerCapture) {
+      this.root.setPointerCapture(event.pointerId);
+    }
+
     this.updateStick(event.clientX, event.clientY);
   }
 
@@ -83,15 +100,58 @@ export class VirtualJoystick {
     this.reset();
   }
 
+  onTouchStart(event) {
+    if (this.active) {
+      return;
+    }
+
+    const touch = event.changedTouches[0];
+    if (!touch || !this.containsPoint(touch.clientX, touch.clientY)) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    this.active = true;
+    this.pointerId = touch.identifier;
+    this.updateStick(touch.clientX, touch.clientY);
+  }
+
+  onTouchMove(event) {
+    if (!this.active) {
+      return;
+    }
+
+    const touch = findTouch(event.changedTouches, this.pointerId) || findTouch(event.touches, this.pointerId);
+    if (!touch) {
+      return;
+    }
+
+    event.preventDefault();
+    this.updateStick(touch.clientX, touch.clientY);
+  }
+
+  onTouchEnd(event) {
+    if (!this.active) {
+      return;
+    }
+
+    const touch = findTouch(event.changedTouches, this.pointerId);
+    if (!touch) {
+      return;
+    }
+
+    event.preventDefault();
+    this.reset();
+  }
+
   updateStick(clientX, clientY) {
     const rect = this.base.getBoundingClientRect();
-    this.baseCenter = {
-      x: rect.left + rect.width * 0.5,
-      y: rect.top + rect.height * 0.5,
-    };
+    const centerX = rect.left + rect.width * 0.5;
+    const centerY = rect.top + rect.height * 0.5;
 
-    let dx = clientX - this.baseCenter.x;
-    let dy = clientY - this.baseCenter.y;
+    let dx = clientX - centerX;
+    let dy = clientY - centerY;
     const distance = Math.hypot(dx, dy);
 
     if (distance > this.maxRadius) {
@@ -100,7 +160,6 @@ export class VirtualJoystick {
     }
 
     this.stick.style.transform = "translate(" + dx + "px, " + dy + "px)";
-
     this.x = dx / this.maxRadius;
     this.y = dy / this.maxRadius;
   }
@@ -112,4 +171,14 @@ export class VirtualJoystick {
     this.y = 0;
     this.stick.style.transform = "translate(0, 0)";
   }
+}
+
+function findTouch(touchList, identifier) {
+  for (let index = 0; index < touchList.length; index += 1) {
+    if (touchList[index].identifier === identifier) {
+      return touchList[index];
+    }
+  }
+
+  return null;
 }

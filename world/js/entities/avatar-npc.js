@@ -1,6 +1,5 @@
 import { DebugGraphics } from "../systems/debug-graphics.js";
-import { HotspotSystem } from "../systems/hotspot-system.js";
-
+import { createWorldLabel } from "../ui/world-label.js";
 const FACING_DIRECTIONS = ["down", "left", "right", "up"];
 const OPPOSITE_FACING = {
   down: "up",
@@ -75,11 +74,24 @@ export class AvatarNpc {
     }
 
     if (avatar.label) {
-      this.addNameLabel(avatar.label, {
-        gap: avatar.labelGap != null ? avatar.labelGap : 4,
-        visualHeight: avatar.visualHeight != null ? avatar.visualHeight : 48,
+      const labelPos = this.getLabelPosition();
+      this.nameLabel = createWorldLabel(this.scene, labelPos.x, labelPos.y, avatar.label, {
+        fontSize: avatar.labelFontSize,
       });
     }
+  }
+
+  getLabelPosition() {
+    const avatar = this.config;
+    const scale = this.sprite.scaleY || 1;
+    const gap = avatar.labelGap != null ? avatar.labelGap : 2;
+    const visualHeight = avatar.visualHeight != null ? avatar.visualHeight : 48;
+    const headTop = this.sprite.y - visualHeight * scale + 6;
+
+    return {
+      x: Math.round(this.sprite.x + (avatar.labelOffsetX != null ? avatar.labelOffsetX : 0)),
+      y: Math.round(headTop - gap),
+    };
   }
 
   getIdleFramesByDirection(avatar) {
@@ -170,29 +182,5 @@ export class AvatarNpc {
     const hitbox = this.scene.add.zone(x, feetY - bodyH - 8, bodyW, bodyH);
     this.scene.physics.add.existing(hitbox, true);
     return hitbox;
-  }
-
-  addNameLabel(label, options) {
-    options = options || {};
-    const gap = options.gap != null ? options.gap : 4;
-    const visualHeight = options.visualHeight != null ? options.visualHeight : 48;
-    const scale = this.sprite.scaleY || 1;
-    const fontSize = Math.max(8, Math.round(8 * scale)) + "px";
-    const headTop = this.sprite.y - visualHeight * scale + 6;
-
-    this.scene.add
-      .text(this.sprite.x, headTop - gap, label, {
-        fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-        fontSize: fontSize,
-        fontStyle: "bold",
-        color: "#ffffff",
-        stroke: "#000000",
-        strokeThickness: 1,
-        backgroundColor: "#000000aa",
-        padding: { x: 1, y: 0 },
-      })
-      .setOrigin(0.5, 1)
-      .setDepth(10)
-      .setResolution(2);
   }
 }
