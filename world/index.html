@@ -41,7 +41,10 @@
     <div id="ui-layer">
       <div class="top-bar">
         <a href="../index.html">&larr; Classic Portfolio</a>
-        <button type="button" id="interact-btn">Interact</button>
+        <div class="top-bar-actions">
+          <button type="button" id="fullscreen-btn" aria-pressed="false">Fullscreen</button>
+          <button type="button" id="interact-btn">Interact</button>
+        </div>
       </div>
       <div id="interaction-hint" class="hint visible">WASD / arrows to move</div>
     </div>
@@ -64,6 +67,6 @@
     <div id="game-container"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
-    <script type="module" src="js/main.js?v=27"></script>
+    <script type="module" src="js/main.js?v=36"></script>
   </body>
 </html>

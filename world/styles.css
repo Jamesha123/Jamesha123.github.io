@@ -17,14 +17,15 @@ body {
 }
 
 #game-container {
+  position: fixed;
+  inset: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 #game-container canvas {
   display: block;
-  width: 100%;
-  height: 100%;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   transform: translateZ(0);
@@ -58,6 +59,17 @@ body {
   border: 2px solid #fff;
   padding: 0.5rem 0.75rem;
   cursor: pointer;
+}
+
+.top-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+#fullscreen-btn[hidden] {
+  display: none;
 }
 
 .top-bar a:hover,
@@ -568,6 +580,43 @@ body {
 #map-fade.active {
   opacity: 1;
   pointer-events: auto;
+}
+
+html.is-fullscreen,
+html:fullscreen,
+html:-webkit-full-screen {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #1a1a2e;
+}
+
+html.is-fullscreen body,
+html:fullscreen body,
+html:-webkit-full-screen body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+html.is-fullscreen #ui-layer,
+html.is-fullscreen #game-container,
+html:fullscreen #game-container,
+html:-webkit-full-screen #game-container {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+html.is-fullscreen #game-container {
+  z-index: 0;
+}
+
+html.is-fullscreen #ui-layer {
+  z-index: 10;
 }
 
 @media (max-width: 640px) {

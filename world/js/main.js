@@ -2,6 +2,7 @@ import { ContentStore } from "./core/content-store.js";
 import { loadContent } from "./core/load-content.js";
 import { createPhaserGame } from "./scenes/world-scene.js";
 import { setBootStage, showFatalError } from "./utils/helpers.js";
+import { bindFullscreenControls } from "./utils/fullscreen.js";
 
 const BOOT_TIMEOUT_MS = 25000;
 
@@ -43,6 +44,8 @@ function clearBootTimeout() {
 }
 
 setBootStage("Starting");
+
+bindFullscreenControls();
 
 loadContent()
   .then(function (data) {

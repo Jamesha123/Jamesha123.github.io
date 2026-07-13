@@ -1,4 +1,5 @@
 import { getObjectProperty, getObjectFeetPosition, getObjectRectHitbox } from "../utils/helpers.js";
+import { isFullscreenActive } from "../utils/fullscreen.js";
 
 import { CharacterAnimation } from "../systems/character-animation.js";
 
@@ -737,46 +738,36 @@ export class TiledWorldBuilder {
 
     camera.setRoundPixels(true);
 
-    camera.startFollow(playerSprite, true, 1, 1);
+    const cameraSettings = TiledWorldBuilder.getCameraSettings(world.mapConfig);
+    const mapPixelW = world.mapWidth * world.tileSize;
+    const mapPixelH = world.mapHeight * world.tileSize;
 
-    camera.setBounds(
+    camera.setBounds(0, 0, mapPixelW, mapPixelH);
 
-      0,
+    scene._cameraFollowTarget = playerSprite;
 
-      0,
-
-      world.mapWidth * world.tileSize,
-
-      world.mapHeight * world.tileSize
-
-    );
-
-
+    if (!cameraSettings.fillViewport) {
+      camera.startFollow(playerSprite, true, 1, 1);
+    }
 
     TiledWorldBuilder.applyCameraZoom(scene, world);
 
-
-
     if (!scene._cameraResizeBound) {
-
       scene._cameraResizeBound = true;
 
       scene.scale.on("resize", function () {
-
         TiledWorldBuilder.applyCameraZoom(scene, world);
-
       });
 
       window.addEventListener("orientationchange", function () {
-
         window.setTimeout(function () {
-
           TiledWorldBuilder.applyCameraZoom(scene, world);
-
         }, 150);
-
       });
 
+      window.addEventListener("world-viewport-change", function () {
+        TiledWorldBuilder.applyCameraZoom(scene, world);
+      });
     }
 
 
@@ -787,86 +778,103 @@ export class TiledWorldBuilder {
 
 
 
-  static applyCameraZoom(scene, world) {
+  static getCameraSettings(mapConfig) {
+    const camera = (mapConfig && mapConfig.camera) || {};
+    const fillViewport = !!(mapConfig && (camera.mode === "fill" || mapConfig.fillViewport));
 
+    return {
+      fillViewport: fillViewport,
+      fillFit: camera.fit === "contain" ? "contain" : "cover",
+      fullscreenFit: camera.fullscreenFit === "cover" ? "cover" : "contain",
+      letterboxColor: camera.letterboxColor || null,
+      visibleTilesY: camera.visibleTilesY != null ? camera.visibleTilesY : 15,
+      mobilePortraitTilesY: camera.mobilePortraitTilesY != null ? camera.mobilePortraitTilesY : 11,
+      mobileLandscapeTilesY: camera.mobileLandscapeTilesY != null ? camera.mobileLandscapeTilesY : 9,
+      mobilePortraitFillScale: camera.mobilePortraitFillScale != null ? camera.mobilePortraitFillScale : 0.92,
+      mobileLandscapeFillScale: camera.mobileLandscapeFillScale != null ? camera.mobileLandscapeFillScale : 1.05,
+      maxZoom: camera.maxZoom != null ? camera.maxZoom : 4,
+    };
+  }
+
+  static resolveFillFit(cameraSettings) {
+    if (isFullscreenActive()) {
+      return cameraSettings.fullscreenFit;
+    }
+
+    return cameraSettings.fillFit;
+  }
+
+  static applyFillCameraBackground(camera, cameraSettings) {
+    if (cameraSettings.letterboxColor) {
+      camera.setBackgroundColor(
+        Phaser.Display.Color.HexStringToColor(cameraSettings.letterboxColor).color
+      );
+      return;
+    }
+
+    camera.setBackgroundColor(0x1a1a2e);
+  }
+
+  static applyFillCameraFollow(scene, camera, mapW, mapH) {
+    const playerSprite = scene._cameraFollowTarget;
+
+    if (isFullscreenActive() && playerSprite) {
+      if (camera.followTarget !== playerSprite) {
+        camera.startFollow(playerSprite, true, 1, 1);
+      }
+      return;
+    }
+
+    if (camera.followTarget) {
+      camera.stopFollow();
+    }
+
+    camera.centerOn(mapW * 0.5, mapH * 0.5);
+  }
+
+  static applyCameraZoom(scene, world) {
     const camera = scene.cameras.main;
 
     if (!camera || !world.tileSize) {
-
       return;
-
     }
-
-
 
     const viewportWidth = scene.scale.gameSize.width;
-
     const viewportHeight = scene.scale.gameSize.height;
-
     const mapConfig = world.mapConfig;
-
+    const cameraSettings = TiledWorldBuilder.getCameraSettings(mapConfig);
     const isMobile = TiledWorldBuilder.isMobileDevice();
-
     const isPortrait = viewportHeight > viewportWidth;
 
-
-
-    if (mapConfig && mapConfig.fillViewport) {
-
+    if (cameraSettings.fillViewport) {
       const mapW = world.mapWidth * world.tileSize;
-
       const mapH = world.mapHeight * world.tileSize;
 
-      let zoom = viewportWidth / mapW;
+      const zoomW = viewportWidth / mapW;
+      const zoomH = viewportHeight / mapH;
+      const fillFit = TiledWorldBuilder.resolveFillFit(cameraSettings);
+      const zoom = fillFit === "contain" ? Math.min(zoomW, zoomH) : Math.max(zoomW, zoomH);
 
-      if (mapH * zoom > viewportHeight) {
-
-        zoom = viewportHeight / mapH;
-
-      }
-
-      if (isMobile && isPortrait) {
-
-        zoom *= 0.92;
-
-      } else if (isMobile) {
-
-        zoom *= 1.05;
-
-      }
-
-      camera.setZoom(Math.max(1, zoom));
-
+      TiledWorldBuilder.applyFillCameraBackground(camera, cameraSettings);
+      camera.setZoom(zoom);
+      TiledWorldBuilder.applyFillCameraFollow(scene, camera, mapW, mapH);
       return;
-
     }
 
-
-
-    let visibleTilesY = 15;
-
+    let visibleTilesY = cameraSettings.visibleTilesY;
     if (isMobile) {
-
-      visibleTilesY = isPortrait ? 11 : 9;
-
+      visibleTilesY = isPortrait
+        ? cameraSettings.mobilePortraitTilesY
+        : cameraSettings.mobileLandscapeTilesY;
     }
 
     const visibleTilesX = visibleTilesY * (viewportWidth / viewportHeight);
-
-
-
     const zoom = Math.min(
-
       viewportWidth / (visibleTilesX * world.tileSize),
-
       viewportHeight / (visibleTilesY * world.tileSize)
-
     );
 
-
-
-    camera.setZoom(Phaser.Math.Clamp(zoom, 1, 4));
-
+    camera.setZoom(Phaser.Math.Clamp(zoom, 1, cameraSettings.maxZoom));
   }
 
 

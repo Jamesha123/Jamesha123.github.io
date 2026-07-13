@@ -12,6 +12,12 @@
   "spawnLayer": "Spawn",
   "propsLayer": "Props",
   "transitionsLayer": "Transitions",
+  "camera": {
+    "mode": "follow",
+    "visibleTilesY": 15,
+    "mobilePortraitTilesY": 11,
+    "mobileLandscapeTilesY": 9
+  },
   "features": {
     "avatar": true,
     "hotspotMarkers": true

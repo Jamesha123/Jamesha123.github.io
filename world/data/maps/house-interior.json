@@ -12,7 +12,12 @@
   "spawnLayer": "Spawn",
   "transitionsLayer": "Transitions",
   "furnitureLayers": ["Furniture", "Furniture 2"],
-  "fillViewport": true,
+  "camera": {
+    "mode": "fill",
+    "fit": "cover",
+    "fullscreenFit": "cover",
+    "letterboxColor": "#3a5a40"
+  },
   "features": {
     "avatar": false,
     "hotspotMarkers": true

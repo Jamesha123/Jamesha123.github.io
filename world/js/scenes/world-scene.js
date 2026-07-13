@@ -325,7 +325,7 @@ export function createPhaserGame(contentStore) {
     roundPixels: true,
     scale: {
       mode: Phaser.Scale.RESIZE,
-      autoCenter: Phaser.Scale.CENTER_BOTH,
+      autoCenter: Phaser.Scale.NO_CENTER,
       autoRound: true,
     },
     render: {
@@ -345,6 +345,8 @@ export function createPhaserGame(contentStore) {
   if (game.canvas) {
     game.canvas.setAttribute("tabindex", "0");
   }
+
+  window.__phaserGame = game;
 
   window.addEventListener("pageshow", function (event) {
     if (!event.persisted) {
