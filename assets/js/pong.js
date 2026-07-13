@@ -448,27 +448,29 @@
     const w = canvas.width;
     const h = canvas.height;
     const laneInset = Math.max(18, Math.round(w * 0.055));
+    const wallThickness = Math.max(3, Math.round(h * 0.014));
 
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, w, h);
 
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
-    ctx.lineWidth = 1;
-    ctx.setLineDash([8, 12]);
-    ctx.beginPath();
-    ctx.moveTo(laneInset + 0.5, 0);
-    ctx.lineTo(laneInset + 0.5, h);
-    ctx.moveTo(w - laneInset + 0.5, 0);
-    ctx.lineTo(w - laneInset + 0.5, h);
-    ctx.stroke();
-    ctx.setLineDash([]);
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, w, wallThickness);
+    ctx.fillRect(0, h - wallThickness, w, wallThickness);
 
     ctx.strokeStyle = "#fff";
     ctx.lineWidth = 2;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(laneInset + 0.5, wallThickness);
+    ctx.lineTo(laneInset + 0.5, h - wallThickness);
+    ctx.moveTo(w - laneInset + 0.5, wallThickness);
+    ctx.lineTo(w - laneInset + 0.5, h - wallThickness);
+    ctx.stroke();
+
     ctx.setLineDash([10, 14]);
     ctx.beginPath();
-    ctx.moveTo(w / 2 + 0.5, 0);
-    ctx.lineTo(w / 2 + 0.5, h);
+    ctx.moveTo(w / 2 + 0.5, wallThickness);
+    ctx.lineTo(w / 2 + 0.5, h - wallThickness);
     ctx.stroke();
     ctx.setLineDash([]);
 
@@ -476,8 +478,8 @@
     ctx.fillStyle = "rgba(255, 255, 255, 0.34)";
     ctx.textAlign = "center";
     ctx.textBaseline = "top";
-    ctx.fillText("YOU", w * 0.25, 8);
-    ctx.fillText("CPU", w * 0.75, 8);
+    ctx.fillText("YOU", w * 0.25, wallThickness + 6);
+    ctx.fillText("CPU", w * 0.75, wallThickness + 6);
     ctx.textAlign = "start";
     ctx.textBaseline = "alphabetic";
 
