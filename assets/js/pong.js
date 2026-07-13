@@ -447,9 +447,21 @@
   function drawRetroField() {
     const w = canvas.width;
     const h = canvas.height;
+    const laneInset = Math.max(18, Math.round(w * 0.055));
 
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, w, h);
+
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
+    ctx.lineWidth = 1;
+    ctx.setLineDash([8, 12]);
+    ctx.beginPath();
+    ctx.moveTo(laneInset + 0.5, 0);
+    ctx.lineTo(laneInset + 0.5, h);
+    ctx.moveTo(w - laneInset + 0.5, 0);
+    ctx.lineTo(w - laneInset + 0.5, h);
+    ctx.stroke();
+    ctx.setLineDash([]);
 
     ctx.strokeStyle = "#fff";
     ctx.lineWidth = 2;
@@ -459,6 +471,15 @@
     ctx.lineTo(w / 2 + 0.5, h);
     ctx.stroke();
     ctx.setLineDash([]);
+
+    ctx.font = "bold 11px Tahoma, sans-serif";
+    ctx.fillStyle = "rgba(255, 255, 255, 0.34)";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+    ctx.fillText("YOU", w * 0.25, 8);
+    ctx.fillText("CPU", w * 0.75, 8);
+    ctx.textAlign = "start";
+    ctx.textBaseline = "alphabetic";
 
     ctx.fillStyle = "#fff";
     ctx.fillRect(

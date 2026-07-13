@@ -17,6 +17,26 @@
 
   const MAIN_SLOT = "center";
   const SLOT_ORDER = ["farLeft", "left", "center", "right", "farRight"];
+  const MOBILE_SLOT_ORDER = ["left", "center", "right"];
+  const MOBILE_LAYOUT_QUERY = window.matchMedia("(max-width: 640px)");
+
+  function isMobileLayout() {
+    return MOBILE_LAYOUT_QUERY.matches;
+  }
+
+  function isSlotAllowed(slot) {
+    if (!isMobileLayout()) {
+      return true;
+    }
+    return MOBILE_SLOT_ORDER.indexOf(slot) !== -1;
+  }
+
+  function getVisibleSlotOrder() {
+    if (isMobileLayout()) {
+      return MOBILE_SLOT_ORDER;
+    }
+    return SLOT_ORDER;
+  }
 
   let playerHand = [];
   let playerHandEl = document.getElementById("player-hand");
@@ -267,7 +287,7 @@
     if (!multiHandMode) {
       return ["center"];
     }
-    return SLOT_ORDER.filter(function (slot) {
+    return getVisibleSlotOrder().filter(function (slot) {
       return slotState[slot].enabled;
     });
   }
@@ -332,6 +352,12 @@
         return;
       }
 
+      const allowed = isSlotAllowed(slot);
+      els.slotEl.hidden = !allowed;
+      if (!allowed && slotState[slot].enabled && canRemoveSideHand(slot)) {
+        disableSideHand(slot);
+      }
+
       els.slotEl.classList.toggle("is-enabled", slotState[slot].enabled);
       els.slotEl.classList.toggle("is-active", !gameOver && slot === activeSlot && !slotState[slot].finished);
       els.slotEl.classList.toggle("is-finished", slotState[slot].finished);
@@ -348,7 +374,8 @@
       }
 
       if (els.addBtn) {
-        els.addBtn.disabled = !canAddHand() || isMainSlot(slot) || slotState[slot].enabled;
+        els.addBtn.disabled =
+          !canAddHand() || isMainSlot(slot) || slotState[slot].enabled || !allowed;
       }
 
       if (els.removeBtn) {
@@ -734,7 +761,13 @@
   }
 
   function enableSideHand(slot) {
-    if (!multiHandMode || isMainSlot(slot) || slotState[slot].enabled || !canAddHand()) {
+    if (
+      !multiHandMode ||
+      isMainSlot(slot) ||
+      !isSlotAllowed(slot) ||
+      slotState[slot].enabled ||
+      !canAddHand()
+    ) {
       return;
     }
 
@@ -806,6 +839,19 @@
         });
       }
     });
+  }
+
+  function syncMobileLayout() {
+    if (!multiHandMode) {
+      return;
+    }
+    updateActiveSlotUI();
+  }
+
+  if (multiHandMode && typeof MOBILE_LAYOUT_QUERY.addEventListener === "function") {
+    MOBILE_LAYOUT_QUERY.addEventListener("change", syncMobileLayout);
+  } else if (multiHandMode) {
+    MOBILE_LAYOUT_QUERY.addListener(syncMobileLayout);
   }
 
   newGame();

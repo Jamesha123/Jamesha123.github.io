@@ -9,18 +9,36 @@
   const scoreEl = document.getElementById("snake-score");
 
   const TILE = 16;
-  const COLS = 28;
-  const ROWS = 20;
   const PIX = 2;
-  const canvasWidth = COLS * TILE;
-  const canvasHeight = ROWS * TILE;
+  const MIN_COLS = 12;
+  const MIN_ROWS = 10;
 
-  canvas.width = canvasWidth;
-  canvas.height = canvasHeight;
+  let tilesX = 28;
+  let tilesY = 20;
+
   ctx.imageSmoothingEnabled = false;
 
-  const tilesX = COLS;
-  const tilesY = ROWS;
+  function layoutGrid() {
+    const field = canvas.parentElement;
+    if (!field) {
+      return false;
+    }
+
+    const availableW = field.clientWidth;
+    const availableH = field.clientHeight;
+    const nextCols = Math.max(MIN_COLS, Math.floor(availableW / TILE));
+    const nextRows = Math.max(MIN_ROWS, Math.floor(availableH / TILE));
+
+    if (nextCols === tilesX && nextRows === tilesY) {
+      return false;
+    }
+
+    tilesX = nextCols;
+    tilesY = nextRows;
+    canvas.width = tilesX * TILE;
+    canvas.height = tilesY * TILE;
+    return true;
+  }
 
   let snake = [];
   let direction = { x: 1, y: 0 };
@@ -118,12 +136,12 @@
 
       if (deltaX < maxTapDistance && deltaY < maxTapDistance) {
         const rect = canvas.getBoundingClientRect();
-        const tapX = ((touchEndX - rect.left) / rect.width) * canvasWidth;
-        const tapY = ((touchEndY - rect.top) / rect.height) * canvasHeight;
+        const tapX = ((touchEndX - rect.left) / rect.width) * canvas.width;
+        const tapY = ((touchEndY - rect.top) / rect.height) * canvas.height;
         const middleRadius = 70;
 
         const distanceFromCenter = Math.sqrt(
-          Math.pow(tapX - canvasWidth / 2, 2) + Math.pow(tapY - canvasHeight / 2, 2)
+          Math.pow(tapX - canvas.width / 2, 2) + Math.pow(tapY - canvas.height / 2, 2)
         );
 
         if (distanceFromCenter <= middleRadius && isGameOver) {
@@ -268,13 +286,13 @@
     for (let x = 0; x <= tilesX; x += 1) {
       ctx.beginPath();
       ctx.moveTo(x * TILE + 0.5, 0);
-      ctx.lineTo(x * TILE + 0.5, canvasHeight);
+      ctx.lineTo(x * TILE + 0.5, canvas.height);
       ctx.stroke();
     }
     for (let y = 0; y <= tilesY; y += 1) {
       ctx.beginPath();
       ctx.moveTo(0, y * TILE + 0.5);
-      ctx.lineTo(canvasWidth, y * TILE + 0.5);
+      ctx.lineTo(canvas.width, y * TILE + 0.5);
       ctx.stroke();
     }
   }
@@ -353,12 +371,12 @@
 
   function drawPixelGameOver() {
     ctx.fillStyle = "rgba(20, 40, 14, 0.72)";
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     const boxW = 176;
     const boxH = 72;
-    const boxX = (canvasWidth - boxW) / 2;
-    const boxY = (canvasHeight - boxH) / 2;
+    const boxX = (canvas.width - boxW) / 2;
+    const boxY = (canvas.height - boxH) / 2;
 
     ctx.fillStyle = "#2f5829";
     ctx.fillRect(boxX, boxY, boxW, boxH);
@@ -371,10 +389,10 @@
     ctx.fillStyle = "#f4ffe8";
     ctx.font = "bold 16px Tahoma, sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText("Game Over", canvasWidth / 2, canvasHeight / 2 - 6);
+    ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2 - 6);
     ctx.font = "11px Tahoma, sans-serif";
     ctx.fillStyle = "#d7f5b8";
-    ctx.fillText("Space or tap center to restart", canvasWidth / 2, canvasHeight / 2 + 16);
+    ctx.fillText("Space or tap center to restart", canvas.width / 2, canvas.height / 2 + 16);
     ctx.textAlign = "start";
   }
 
@@ -409,6 +427,23 @@
     requestAnimationFrame(loop);
   }
 
+  layoutGrid();
   restart();
+
+  if (typeof ResizeObserver !== "undefined" && canvas.parentElement) {
+    const resizeObserver = new ResizeObserver(function () {
+      if (layoutGrid()) {
+        restart();
+      }
+    });
+    resizeObserver.observe(canvas.parentElement);
+  } else {
+    window.addEventListener("resize", function () {
+      if (layoutGrid()) {
+        restart();
+      }
+    });
+  }
+
   requestAnimationFrame(loop);
 })();
