@@ -1,3 +1,5 @@
+import { getMobileJoystick } from "./mobile-controls.js?v=127";
+
 let worldScene = null;
 let gameStarted = false;
 let startingGame = false;
@@ -12,17 +14,34 @@ export function initTitleScreen() {
 
   if (classicBtn) {
     classicBtn.addEventListener("click", function () {
-      window.location.href = "../index.html";
+      window.location.href = "../classic.html";
     });
+  }
+}
+
+function pauseWorldScene(scene) {
+  if (!scene || !scene.game || !scene.game.scene) {
+    return;
+  }
+
+  if (scene.game.scene.isActive("WorldScene")) {
+    scene.game.scene.pause("WorldScene");
+  }
+}
+
+export function resumeWorldScene() {
+  if (!worldScene || !worldScene.game || !worldScene.game.scene) {
+    return;
+  }
+
+  if (worldScene.game.scene.isPaused("WorldScene")) {
+    worldScene.game.scene.resume("WorldScene");
   }
 }
 
 export function showTitleScreen(scene) {
   worldScene = scene;
-
-  if (scene && scene.scene) {
-    scene.scene.pause();
-  }
+  pauseWorldScene(scene);
 
   const loading = document.getElementById("boot-loading");
   const title = document.getElementById("title-screen");
@@ -39,6 +58,7 @@ function revealGame() {
   const overlay = document.getElementById("boot-overlay");
   const uiLayer = document.getElementById("ui-layer");
   const gameContainer = document.getElementById("game-container");
+  const mobileJoystick = getMobileJoystick();
 
   if (overlay) {
     overlay.classList.add("hidden");
@@ -49,16 +69,24 @@ function revealGame() {
   if (gameContainer) {
     gameContainer.classList.remove("pre-game-hidden");
   }
-
-  if (worldScene && worldScene.scene) {
-    worldScene.scene.resume();
+  if (mobileJoystick) {
+    mobileJoystick.show();
   }
+
+  resumeWorldScene();
 }
 
 function finishPlayTransition() {
   const mapFade = document.getElementById("map-fade");
   if (mapFade) {
     mapFade.classList.remove("play-transition");
+  }
+
+  resumeWorldScene();
+
+  const ui = worldScene && worldScene.ui;
+  if (ui && ui.isMapFading && ui.isMapFading()) {
+    ui.resetMapFade();
   }
 
   const canvas = worldScene && worldScene.game && worldScene.game.canvas;

@@ -212,7 +212,7 @@ html.mobile-user .mobile-interact-btn:not([hidden]) {
   height: 7rem;
   pointer-events: auto;
   touch-action: none;
-  z-index: 30;
+  z-index: 36;
   -webkit-user-select: none;
   user-select: none;
 }

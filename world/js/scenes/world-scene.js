@@ -9,8 +9,8 @@ import { Player } from "../entities/player.js?v=114";
 import { TiledWorldBuilder } from "../map/tiled-world-builder.js?v=114";
 import { FallbackWorldBuilder } from "../map/fallback-world-builder.js?v=114";
 import { cacheBust, showFatalError } from "../utils/helpers.js?v=122";
-import { setBootProgress, setBootStageProgress, finishBoot } from "../ui/boot-progress.js?v=126";
-import { showTitleScreen, isGameStarted } from "../ui/title-screen.js?v=126";
+import { setBootProgress, setBootStageProgress, finishBoot } from "../ui/boot-progress.js?v=127";
+import { showTitleScreen, isGameStarted } from "../ui/title-screen.js?v=127";
 import { DebugGraphics } from "../systems/debug-graphics.js?v=114";
 import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=114";
 import { getMobileJoystick } from "../ui/mobile-controls.js?v=114";
@@ -410,11 +410,16 @@ export default class WorldScene extends Phaser.Scene {
     if (this.ui.isModalOpen() || this.ui.isMapFading() || isMobileLandscape()) {
       this.player.stop();
     } else {
+      const joystickVector =
+        mobileJoystick && typeof mobileJoystick.getVector === "function"
+          ? mobileJoystick.getVector()
+          : null;
+
       this.player.update(
         {
           cursors: this.cursors,
           keys: this.keys,
-          joystick: mobileJoystick ? mobileJoystick.getVector() : null,
+          joystick: joystickVector,
         },
         this.world,
         delta

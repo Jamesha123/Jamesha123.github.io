@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=126" />
+    <link rel="stylesheet" href="styles.css?v=127" />
     <script>
       (function () {
         var path = location.pathname;
@@ -72,7 +72,7 @@
     <div id="ui-layer" class="pre-game-hidden">
       <div class="top-bar">
         <div class="top-bar-actions">
-          <a href="../index.html">Classic Portfolio</a>
+          <a href="../classic.html">Classic Portfolio</a>
           <button type="button" id="fullscreen-btn" aria-pressed="false">Fullscreen</button>
         </div>
       </div>
@@ -80,10 +80,11 @@
         <p id="interaction-hint" class="hint visible">WASD or click to move</p>
         <button type="button" id="mobile-interact-btn" class="mobile-interact-btn" hidden aria-label="Interact">Interact</button>
       </div>
-      <div id="virtual-joystick" hidden aria-hidden="true">
-        <div class="joystick-base"></div>
-        <div class="joystick-stick"></div>
-      </div>
+    </div>
+
+    <div id="virtual-joystick" class="pre-game-hidden" hidden aria-hidden="true">
+      <div class="joystick-base"></div>
+      <div class="joystick-stick"></div>
     </div>
 
     <div id="mobile-rotate-overlay" hidden aria-hidden="true">
@@ -114,6 +115,6 @@
     <div id="game-container" class="pre-game-hidden"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
-    <script type="module" src="js/main.js?v=126"></script>
+    <script type="module" src="js/main.js?v=127"></script>
   </body>
 </html>

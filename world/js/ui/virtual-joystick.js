@@ -21,23 +21,16 @@ export class VirtualJoystick {
     this.onPointerDown = this.onPointerDown.bind(this);
     this.onPointerMove = this.onPointerMove.bind(this);
     this.onPointerUp = this.onPointerUp.bind(this);
-    this.onTouchStart = this.onTouchStart.bind(this);
-    this.onTouchMove = this.onTouchMove.bind(this);
-    this.onTouchEnd = this.onTouchEnd.bind(this);
 
     this.root.addEventListener("pointerdown", this.onPointerDown, { passive: false });
     window.addEventListener("pointermove", this.onPointerMove, { passive: false });
     window.addEventListener("pointerup", this.onPointerUp, { passive: false });
     window.addEventListener("pointercancel", this.onPointerUp, { passive: false });
-
-    this.root.addEventListener("touchstart", this.onTouchStart, { passive: false });
-    window.addEventListener("touchmove", this.onTouchMove, { passive: false });
-    window.addEventListener("touchend", this.onTouchEnd, { passive: false });
-    window.addEventListener("touchcancel", this.onTouchEnd, { passive: false });
   }
 
   show() {
     this.root.hidden = false;
+    this.root.classList.remove("pre-game-hidden");
     this.root.setAttribute("aria-hidden", "false");
   }
 
@@ -62,6 +55,10 @@ export class VirtualJoystick {
   }
 
   onPointerDown(event) {
+    if (this.active) {
+      return;
+    }
+
     if (event.pointerType === "mouse" && event.button !== 0) {
       return;
     }
@@ -97,51 +94,15 @@ export class VirtualJoystick {
     }
 
     event.preventDefault();
-    this.reset();
-  }
 
-  onTouchStart(event) {
-    if (this.active) {
-      return;
+    if (this.root.releasePointerCapture) {
+      try {
+        this.root.releasePointerCapture(event.pointerId);
+      } catch (_error) {
+        // Ignore if capture was already released.
+      }
     }
 
-    const touch = event.changedTouches[0];
-    if (!touch || !this.containsPoint(touch.clientX, touch.clientY)) {
-      return;
-    }
-
-    event.preventDefault();
-    event.stopPropagation();
-    this.active = true;
-    this.pointerId = touch.identifier;
-    this.updateStick(touch.clientX, touch.clientY);
-  }
-
-  onTouchMove(event) {
-    if (!this.active) {
-      return;
-    }
-
-    const touch = findTouch(event.changedTouches, this.pointerId) || findTouch(event.touches, this.pointerId);
-    if (!touch) {
-      return;
-    }
-
-    event.preventDefault();
-    this.updateStick(touch.clientX, touch.clientY);
-  }
-
-  onTouchEnd(event) {
-    if (!this.active) {
-      return;
-    }
-
-    const touch = findTouch(event.changedTouches, this.pointerId);
-    if (!touch) {
-      return;
-    }
-
-    event.preventDefault();
     this.reset();
   }
 
@@ -171,14 +132,4 @@ export class VirtualJoystick {
     this.y = 0;
     this.stick.style.transform = "translate(0, 0)";
   }
-}
-
-function findTouch(touchList, identifier) {
-  for (let index = 0; index < touchList.length; index += 1) {
-    if (touchList[index].identifier === identifier) {
-      return touchList[index];
-    }
-  }
-
-  return null;
 }
