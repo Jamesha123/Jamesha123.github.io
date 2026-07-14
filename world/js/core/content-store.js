@@ -41,6 +41,18 @@ export class ContentStore {
     return this.sprites.npcs || [];
   }
 
+  get portraitNpcConfigs() {
+    return this.npcConfigs.filter(function (npc) {
+      return npc && typeof npc === "object" && npc.type === "portrait";
+    });
+  }
+
+  get walkNpcConfigs() {
+    return this.npcConfigs.filter(function (npc) {
+      return npc && typeof npc === "object" && npc.type !== "portrait";
+    });
+  }
+
   get propConfigs() {
     return this.sprites.props || [];
   }

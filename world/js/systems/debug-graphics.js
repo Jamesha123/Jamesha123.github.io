@@ -1,33 +1,43 @@
-export function showHitboxesEnabled() {
-  return typeof window !== "undefined" && window.SHOW_HITBOXES === true;
-}
+import { isDebugEnabled } from "../config/debug.js";
 
 export class DebugGraphics {
-  static reset() {
+  static reset(scene) {
+    if (scene) {
+      if (scene.debugOutlineGfx) {
+        scene.debugOutlineGfx.destroy();
+        scene.debugOutlineGfx = null;
+      }
+      if (scene.transitionOutlineGfx) {
+        scene.transitionOutlineGfx.destroy();
+        scene.transitionOutlineGfx = null;
+      }
+    }
+
     DebugGraphics.hitboxTargets = [];
     DebugGraphics.hotspotRanges = [];
     DebugGraphics.hotspotRects = [];
   }
 
-  static addHitboxOutline(scene, bodyTarget) {
-    DebugGraphics.hitboxTargets.push(bodyTarget);
-    if (showHitboxesEnabled()) {
-      DebugGraphics.redraw(scene);
+  static addHitboxOutline(scene, bodyTarget, kind) {
+    if (!bodyTarget || !kind) {
+      return;
     }
+
+    DebugGraphics.hitboxTargets.push({
+      target: bodyTarget,
+      kind: kind,
+    });
+    DebugGraphics.redraw(scene);
   }
 
   static addHotspotRangeOutline(scene, x, y, radius) {
     DebugGraphics.hotspotRanges.push({ x: x, y: y, radius: radius });
-    if (showHitboxesEnabled()) {
-      DebugGraphics.redraw(scene);
-    }
+    DebugGraphics.redraw(scene);
   }
 
   static addHotspotRectOutline(scene, rect) {
     DebugGraphics.hotspotRects.push(rect);
-    if (showHitboxesEnabled()) {
-      DebugGraphics.redraw(scene);
-    }
+    DebugGraphics.redraw(scene);
   }
 
   static redraw(scene) {
@@ -42,7 +52,53 @@ export class DebugGraphics {
     const gfx = scene.debugOutlineGfx;
     gfx.clear();
 
-    if (!showHitboxesEnabled()) {
+    DebugGraphics.hitboxTargets.forEach(function (entry) {
+      if (!isDebugEnabled(entry.kind)) {
+        return;
+      }
+
+      const go = entry.target;
+      const body = go.body;
+
+      gfx.lineStyle(2, 0xff0000, 1);
+      const angle = go.rotation || 0;
+
+      if (body) {
+        if (Math.abs(angle) > 0.001) {
+          DebugGraphics.strokeRotatedRect(
+            gfx,
+            go.x,
+            go.y,
+            go.displayWidth || go.width,
+            go.displayHeight || go.height,
+            angle
+          );
+          return;
+        }
+
+        if (body.updateFromGameObject) {
+          body.updateFromGameObject();
+        }
+
+        const left = typeof body.left === "number" ? body.left : body.x - body.width / 2;
+        const top = typeof body.top === "number" ? body.top : body.y - body.height / 2;
+        gfx.strokeRect(left, top, body.width, body.height);
+        return;
+      }
+
+      const width = go.displayWidth || go.width;
+      const height = go.displayHeight || go.height;
+      if (width && height) {
+        if (Math.abs(angle) > 0.001) {
+          DebugGraphics.strokeRotatedRect(gfx, go.x, go.y, width, height, angle);
+          return;
+        }
+
+        gfx.strokeRect(go.x - width / 2, go.y - height / 2, width, height);
+      }
+    });
+
+    if (!isDebugEnabled("showHotspots")) {
       return;
     }
 
@@ -58,29 +114,6 @@ export class DebugGraphics {
       gfx.fillRect(rect.left, rect.top, rect.width, rect.height);
       gfx.lineStyle(2, 0xff0000, 0.9);
       gfx.strokeRect(rect.left, rect.top, rect.width, rect.height);
-    });
-
-    DebugGraphics.hitboxTargets.forEach(function (bodyTarget) {
-      const go = bodyTarget;
-      const body = go.body;
-      if (!body) {
-        return;
-      }
-
-      gfx.lineStyle(2, 0xff0000, 1);
-      const angle = go.rotation || 0;
-      if (Math.abs(angle) > 0.001) {
-        DebugGraphics.strokeRotatedRect(
-          gfx,
-          go.x,
-          go.y,
-          go.displayWidth || go.width,
-          go.displayHeight || go.height,
-          angle
-        );
-      } else {
-        gfx.strokeRect(body.x, body.y, body.width, body.height);
-      }
     });
   }
 

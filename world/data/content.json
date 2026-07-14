@@ -1,5 +1,5 @@
 {
-  "startMap": "portfolio",
+  "startMap": "house-interior",
   "maps": [
     "maps/portfolio.json",
     "maps/house-interior.json"
@@ -7,14 +7,19 @@
   "sprites": {
     "player": "sprites/player.json",
     "avatar": "sprites/avatar.json",
-    "npcs": [],
+    "npcs": [
+      "sprites/npcs/old-man.json"
+    ],
     "props": [
-      "sprites/props/house.json"
+      "sprites/props/house.json",
+      "sprites/props/mailbox.json"
     ],
     "furniture": "sprites/furniture.json"
   },
   "hotspots": [
+    "hotspots/welcome.json",
     "hotspots/about.json",
+    "hotspots/contact.json",
     "hotspots/monkeyboy.json",
     "hotspots/book-recommender.json",
     "hotspots/games.json",

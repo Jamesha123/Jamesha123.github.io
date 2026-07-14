@@ -1,23 +1,44 @@
-import { cacheBust } from "../utils/helpers.js";
+import { cacheBust } from "../utils/helpers.js?v=77";
 
 export class CharacterAnimation {
   static preloadWalkFrames(loader, prefix, folder, walkConfig) {
+    if (!walkConfig || typeof walkConfig !== "object" || !folder) {
+      return;
+    }
+
     Object.keys(walkConfig).forEach(function (direction) {
-      walkConfig[direction].forEach(function (filename, index) {
+      const filenames = walkConfig[direction];
+      if (!Array.isArray(filenames) || !filenames.length) {
+        return;
+      }
+
+      filenames.forEach(function (filename, index) {
         loader.image(prefix + "-" + direction + "-" + index, cacheBust(folder + "/" + filename));
       });
     });
   }
 
   static createWalkAnimations(scene, prefix, walkConfig, frameRate) {
+    if (!walkConfig || typeof walkConfig !== "object") {
+      return;
+    }
+
     frameRate = frameRate || 8;
 
     Object.keys(walkConfig).forEach(function (direction) {
       const filenames = walkConfig[direction];
+      if (!Array.isArray(filenames) || !filenames.length) {
+        return;
+      }
+
       const animKey = prefix + "-walk-" + direction;
 
       if ((direction === "left" || direction === "right") && filenames.length === 3) {
         const introKey = animKey + "-intro";
+        if (!CharacterAnimation.hasWalkFrameTextures(scene, prefix, direction, [0, 1, 2])) {
+          return;
+        }
+
         if (!scene.anims.exists(introKey)) {
           scene.anims.create({
             key: introKey,
@@ -41,6 +62,10 @@ export class CharacterAnimation {
         return;
       }
 
+      if (!CharacterAnimation.hasWalkFrameTextures(scene, prefix, direction, filenames)) {
+        return;
+      }
+
       if (scene.anims.exists(animKey)) {
         return;
       }
@@ -54,6 +79,25 @@ export class CharacterAnimation {
         repeat: -1,
       });
     });
+  }
+
+  static hasWalkFrameTextures(scene, prefix, direction, filenames) {
+    if (!Array.isArray(filenames)) {
+      return false;
+    }
+
+    return filenames.every(function (_filename, index) {
+      return scene.textures.exists(prefix + "-" + direction + "-" + index);
+    });
+  }
+
+  static hasSheetFrame(scene, sheetKey, frameIndex) {
+    if (!scene.textures.exists(sheetKey)) {
+      return false;
+    }
+
+    const texture = scene.textures.get(sheetKey);
+    return texture.has(String(frameIndex));
   }
 
   static getIdleFrameKey(prefix, direction) {

@@ -1,4 +1,4 @@
-import { showHitboxesEnabled } from "./debug-graphics.js";
+import { isDebugEnabled } from "../config/debug.js";
 
 export class MapTransitionSystem {
   constructor(scene, content, world) {
@@ -9,9 +9,16 @@ export class MapTransitionSystem {
     this.pendingTransition = false;
   }
 
+  shouldShowOutline(target, kind) {
+    if (!isDebugEnabled(kind)) {
+      return false;
+    }
+    return target.showOutline !== false;
+  }
+
   registerTransition(transition) {
     this.world.transitions.push(transition);
-    if (this.shouldShowOutline(transition)) {
+    if (this.shouldShowOutline(transition, "showHotspots")) {
       MapTransitionSystem.drawRectOutline(
         this.scene,
         transition.x,
@@ -24,7 +31,7 @@ export class MapTransitionSystem {
 
   registerPropInteraction(interaction) {
     this.world.propInteractions.push(interaction);
-    if (this.shouldShowOutline(interaction)) {
+    if (this.shouldShowOutline(interaction, "showProps")) {
       MapTransitionSystem.drawReachOutline(
         this.scene,
         interaction.x,
@@ -32,13 +39,6 @@ export class MapTransitionSystem {
         interaction.reach || this.world.tileSize * 1.5
       );
     }
-  }
-
-  shouldShowOutline(target) {
-    if (!showHitboxesEnabled()) {
-      return false;
-    }
-    return target.showOutline !== false;
   }
 
   checkProximity(playerSprite, ui) {
@@ -136,34 +136,34 @@ export class MapTransitionSystem {
       scene.transitionOutlineGfx.clear();
     }
 
-    if (!showHitboxesEnabled()) {
-      return;
+    if (isDebugEnabled("showProps")) {
+      world.propInteractions.forEach(function (interaction) {
+        if (interaction.showOutline === false) {
+          return;
+        }
+        MapTransitionSystem.drawReachOutline(
+          scene,
+          interaction.x,
+          interaction.y,
+          interaction.reach || world.tileSize * 1.5
+        );
+      });
     }
 
-    world.propInteractions.forEach(function (interaction) {
-      if (interaction.showOutline === false) {
-        return;
-      }
-      MapTransitionSystem.drawReachOutline(
-        scene,
-        interaction.x,
-        interaction.y,
-        interaction.reach || world.tileSize * 1.5
-      );
-    });
-
-    world.transitions.forEach(function (transition) {
-      if (transition.showOutline === false) {
-        return;
-      }
-      MapTransitionSystem.drawRectOutline(
-        scene,
-        transition.x,
-        transition.y,
-        transition.width,
-        transition.height
-      );
-    });
+    if (isDebugEnabled("showHotspots")) {
+      world.transitions.forEach(function (transition) {
+        if (transition.showOutline === false) {
+          return;
+        }
+        MapTransitionSystem.drawRectOutline(
+          scene,
+          transition.x,
+          transition.y,
+          transition.width,
+          transition.height
+        );
+      });
+    }
   }
 
   static drawReachOutline(scene, x, y, reach) {

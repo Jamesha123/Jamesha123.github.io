@@ -1,15 +1,20 @@
-import { ContentStore } from "./core/content-store.js";
-import { loadContent } from "./core/load-content.js";
-import { createPhaserGame } from "./scenes/world-scene.js";
-import { setBootStage, showFatalError } from "./utils/helpers.js";
-import { bindFullscreenControls } from "./utils/fullscreen.js?v=72";
-import { bindMobileControls } from "./ui/mobile-controls.js?v=72";
-import { ASSET_VERSION } from "./version.js";
+import { ContentStore } from "./core/content-store.js?v=113";
+import { loadContent } from "./core/load-content.js?v=113";
+import { createPhaserGame } from "./scenes/world-scene.js?v=113";
+import { setBootStage, showFatalError } from "./utils/helpers.js?v=113";
+import { bindFullscreenControls } from "./utils/fullscreen.js?v=113";
+import { bindMobileControls } from "./ui/mobile-controls.js?v=113";
+import { initWorldDebug, bindDebugRefresh } from "./config/debug.js";
+import { DebugGraphics } from "./systems/debug-graphics.js?v=113";
+import { MapTransitionSystem } from "./systems/map-transition-system.js?v=113";
+import { ASSET_VERSION } from "./version.js?v=113";
 
 const BOOT_TIMEOUT_MS = 25000;
 
-if (typeof window !== "undefined" && typeof window.SHOW_HITBOXES !== "boolean") {
-  window.SHOW_HITBOXES = false;
+initWorldDebug();
+
+if (typeof window !== "undefined") {
+  window.__WORLD_VERSION__ = ASSET_VERSION;
 }
 
 function reportBootError(message) {
@@ -45,14 +50,14 @@ function clearBootTimeout() {
   window.clearTimeout(bootTimeoutId);
 }
 
-setBootStage("Starting");
+setBootStage("Starting v" + ASSET_VERSION);
 
 bindFullscreenControls();
 bindMobileControls();
 
 loadContent()
   .then(function (data) {
-    setBootStage("Starting game");
+    setBootStage("Starting game v" + ASSET_VERSION);
     try {
       createPhaserGame(new ContentStore(data));
     } catch (error) {
@@ -69,6 +74,21 @@ loadContent()
     );
   });
 
-window.addEventListener("world-ready", clearBootTimeout);
+window.addEventListener("world-ready", function () {
+  clearBootTimeout();
+
+  const game = window.__phaserGame;
+  const scene = game && game.scene ? game.scene.getScene("WorldScene") : null;
+  if (!scene) {
+    return;
+  }
+
+  bindDebugRefresh(function () {
+    DebugGraphics.redraw(scene);
+    if (scene.world) {
+      MapTransitionSystem.redrawOutlines(scene, scene.world);
+    }
+  });
+});
 
 export { ASSET_VERSION };

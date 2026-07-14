@@ -1,0 +1,42 @@
+{
+  "id": "old-man",
+  "type": "portrait",
+  "label": "Monkey Boy",
+  "labelFontSize": "4px",
+  "mapId": "portfolio",
+  "folder": "assets/sprites/old-man",
+  "idle": {
+    "down": [
+      "oldman_down_idle_1.png",
+      "oldman_down_idle_2.png"
+    ],
+    "left": [
+      "oldman_left_idle_1.png",
+      "oldman_left_idle_2.png"
+    ],
+    "right": [
+      "oldman_right_idle_1.png",
+      "oldman_right_idle_2.png"
+    ],
+    "up": [
+      "oldman_up_idle_1.png",
+      "oldman_up_idle_2.png"
+    ]
+  },
+  "defaultFacing": "down",
+  "idleFrameMs": 600,
+  "scale": 1.6,
+  "x": 7.5,
+  "y": 34.875,
+  "visualHeight": 26,
+  "labelGap": -6,
+  "hotspotId": "monkeyboy",
+  "bodyWidth": 16,
+  "bodyHeight": 16,
+  "hitboxOffsetX": 0,
+  "hitboxOffsetY": 20,
+  "showHitbox": true,
+  "hotspotReach": 2,
+  "hotspotOffsetX": 0,
+  "hotspotOffsetY": 6
+}

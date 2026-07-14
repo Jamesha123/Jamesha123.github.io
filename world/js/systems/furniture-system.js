@@ -1,5 +1,5 @@
-import { getObjectProperty } from "../utils/helpers.js";
-import { DebugGraphics } from "./debug-graphics.js";
+import { getObjectProperty } from "../utils/helpers.js?v=82";
+import { DebugGraphics } from "./debug-graphics.js?v=93";
 import { MapPropSystem } from "./map-prop-system.js";
 
 export class FurnitureSystem {
@@ -29,13 +29,6 @@ export class FurnitureSystem {
     const feetY = obj.y;
     const hitboxOffsetX = FurnitureSystem.readNumber(obj, "hitboxOffsetX", furnitureDef.hitboxOffsetX != null ? furnitureDef.hitboxOffsetX : 0);
     const hitboxOffsetY = FurnitureSystem.readNumber(obj, "hitboxOffsetY", furnitureDef.hitboxOffsetY != null ? furnitureDef.hitboxOffsetY : 0);
-    const showHitboxProp = getObjectProperty(obj, "showHitbox");
-    const showHitbox =
-      showHitboxProp != null
-        ? showHitboxProp
-        : furnitureDef.showHitbox != null
-          ? furnitureDef.showHitbox
-          : true;
     const propLeft = obj.x + hitboxOffsetX;
     const propTop = obj.y - height + hitboxOffsetY;
     const hitboxes = [];
@@ -79,11 +72,11 @@ export class FurnitureSystem {
       hitboxes.push(hitbox);
     }
 
-    if (showHitbox) {
-      hitboxes.forEach(function (hitbox) {
-        DebugGraphics.addHitboxOutline(scene, hitbox);
-      });
-    }
+    hitboxes.forEach(function (hitbox) {
+      if (hitbox) {
+        DebugGraphics.addHitboxOutline(scene, hitbox, "showProps");
+      }
+    });
 
     return hitboxes;
   }

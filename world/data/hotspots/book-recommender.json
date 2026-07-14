@@ -5,7 +5,14 @@
   "y": 4,
   "color": "#9b59b6",
   "title": "Book Recommender",
-  "body": "Full-stack ML book recommendation app — Node.js, MongoDB, JWT auth, and a hybrid TF-IDF + collaborative filtering pipeline that retrains as users rate books.",
+  "body": "Book Recommender is a full stack app that learns your taste in books and suggests what to read next. Search titles, rate what you've read, and get recommendations that improve as your profile grows.",
+  "technologies": [
+    "Node.js",
+    "Express",
+    "MongoDB",
+    "JavaScript",
+    "Machine Learning"
+  ],
   "links": [
     { "label": "View on GitHub", "url": "https://github.com/Jamesha123/BookRecommender" }
   ]

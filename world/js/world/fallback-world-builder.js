@@ -1,8 +1,19 @@
-import { FALLBACK_MAP } from "../config/fallback-map.js";
-import { AvatarNpc } from "../entities/avatar-npc.js?v=72";
-import { setupCamera } from "./camera-controller.js?v=44";
+import { FALLBACK_MAP } from "../config/fallback-map.js?v=77";
+import { AvatarNpc } from "../entities/avatar-npc.js?v=85";
+import { setupCamera } from "./camera-controller.js?v=77";
 
 export class FallbackWorldBuilder {
+  static collectNpcHitboxes(world) {
+    const hitboxes = [];
+    if (world.avatarNpc) {
+      hitboxes.push(world.avatarNpc);
+    }
+    if (world.portraitHitboxes && world.portraitHitboxes.length) {
+      hitboxes.push.apply(hitboxes, world.portraitHitboxes);
+    }
+    return hitboxes;
+  }
+
   static build(scene, content, world, hotspots, player) {
     world.tileSize = 32;
     world.mapWidth = FALLBACK_MAP[0].length;
@@ -30,8 +41,11 @@ export class FallbackWorldBuilder {
 
     hotspots.addMarkers(scene);
     new AvatarNpc(scene, content, world, hotspots).spawn();
+    content.portraitNpcConfigs.forEach(function (npc) {
+      new AvatarNpc(scene, content, world, hotspots, npc).spawn();
+    });
     player.create(9 * 32 + 16, 7 * 32 + 16);
-    player.setupColliders(null, world.avatarNpc);
+    player.setupColliders(null, FallbackWorldBuilder.collectNpcHitboxes(world));
     setupCamera(scene, world, player.sprite);
   }
 

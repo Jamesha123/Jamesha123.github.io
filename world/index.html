@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=72" />
+    <link rel="stylesheet" href="styles.css?v=113" />
     <script>
       (function () {
         var path = location.pathname;
@@ -68,8 +68,10 @@
         <button type="button" id="modal-close" class="modal-close" aria-label="Close (Esc)">×</button>
         <div id="modal-standard">
           <h2 id="modal-title"></h2>
-          <p id="modal-body"></p>
-          <div id="modal-links" class="modal-links"></div>
+          <div id="modal-body-scroll" class="modal-body-scroll"></div>
+          <div id="modal-hotspot-footer" class="modal-hotspot-footer">
+            <div id="modal-links" class="modal-links"></div>
+          </div>
         </div>
         <div id="modal-games-desktop" hidden></div>
         <div id="modal-app-view" hidden></div>
@@ -81,6 +83,6 @@
     <div id="game-container"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
-    <script type="module" src="js/main.js?v=72"></script>
+    <script type="module" src="js/main.js?v=113"></script>
   </body>
 </html>

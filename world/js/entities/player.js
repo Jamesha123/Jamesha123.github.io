@@ -1,4 +1,5 @@
-import { CharacterAnimation } from "../systems/character-animation.js";
+import { CharacterAnimation } from "../systems/character-animation.js?v=85";
+import { DebugGraphics } from "../systems/debug-graphics.js?v=93";
 
 export class Player {
   constructor(scene, config) {
@@ -27,6 +28,7 @@ export class Player {
     this.configureBody(scale);
     this.sprite.setDepth(10);
     this.facing = { current: "down" };
+    DebugGraphics.addHitboxOutline(this.scene, this.sprite, "showCharacters");
     return this.sprite;
   }
 
@@ -37,13 +39,23 @@ export class Player {
     this.sprite.body.setOffset(3, 8);
   }
 
-  setupColliders(collisionLayer, avatarHitbox, propColliders) {
+  setupColliders(collisionLayer, npcHitboxes, propColliders) {
     if (collisionLayer) {
       this.scene.physics.add.collider(this.sprite, collisionLayer);
     }
-    if (avatarHitbox) {
-      this.scene.physics.add.collider(this.sprite, avatarHitbox);
-    }
+
+    const hitboxes = Array.isArray(npcHitboxes)
+      ? npcHitboxes
+      : npcHitboxes
+        ? [npcHitboxes]
+        : [];
+
+    hitboxes.forEach((hitbox) => {
+      if (hitbox) {
+        this.scene.physics.add.collider(this.sprite, hitbox);
+      }
+    });
+
     (propColliders || []).forEach((hitbox) => {
       this.scene.physics.add.collider(this.sprite, hitbox);
     });

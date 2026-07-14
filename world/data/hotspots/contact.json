@@ -1,0 +1,21 @@
+{
+  "id": "contact",
+  "label": "Contact",
+  "color": "#2ecc71",
+  "title": "Get in Touch",
+  "body": "Below are my contact information. Feel free to reach out to me via email or linkedin.",
+  "links": [
+    {
+      "label": "LinkedIn",
+      "icon": "linkedin",
+      "url": "https://www.linkedin.com/in/james-hang123/",
+      "display": "linkedin.com/in/james-hang123"
+    },
+    {
+      "label": "Email",
+      "icon": "email",
+      "url": "mailto:jameshang123@gmail.com",
+      "display": "jameshang123@gmail.com"
+    }
+  ]
+}

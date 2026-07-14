@@ -1,19 +1,19 @@
-import { ContentStore } from "../core/content-store.js";
-import { WorldState } from "../core/world-state.js";
-import { GameUI } from "../ui/game-ui.js?v=72";
-import { HotspotSystem } from "../systems/hotspot-system.js?v=72";
-import { MapTransitionSystem } from "../systems/map-transition-system.js?v=72";
-import { MapPropSystem } from "../systems/map-prop-system.js";
-import { CharacterAnimation } from "../systems/character-animation.js";
-import { Player } from "../entities/player.js";
-import { TiledWorldBuilder } from "../world/tiled-world-builder.js";
-import { FallbackWorldBuilder } from "../world/fallback-world-builder.js";
-import { cacheBust, showFatalError, hideLoading } from "../utils/helpers.js";
-import { DebugGraphics } from "../systems/debug-graphics.js";
-import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=72";
-import { getMobileJoystick } from "../ui/mobile-controls.js?v=72";
-import { preloadWorldLabelFont } from "../ui/world-label.js";
-import { ASSET_VERSION } from "../version.js";
+import { ContentStore } from "../core/content-store.js?v=93";
+import { WorldState } from "../core/world-state.js?v=93";
+import { GameUI } from "../ui/game-ui.js?v=113";
+import { HotspotSystem } from "../systems/hotspot-system.js?v=93";
+import { MapTransitionSystem } from "../systems/map-transition-system.js?v=93";
+import { MapPropSystem } from "../systems/map-prop-system.js?v=93";
+import { CharacterAnimation } from "../systems/character-animation.js?v=93";
+import { Player } from "../entities/player.js?v=93";
+import { TiledWorldBuilder } from "../world/tiled-world-builder.js?v=93";
+import { FallbackWorldBuilder } from "../world/fallback-world-builder.js?v=93";
+import { cacheBust, showFatalError, hideLoading } from "../utils/helpers.js?v=93";
+import { DebugGraphics } from "../systems/debug-graphics.js?v=93";
+import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=93";
+import { getMobileJoystick } from "../ui/mobile-controls.js?v=93";
+import { preloadWorldLabelFont } from "../ui/world-label.js?v=93";
+import { ASSET_VERSION } from "../version.js?v=93";
 
 export default class WorldScene extends Phaser.Scene {
   constructor(contentStore) {
@@ -65,7 +65,51 @@ export default class WorldScene extends Phaser.Scene {
 
     if (!assetsReady) {
       this.content.npcConfigs.forEach(function (npc) {
-        CharacterAnimation.preloadWalkFrames(this.load, "npc-" + npc.id, npc.folder, npc.walk);
+        if (!npc || typeof npc !== "object") {
+          return;
+        }
+
+        if (npc.type === "portrait") {
+          if (npc.spritesheet) {
+            this.load.spritesheet(npc.id + "-sheet", cacheBust(npc.spritesheet), {
+              frameWidth: npc.frameWidth,
+              frameHeight: npc.frameHeight,
+            });
+          } else if (npc.folder) {
+            const frameSet = {};
+            [npc.idle, npc.walk].forEach(function (set) {
+              if (!set || typeof set !== "object") {
+                return;
+              }
+              Object.keys(set).forEach(function (direction) {
+                const files = set[direction];
+                if (!Array.isArray(files)) {
+                  return;
+                }
+                frameSet[direction] = frameSet[direction] || [];
+                files.forEach(function (file) {
+                  if (frameSet[direction].indexOf(file) === -1) {
+                    frameSet[direction].push(file);
+                  }
+                });
+              });
+            });
+
+            if (Object.keys(frameSet).length) {
+              CharacterAnimation.preloadWalkFrames(
+                this.load,
+                "portrait-" + npc.id,
+                npc.folder,
+                frameSet
+              );
+            }
+          }
+          return;
+        }
+
+        if (npc.folder && npc.walk) {
+          CharacterAnimation.preloadWalkFrames(this.load, "npc-" + npc.id, npc.folder, npc.walk);
+        }
       }, this);
 
       const avatar = this.content.avatarConfig;
@@ -132,76 +176,97 @@ export default class WorldScene extends Phaser.Scene {
 
   create() {
     try {
-      this.transitionOutlineGfx = null;
-      this.debugOutlineGfx = null;
-      this.world.resetRuntime();
-      DebugGraphics.reset();
-      this.hotspots.nearbyHotspot = null;
-      this.ui.bindScene(this);
-      this.mapTransitions = new MapTransitionSystem(this, this.content, this.world);
-      this.ui.onInteract = () => this.handleInteract();
-
-      if (this.content.playerConfig) {
-        const walkFrameRate = this.content.playerConfig.walkFrameRate || 8;
-        CharacterAnimation.createWalkAnimations(
-          this,
-          "player",
-          this.content.playerConfig.walk,
-          walkFrameRate
-        );
-      }
-
-      this.textures.each(function (texture) {
-        texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
+      this.runBuildStep("reset runtime", () => {
+        this.transitionOutlineGfx = null;
+        this.debugOutlineGfx = null;
+        this.world.resetRuntime();
+        DebugGraphics.reset(this);
+        this.hotspots.nearbyHotspot = null;
+        this.ui.bindScene(this);
+        this.ui.bindContent(this.content);
+        this.mapTransitions = new MapTransitionSystem(this, this.content, this.world);
+        this.ui.onInteract = () => this.handleInteract();
       });
 
-      if (this.world.useTiled) {
-        this.content.maps.forEach(function (mapConfig) {
-          const tileTexture = this.textures.get("tileset-" + mapConfig.tilesetName);
-          if (!tileTexture) {
-            return;
-          }
-          tileTexture.setFilter(Phaser.Textures.FilterMode.NEAREST);
-          tileTexture.source.forEach(function (source) {
-            source.setFilter(Phaser.Textures.FilterMode.NEAREST);
-          });
-        }, this);
-      }
-
-      this.player = new Player(this, this.content.playerConfig || {});
-
-      if (this.world.useTiled) {
-        const mapConfig = this.content.getMap(this.activeMapId);
-        if (!mapConfig) {
-          throw new Error('Missing map config for "' + this.activeMapId + '".');
+      this.runBuildStep("player animations", () => {
+        if (this.content.playerConfig) {
+          const walkFrameRate = this.content.playerConfig.walkFrameRate || 8;
+          CharacterAnimation.createWalkAnimations(
+            this,
+            "player",
+            this.content.playerConfig.walk,
+            walkFrameRate
+          );
         }
-        TiledWorldBuilder.build(
-          this,
-          this.content,
-          this.world,
-          this.hotspots,
-          this.player,
-          mapConfig,
-          this.mapTransitions,
-          {
-            spawnId: this.spawnId,
-            returnState: this.returnState,
+      });
+
+      this.runBuildStep("texture filters", () => {
+        this.textures.each(function (texture) {
+          texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
+        });
+
+        if (this.world.useTiled) {
+          this.content.maps.forEach(function (mapConfig) {
+            const tileTexture = this.textures.get("tileset-" + mapConfig.tilesetName);
+            if (!tileTexture) {
+              return;
+            }
+            tileTexture.setFilter(Phaser.Textures.FilterMode.NEAREST);
+            if (tileTexture.source) {
+              tileTexture.source.forEach(function (source) {
+                source.setFilter(Phaser.Textures.FilterMode.NEAREST);
+              });
+            }
+          }, this);
+        }
+      });
+
+      this.runBuildStep("player entity", () => {
+        this.player = new Player(this, this.content.playerConfig || {});
+      });
+
+      this.runBuildStep("world map", () => {
+        if (this.world.useTiled) {
+          const mapConfig = this.content.getMap(this.activeMapId);
+          if (!mapConfig) {
+            throw new Error('Missing map config for "' + this.activeMapId + '".');
           }
-        );
-      } else {
-        FallbackWorldBuilder.build(this, this.content, this.world, this.hotspots, this.player);
-      }
+          TiledWorldBuilder.build(
+            this,
+            this.content,
+            this.world,
+            this.hotspots,
+            this.player,
+            mapConfig,
+            this.mapTransitions,
+            {
+              spawnId: this.spawnId,
+              returnState: this.returnState,
+            }
+          );
+        } else {
+          FallbackWorldBuilder.build(this, this.content, this.world, this.hotspots, this.player);
+        }
 
-      this.player.clearTouchTarget();
-      this.cursors = this.input.keyboard.createCursorKeys();
-      this.keys = this.input.keyboard.addKeys("W,S,A,D");
+        DebugGraphics.redraw(this);
+        if (this.mapTransitions) {
+          MapTransitionSystem.redrawOutlines(this, this.world);
+        }
+      });
 
-      if (this.mobileControls) {
-        this.ui.setDefaultHint();
-      } else {
-        this.setupPointerInput();
-        this.ui.setDefaultHint();
-      }
+      this.runBuildStep("input", () => {
+        this.player.clearTouchTarget();
+        this.cursors = this.input.keyboard.createCursorKeys();
+        this.keys = this.input.keyboard.addKeys("W,S,A,D");
+
+        if (this.mobileControls) {
+          this.ui.setDefaultHint();
+        } else {
+          this.setupPointerInput();
+          this.ui.setDefaultHint();
+        }
+      });
+
       this.world.enterMap(this.activeMapId);
       this.events.once("shutdown", () => this.world.leaveMap());
       this.registry.set("worldAssetsReady", true);
@@ -215,7 +280,15 @@ export default class WorldScene extends Phaser.Scene {
       }
     } catch (error) {
       console.error(error);
-      showFatalError("Map failed: " + error.message);
+      showFatalError("Map failed: " + error.message + (error.stack ? "\n" + error.stack : ""));
+    }
+  }
+
+  runBuildStep(stepName, fn) {
+    try {
+      fn.call(this);
+    } catch (error) {
+      throw new Error("[" + stepName + "] " + error.message, { cause: error });
     }
   }
 
@@ -347,6 +420,18 @@ export default class WorldScene extends Phaser.Scene {
         avatarEntity.updateFacing(this.player);
       }
     }
+
+    (this.world.portraitEntities || []).forEach((entry) => {
+      if (
+        this.ui.isModalOpen() &&
+        entry.hotspotId &&
+        this.ui.activeHotspot &&
+        this.ui.activeHotspot.id === entry.hotspotId &&
+        entry.entity
+      ) {
+        entry.entity.updateFacing(this.player);
+      }
+    });
 
     this.mapTransitions.checkProximity(this.player.sprite, this.ui);
     this.hotspots.checkProximity(this.player.sprite, this.ui, {

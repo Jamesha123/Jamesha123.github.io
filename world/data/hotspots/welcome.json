@@ -1,0 +1,9 @@
+{
+  "id": "welcome",
+  "label": "James",
+  "title": "Welcome!",
+  "body": "Welcome to my portfolio world! Projects are scattered around the map and inside the house, with more on the way as I build them. Walk up to signs, characters, and objects, then press E to interact. Feel free to explore.",
+  "links": [
+    { "label": "About Me", "hotspotId": "about" }
+  ]
+}

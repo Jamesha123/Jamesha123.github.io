@@ -1,0 +1,21 @@
+{
+  "id": "mailbox",
+  "image": "assets/sprites/props/mailbox.png",
+  "preferConfigSize": true,
+  "width": 20,
+  "height": 30,
+  "scale": 1.5,
+  "depth": 4,
+  "hitboxWidth": 16,
+  "hitboxHeight": 28,
+  "hitboxOffsetX": 0,
+  "hitboxOffsetY": 2,
+  "hitboxLift": -1,
+  "hotspotId": "contact",
+  "hotspotReach": 2.5,
+  "collision": true,
+  "label": "Contact",
+  "labelGap": -16,
+  "labelFontSize": "1px",
+  "labelOffsetX": 1
+}

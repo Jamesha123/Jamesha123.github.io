@@ -19,7 +19,7 @@
   "y": 27,
   "visualHeight": 48,
   "labelGap": 5,
-  "hotspotId": "about",
+  "hotspotId": "welcome",
   "bodyWidth": 18,
   "bodyHeight": 26,
   "showHitbox": true,

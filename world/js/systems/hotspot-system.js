@@ -1,5 +1,5 @@
-import { DebugGraphics } from "./debug-graphics.js";
-import { createWorldLabel } from "../ui/world-label.js";
+import { DebugGraphics } from "./debug-graphics.js?v=93";
+import { createWorldLabel } from "../ui/world-label.js?v=93";
 
 export class HotspotSystem {
   constructor(content, world) {
@@ -14,14 +14,47 @@ export class HotspotSystem {
     return avatar && avatar.hotspotId ? avatar.hotspotId : null;
   }
 
-  filterAvatarHotspot(hotspots) {
+  getCharacterEmbeddedHotspotIds() {
+    const ids = [];
     const avatarHotspotId = this.getAvatarHotspotId();
-    if (!avatarHotspotId) {
+    if (avatarHotspotId) {
+      ids.push(avatarHotspotId);
+    }
+
+    this.content.portraitNpcConfigs.forEach(function (npc) {
+      if (npc.hotspotId) {
+        ids.push(npc.hotspotId);
+      }
+    });
+
+    return ids;
+  }
+
+  getPropHotspotIds() {
+    return this.content.propConfigs
+      .map(function (prop) {
+        return prop && prop.hotspotId ? prop.hotspotId : null;
+      })
+      .filter(Boolean);
+  }
+
+  getEmbeddedHotspotIds() {
+    return this.getCharacterEmbeddedHotspotIds().concat(this.getPropHotspotIds());
+  }
+
+  filterEmbeddedHotspots(hotspots) {
+    const embeddedIds = this.getCharacterEmbeddedHotspotIds();
+    if (!embeddedIds.length) {
       return hotspots;
     }
+
     return hotspots.filter(function (hotspot) {
-      return hotspot.id !== avatarHotspotId;
+      return embeddedIds.indexOf(hotspot.id) === -1;
     });
+  }
+
+  filterAvatarHotspot(hotspots) {
+    return this.filterEmbeddedHotspots(hotspots);
   }
 
   getReach() {
@@ -109,13 +142,18 @@ export class HotspotSystem {
   addMarkers(scene) {
     this.clearMarkers();
 
-    const npcHotspotIds = this.content.npcConfigs.map(function (npc) {
-      return npc.hotspotId;
-    });
-    const avatarHotspotId = this.getAvatarHotspotId();
+    const npcHotspotIds = this.content.npcConfigs
+      .filter(function (npc) {
+        return npc.type !== "portrait";
+      })
+      .map(function (npc) {
+        return npc.hotspotId;
+      })
+      .filter(Boolean);
+    const embeddedHotspotIds = this.getEmbeddedHotspotIds();
 
     this.world.runtimeHotspots.forEach(function (hotspot) {
-      if (npcHotspotIds.indexOf(hotspot.id) !== -1 || hotspot.id === avatarHotspotId) {
+      if (npcHotspotIds.indexOf(hotspot.id) !== -1 || embeddedHotspotIds.indexOf(hotspot.id) !== -1) {
         return;
       }
 

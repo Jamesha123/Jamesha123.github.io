@@ -313,6 +313,232 @@ html.mobile-user .mobile-interact-btn:not([hidden]) {
   box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.45);
 }
 
+#modal-overlay.hotspot-panel-mode {
+  padding: 0.35rem;
+}
+
+.modal.modal-hotspot-panel {
+  width: min(98vw, 940px);
+  height: min(calc(96vh - 2in), calc(900px - 2in));
+  max-height: calc(96vh - 2in);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 1.5rem 1.5rem;
+  padding-top: 3rem;
+}
+
+.modal.modal-hotspot-panel #modal-standard {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.modal.modal-hotspot-panel .modal-body-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 2.5rem 1rem 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.modal.modal-hotspot-panel .modal-body-inner {
+  margin-block: auto;
+  width: 100%;
+  transform: translateY(-0.5in);
+}
+
+.modal.modal-hotspot-panel .modal-body-scroll p {
+  width: 100%;
+  max-width: none;
+  margin: 0 0 1.1em;
+  font-size: clamp(1.15rem, 2.2vw, 1.65rem);
+  line-height: 1.75;
+  text-align: left;
+  text-indent: 0;
+  color: #ecf0f1;
+  white-space: normal;
+}
+
+.modal.modal-hotspot-panel .modal-body-scroll p:last-child {
+  margin-bottom: 0;
+}
+
+.modal.modal-hotspot-panel h2 {
+  flex-shrink: 0;
+  margin: 0 0 1.25rem;
+  padding: 0 2.5rem;
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  line-height: 1.25;
+  text-align: center;
+  color: #f1c40f;
+}
+
+.modal.modal-hotspot-panel .modal-hotspot-footer {
+  flex-shrink: 0;
+  margin-top: auto;
+  width: 100%;
+  padding-top: 1rem;
+}
+
+.modal.modal-hotspot-panel .modal-body-inner .modal-tech-list {
+  margin: 0.65rem 0 0;
+  padding: 0 0 0 1.25rem;
+  list-style: disc;
+  text-align: left;
+}
+
+.modal.modal-hotspot-panel .modal-body-inner .modal-tech-list li {
+  margin: 0 0 0.3rem;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+  line-height: 1.5;
+  color: #ecf0f1;
+}
+
+.modal.modal-hotspot-panel .modal-body-inner .modal-tech-list li:last-child {
+  margin-bottom: 0;
+}
+
+.modal.modal-hotspot-panel .modal-links.modal-links-listed {
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.modal.modal-hotspot-panel .modal-link-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(100%, 42rem);
+}
+
+.modal.modal-hotspot-panel .modal-contact-card {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+  min-height: 5.5rem;
+  padding: 1.35rem 1.5rem;
+  text-decoration: none;
+  color: #fff;
+  border: 4px solid #fff;
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+
+.modal.modal-hotspot-panel .modal-contact-card--linkedin {
+  background: #0a66c2;
+}
+
+.modal.modal-hotspot-panel .modal-contact-card--email {
+  background: #3498db;
+}
+
+.modal.modal-hotspot-panel .modal-contact-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.75rem;
+  height: 3.75rem;
+  background: rgba(255, 255, 255, 0.16);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+}
+
+.modal.modal-hotspot-panel .modal-contact-icon svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.modal.modal-hotspot-panel .modal-contact-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  min-width: 0;
+  flex: 1;
+  user-select: all;
+}
+
+.modal.modal-hotspot-panel .modal-contact-label {
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  font-size: clamp(0.8rem, 1.5vw, 1rem);
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.modal.modal-hotspot-panel .modal-contact-value {
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  font-size: clamp(1rem, 2.2vw, 1.35rem);
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.modal.modal-hotspot-panel .modal-link-label {
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  font-size: clamp(0.75rem, 1.4vw, 0.95rem);
+  line-height: 1.4;
+  color: #bdc3c7;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.modal.modal-hotspot-panel .modal-link-url:not(.modal-contact-card) {
+  display: block;
+  width: 100%;
+  font-family: inherit;
+  font-size: clamp(0.85rem, 1.8vw, 1.1rem);
+  line-height: 1.45;
+  text-decoration: none;
+  text-align: center;
+  color: #fff;
+  background: #2ecc71;
+  border: 3px solid #fff;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  user-select: all;
+  word-break: break-word;
+}
+
+.modal.modal-hotspot-panel .modal-link-url:not(.modal-contact-card).secondary {
+  background: #3498db;
+}
+
+.modal.modal-hotspot-panel .modal-link-url:hover,
+.modal.modal-hotspot-panel .modal-link-url:focus-visible,
+.modal.modal-hotspot-panel .modal-contact-card:hover,
+.modal.modal-hotspot-panel .modal-contact-card:focus-visible {
+  filter: brightness(1.08);
+  outline: none;
+}
+
+.modal.modal-hotspot-panel .modal-links {
+  flex-shrink: 0;
+  padding-top: 0;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.modal.modal-hotspot-panel .modal-links a:not(.modal-contact-card),
+.modal.modal-hotspot-panel .modal-links button {
+  font-size: clamp(0.85rem, 1.8vw, 1.15rem);
+  line-height: 1.4;
+  padding: 1rem 2rem;
+  min-width: min(100%, 14rem);
+  text-align: center;
+  border-width: 3px;
+}
+
 .modal h2 {
   margin: 0 0 1rem;
   padding-right: 2rem;
@@ -327,6 +553,7 @@ html.mobile-user .mobile-interact-btn:not([hidden]) {
   font-size: 0.95rem;
   line-height: 1.6;
   color: #ecf0f1;
+  white-space: pre-wrap;
 }
 
 .modal-links {
@@ -336,6 +563,7 @@ html.mobile-user .mobile-interact-btn:not([hidden]) {
 }
 
 .modal-links a,
+.modal-links button,
 .modal-close {
   font-family: inherit;
   font-size: 0.55rem;
@@ -345,9 +573,15 @@ html.mobile-user .mobile-interact-btn:not([hidden]) {
   background: #2ecc71;
   border: 2px solid #fff;
   padding: 0.55rem 0.75rem;
+  cursor: pointer;
 }
 
-.modal-links a.secondary {
+.modal-links button {
+  appearance: none;
+}
+
+.modal-links a.secondary,
+.modal-links button.secondary {
   background: #3498db;
 }
 
@@ -371,6 +605,7 @@ html.mobile-user .mobile-interact-btn:not([hidden]) {
 }
 
 .modal-links a:hover,
+.modal-links button:hover,
 .modal-close:hover {
   filter: brightness(1.1);
 }
@@ -724,10 +959,36 @@ html.mobile-user .mobile-interact-btn:not([hidden]) {
 }
 
 @media (max-width: 640px) {
+  .modal.modal-hotspot-panel {
+    width: 100%;
+    height: calc(96vh - 2in);
+  }
+
   #modal-overlay.games-mode .modal,
   #modal-overlay.app-mode .modal {
     width: 100%;
     height: 96vh;
+  }
+
+  .modal.modal-hotspot-panel .modal-body-scroll {
+    padding: 0.75rem 1rem;
+  }
+
+  .modal.modal-hotspot-panel .modal-links {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .modal.modal-hotspot-panel .modal-links a:not(.modal-contact-card),
+  .modal.modal-hotspot-panel .modal-links button,
+  .modal.modal-hotspot-panel .modal-link-url:not(.modal-contact-card) {
+    width: 100%;
+    max-width: 20rem;
+  }
+
+  .modal.modal-hotspot-panel .modal-contact-card {
+    width: 100%;
+    max-width: none;
   }
 
   .games-desktop-icons {

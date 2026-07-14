@@ -1,13 +1,12 @@
-import { getObjectProperty, getObjectFeetPosition, getObjectRectHitbox } from "../utils/helpers.js";
-import { setupCamera } from "./camera-controller.js?v=44";
+import { getObjectProperty, getObjectFeetPosition, getObjectRectHitbox } from "../utils/helpers.js?v=93";
+import { setupCamera } from "./camera-controller.js?v=93";
 
-import { CharacterAnimation } from "../systems/character-animation.js";
+import { CharacterAnimation } from "../systems/character-animation.js?v=93";
 
-import { MapPropSystem } from "../systems/map-prop-system.js";
+import { MapPropSystem } from "../systems/map-prop-system.js?v=93";
+import { FurnitureSystem } from "../systems/furniture-system.js?v=93";
 
-import { FurnitureSystem } from "../systems/furniture-system.js";
-
-import { AvatarNpc } from "../entities/avatar-npc.js?v=72";
+import { AvatarNpc } from "../entities/avatar-npc.js?v=93";
 
 
 
@@ -184,34 +183,24 @@ export class TiledWorldBuilder {
 
     world.runtimeHotspots = hotspots.filterAvatarHotspot(world.runtimeHotspots);
 
-    if (mapConfig.features && mapConfig.features.hotspotMarkers !== false && mapConfig.hotspotsLayer) {
-
-      hotspots.addMarkers(scene);
-
-    }
-
-
-
     if (mapConfig.propsLayer) {
-
-      MapPropSystem.spawnFromMap(scene, content, world, map, mapConfig, mapTransitions);
-
+      MapPropSystem.spawnFromMap(scene, content, world, map, mapConfig, mapTransitions, hotspots);
     }
-
-
 
     TiledWorldBuilder.spawnTransitions(scene, world, map, mapConfig, mapTransitions);
 
-    TiledWorldBuilder.spawnMapNpcs(scene, content, world, hotspots);
+    TiledWorldBuilder.spawnWalkNpcs(scene, content, world, hotspots);
 
-
+    TiledWorldBuilder.spawnPortraitNpcs(scene, content, world, hotspots, mapConfig);
 
     const features = mapConfig.features || {};
 
     if (features.avatar !== false && content.avatarConfig) {
-
       new AvatarNpc(scene, content, world, hotspots).spawn();
+    }
 
+    if (mapConfig.features && mapConfig.features.hotspotMarkers !== false && mapConfig.hotspotsLayer) {
+      hotspots.addMarkers(scene);
     }
 
 
@@ -234,7 +223,11 @@ export class TiledWorldBuilder {
 
     player.create(spawnPos.x, spawnPos.y);
 
-    player.setupColliders(world.collisionLayer, world.avatarNpc, world.propColliders);
+    player.setupColliders(
+      world.collisionLayer,
+      TiledWorldBuilder.collectNpcHitboxes(world),
+      world.propColliders
+    );
 
     setupCamera(scene, world, player.sprite);
 
@@ -653,9 +646,36 @@ export class TiledWorldBuilder {
 
 
 
-  static spawnMapNpcs(scene, content, world, hotspots) {
+  static collectNpcHitboxes(world) {
+    const hitboxes = [];
+    if (world.avatarNpc) {
+      hitboxes.push(world.avatarNpc);
+    }
+    if (world.portraitHitboxes && world.portraitHitboxes.length) {
+      hitboxes.push.apply(hitboxes, world.portraitHitboxes);
+    }
+    return hitboxes;
+  }
 
-    content.npcConfigs.forEach(function (npc) {
+  static spawnPortraitNpcs(scene, content, world, hotspots, mapConfig) {
+    content.portraitNpcConfigs.forEach(function (npc) {
+      if (!npc || typeof npc !== "object") {
+        return;
+      }
+
+      if (npc.mapId && npc.mapId !== mapConfig.id) {
+        return;
+      }
+
+      new AvatarNpc(scene, content, world, hotspots, npc).spawn();
+    });
+  }
+
+  static spawnWalkNpcs(scene, content, world, hotspots) {
+    content.walkNpcConfigs.forEach(function (npc) {
+      if (!npc || typeof npc !== "object" || !npc.walk || !npc.folder) {
+        return;
+      }
 
       const hotspot = world.runtimeHotspots.find(function (item) {
 

@@ -11,8 +11,11 @@ export class WorldState {
     this.propInteractions = [];
     this.avatarNpc = null;
     this.avatarEntity = null;
+    this.portraitHitboxes = [];
+    this.portraitEntities = [];
     this.propColliders = [];
     this.furnitureSprites = [];
+    this.propLabels = [];
   }
 
   enterMap(mapId) {
@@ -20,6 +23,11 @@ export class WorldState {
     if (this.avatarEntity) {
       this.avatarEntity.resetToDefaultFacing();
     }
+    (this.portraitEntities || []).forEach(function (entry) {
+      if (entry.entity) {
+        entry.entity.resetToDefaultFacing();
+      }
+    });
   }
 
   leaveMap() {
@@ -33,7 +41,10 @@ export class WorldState {
     this.propInteractions = [];
     this.avatarNpc = null;
     this.avatarEntity = null;
+    this.portraitHitboxes = [];
+    this.portraitEntities = [];
     this.propColliders = [];
     this.furnitureSprites = [];
+    this.propLabels = [];
   }
 }

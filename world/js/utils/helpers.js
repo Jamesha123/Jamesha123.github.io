@@ -27,6 +27,25 @@ export function cacheBust(path) {
   const separator = resolved.includes("?") ? "&" : "?";
   return resolved + separator + "v=" + Date.now();
 }
+export function parseBooleanProperty(value, fallback) {
+  if (value === null || value === undefined || value === "") {
+    return fallback;
+  }
+  if (typeof value === "boolean") {
+    return value;
+  }
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === "true" || normalized === "1") {
+      return true;
+    }
+    if (normalized === "false" || normalized === "0") {
+      return false;
+    }
+  }
+  return !!value;
+}
+
 export function getObjectProperty(obj, name) {
   if (!obj.properties) {
     return null;
@@ -81,12 +100,17 @@ export function setBootStage(message) {
 
 export function showFatalError(message) {
   const loading = document.getElementById("loading");
+  const version =
+    typeof window !== "undefined" && window.__WORLD_VERSION__
+      ? " (build v" + window.__WORLD_VERSION__ + ")"
+      : "";
+  const fullMessage = String(message || "Unknown error") + version;
   if (!loading) {
-    console.error(message);
+    console.error(fullMessage);
     return;
   }
   loading.classList.remove("hidden");
-  loading.textContent = message;
+  loading.textContent = fullMessage;
 }
 
 export function hideLoading() {

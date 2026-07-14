@@ -1,4 +1,4 @@
-import { setBootStage, getWorldRootUrl } from "../utils/helpers.js";
+import { setBootStage, getWorldRootUrl } from "../utils/helpers.js?v=77";
 
 const FETCH_TIMEOUT_MS = 15000;
 
@@ -39,8 +39,14 @@ async function fetchJson(relativePath) {
   return response.json();
 }
 async function fetchJsonList(relativePaths) {
+  if (!Array.isArray(relativePaths) || !relativePaths.length) {
+    return [];
+  }
+
   const results = await Promise.all(relativePaths.map(fetchJson));
-  return results;
+  return results.filter(function (entry) {
+    return entry && typeof entry === "object";
+  });
 }
 
 export async function loadContent() {
@@ -48,10 +54,11 @@ export async function loadContent() {
   const manifest = await fetchJson("content.json");
   const sprites = manifest.sprites || {};
 
-  const [maps, player, avatar, props, furniture, hotspots] = await Promise.all([
+  const [maps, player, avatar, npcs, props, furniture, hotspots] = await Promise.all([
     fetchJsonList(manifest.maps || []),
     fetchJson(sprites.player),
     fetchJson(sprites.avatar),
+    fetchJsonList(sprites.npcs || []),
     fetchJsonList(sprites.props || []),
     sprites.furniture ? fetchJson(sprites.furniture) : Promise.resolve([]),
     fetchJsonList(manifest.hotspots || []),
@@ -63,7 +70,7 @@ export async function loadContent() {
     sprites: {
       player: player,
       avatar: avatar,
-      npcs: sprites.npcs || [],
+      npcs: npcs,
       props: props,
       furniture: furniture,
     },
