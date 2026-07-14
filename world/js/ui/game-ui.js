@@ -1,5 +1,5 @@
 import { GamesDesktop } from "./games-desktop.js";
-import { isMobileDevice } from "../utils/device.js?v=44";
+import { isMobileDevice } from "../utils/device.js?v=114";
 
 export class GameUI {
   constructor() {

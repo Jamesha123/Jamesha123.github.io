@@ -1,85 +1,43 @@
-{
-
-  "id": "games",
-
-  "label": "Mini Games",
-
-  "x": 6,
-
-  "y": 10,
-
-  "color": "#2ecc71",
-
-  "view": "desktop",
-
-  "title": "Mini Games",
-
-  "body": "",
-
-  "apps": [
-
-    {
-
-      "id": "hangman",
-
-      "label": "Hangman",
-
-      "icon": "../images/hangman.jpg",
-
-      "page": "games/hangman.html"
-
-    },
-
-    {
-
-      "id": "blackjack",
-
-      "label": "Blackjack",
-
-      "icon": "../images/blackjack.jpg",
-
-      "page": "games/blackjack.html"
-
-    },
-
-    {
-
-      "id": "snake",
-
-      "label": "Snake",
-
-      "icon": "../images/Snake.jpg",
-
-      "page": "games/snake.html"
-
-    },
-
-    {
-
-      "id": "pong",
-
-      "label": "Pong",
-
-      "icon": "../images/pong.jpg",
-
-      "page": "games/pong.html"
-
-    },
-
-    {
-
-      "id": "github",
-
-      "label": "Projects",
-
-      "icon": "../images/github.svg",
-
-      "page": "games/projects.html"
-
-    }
-
-  ]
-
-}
-
-
+{
+  "id": "games",
+  "label": "Mini Games",
+  "x": 6,
+  "y": 10,
+  "color": "#2ecc71",
+  "view": "desktop",
+  "title": "Mini Games",
+  "body": "",
+  "apps": [
+    {
+      "id": "hangman",
+      "label": "Hangman",
+      "icon": "embedded/games/hangman/icon.jpg",
+      "page": "embedded/games/hangman/index.html"
+    },
+    {
+      "id": "blackjack",
+      "label": "Blackjack",
+      "icon": "embedded/games/blackjack/icon.jpg",
+      "page": "embedded/games/blackjack/index.html"
+    },
+    {
+      "id": "snake",
+      "label": "Snake",
+      "icon": "embedded/games/snake/icon.jpg",
+      "page": "embedded/games/snake/index.html"
+    },
+    {
+      "id": "pong",
+      "label": "Pong",
+      "icon": "embedded/games/pong/icon.jpg",
+      "page": "embedded/games/pong/index.html"
+    },
+    {
+      "id": "github",
+      "label": "Projects",
+      "icon": "embedded/games/projects/icon.svg",
+      "page": "embedded/games/projects/index.html"
+    }
+  ]
+}
+

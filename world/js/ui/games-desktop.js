@@ -133,8 +133,8 @@ export class GamesDesktop {
     frame.className = "games-app-frame";
     frame.src = app.page;
     frame.title = app.label;
-    frame.scrolling = app.page === "games/projects.html" ? "auto" : "no";
-    if (app.page !== "games/projects.html") {
+    frame.scrolling = app.page === "embedded/games/projects/index.html" ? "auto" : "no";
+    if (app.page !== "embedded/games/projects/index.html") {
       frame.tabIndex = 0;
     }
 
@@ -142,7 +142,7 @@ export class GamesDesktop {
     win.appendChild(frame);
 
     closeBtn.addEventListener("click", () => this.closeApp());
-    if (app.page !== "games/projects.html") {
+    if (app.page !== "embedded/games/projects/index.html") {
       titlebar.addEventListener("mousedown", () => this.focusGameFrame(frame));
       frame.addEventListener("load", () => this.focusGameFrame(frame));
     }
@@ -159,7 +159,7 @@ export class GamesDesktop {
     this.taskbarApps.appendChild(taskBtn);
     this.taskbarButton = taskBtn;
 
-    if (app.page !== "games/projects.html") {
+    if (app.page !== "embedded/games/projects/index.html") {
       window.requestAnimationFrame(() => this.focusGameFrame(frame));
     }
   }

@@ -1,4 +1,4 @@
-import { setBootStage, getWorldRootUrl } from "../utils/helpers.js?v=77";
+import { setBootStage, getWorldRootUrl } from "../utils/helpers.js?v=114";
 
 const FETCH_TIMEOUT_MS = 15000;
 
@@ -38,6 +38,7 @@ async function fetchJson(relativePath) {
   }
   return response.json();
 }
+
 async function fetchJsonList(relativePaths) {
   if (!Array.isArray(relativePaths) || !relativePaths.length) {
     return [];
@@ -49,20 +50,64 @@ async function fetchJsonList(relativePaths) {
   });
 }
 
+function splitNpcEntries(npcEntries) {
+  let player = null;
+  let avatar = null;
+  const npcs = [];
+
+  npcEntries.forEach(function (entry) {
+    if (!entry || typeof entry !== "object") {
+      return;
+    }
+
+    if (entry.role === "player" || entry.id === "player") {
+      player = entry;
+      return;
+    }
+
+    if (entry.role === "avatar" || entry.id === "james") {
+      avatar = entry;
+      return;
+    }
+
+    npcs.push(entry);
+  });
+
+  return { player, avatar, npcs };
+}
+
+function splitPropEntries(propEntries) {
+  const props = [];
+  let furniture = [];
+
+  propEntries.forEach(function (entry) {
+    if (Array.isArray(entry)) {
+      furniture = entry;
+      return;
+    }
+
+    if (entry && typeof entry === "object") {
+      props.push(entry);
+    }
+  });
+
+  return { props, furniture };
+}
+
 export async function loadContent() {
   setBootStage("Reading manifest");
   const manifest = await fetchJson("content.json");
   const sprites = manifest.sprites || {};
 
-  const [maps, player, avatar, npcs, props, furniture, hotspots] = await Promise.all([
+  const [maps, npcEntries, propEntries, hotspots] = await Promise.all([
     fetchJsonList(manifest.maps || []),
-    fetchJson(sprites.player),
-    fetchJson(sprites.avatar),
     fetchJsonList(sprites.npcs || []),
     fetchJsonList(sprites.props || []),
-    sprites.furniture ? fetchJson(sprites.furniture) : Promise.resolve([]),
     fetchJsonList(manifest.hotspots || []),
   ]);
+
+  const { player, avatar, npcs } = splitNpcEntries(npcEntries);
+  const { props, furniture } = splitPropEntries(propEntries);
 
   return {
     startMap: manifest.startMap || (maps[0] && maps[0].id) || "portfolio",

@@ -6,7 +6,7 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "assets" / "monkeyboy-source" / "Tiles_Interactive" / "stickyNote.png"
+OUT = ROOT / "assets" / "tilesets" / "interactive" / "stickyNote.png"
 
 W = H = 16
 T = (0, 0, 0, 0)

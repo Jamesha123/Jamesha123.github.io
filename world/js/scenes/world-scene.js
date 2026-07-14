@@ -1,19 +1,19 @@
-import { ContentStore } from "../core/content-store.js?v=93";
-import { WorldState } from "../core/world-state.js?v=93";
-import { GameUI } from "../ui/game-ui.js?v=113";
-import { HotspotSystem } from "../systems/hotspot-system.js?v=93";
-import { MapTransitionSystem } from "../systems/map-transition-system.js?v=93";
-import { MapPropSystem } from "../systems/map-prop-system.js?v=93";
-import { CharacterAnimation } from "../systems/character-animation.js?v=93";
-import { Player } from "../entities/player.js?v=93";
-import { TiledWorldBuilder } from "../world/tiled-world-builder.js?v=93";
-import { FallbackWorldBuilder } from "../world/fallback-world-builder.js?v=93";
-import { cacheBust, showFatalError, hideLoading } from "../utils/helpers.js?v=93";
-import { DebugGraphics } from "../systems/debug-graphics.js?v=93";
-import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=93";
-import { getMobileJoystick } from "../ui/mobile-controls.js?v=93";
-import { preloadWorldLabelFont } from "../ui/world-label.js?v=93";
-import { ASSET_VERSION } from "../version.js?v=93";
+import { ContentStore } from "../core/content-store.js?v=114";
+import { WorldState } from "../core/world-state.js?v=114";
+import { GameUI } from "../ui/game-ui.js?v=119";
+import { HotspotSystem } from "../systems/hotspot-system.js?v=114";
+import { MapTransitionSystem } from "../systems/map-transition-system.js?v=114";
+import { MapPropSystem } from "../systems/map-prop-system.js?v=114";
+import { CharacterAnimation } from "../systems/character-animation.js?v=114";
+import { Player } from "../entities/player.js?v=114";
+import { TiledWorldBuilder } from "../map/tiled-world-builder.js?v=114";
+import { FallbackWorldBuilder } from "../map/fallback-world-builder.js?v=114";
+import { cacheBust, showFatalError, hideLoading } from "../utils/helpers.js?v=114";
+import { DebugGraphics } from "../systems/debug-graphics.js?v=114";
+import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=114";
+import { getMobileJoystick } from "../ui/mobile-controls.js?v=114";
+import { preloadWorldLabelFont } from "../ui/world-label.js?v=114";
+import { ASSET_VERSION } from "../version.js?v=114";
 
 export default class WorldScene extends Phaser.Scene {
   constructor(contentStore) {

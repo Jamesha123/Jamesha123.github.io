@@ -1,13 +1,13 @@
-import { ContentStore } from "./core/content-store.js?v=113";
-import { loadContent } from "./core/load-content.js?v=113";
-import { createPhaserGame } from "./scenes/world-scene.js?v=113";
-import { setBootStage, showFatalError } from "./utils/helpers.js?v=113";
-import { bindFullscreenControls } from "./utils/fullscreen.js?v=113";
-import { bindMobileControls } from "./ui/mobile-controls.js?v=113";
+import { ContentStore } from "./core/content-store.js?v=119";
+import { loadContent } from "./core/load-content.js?v=119";
+import { createPhaserGame } from "./scenes/world-scene.js?v=119";
+import { setBootStage, showFatalError } from "./utils/helpers.js?v=119";
+import { bindFullscreenControls } from "./utils/fullscreen.js?v=119";
+import { bindMobileControls } from "./ui/mobile-controls.js?v=119";
 import { initWorldDebug, bindDebugRefresh } from "./config/debug.js";
-import { DebugGraphics } from "./systems/debug-graphics.js?v=113";
-import { MapTransitionSystem } from "./systems/map-transition-system.js?v=113";
-import { ASSET_VERSION } from "./version.js?v=113";
+import { DebugGraphics } from "./systems/debug-graphics.js?v=119";
+import { MapTransitionSystem } from "./systems/map-transition-system.js?v=119";
+import { ASSET_VERSION } from "./version.js?v=119";
 
 const BOOT_TIMEOUT_MS = 25000;
 

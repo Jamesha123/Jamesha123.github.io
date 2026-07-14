@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hangman</title>
+    <link rel="stylesheet" href="../../shared/games-shell.css" />
+  </head>
+  <body>
+    <div class="game-shell game-hangman">
+      <div id="hangman-container" class="game-body">
+        <div class="game-content">
+          <div id="hangman-status" class="status">Click "New Game" to start!</div>
+          <p class="meta">
+            Word: <strong id="word-display"></strong> · Wrong:
+            <strong id="wrong-count">0</strong>/6
+          </p>
+          <div id="hangman-drawing" class="panel hangman-stage">
+            <img id="hangman-sprite" class="hangman-sprite" alt="Hangman drawing" />
+          </div>
+          <div id="letter-buttons" class="hangman-keyboard"></div>
+        </div>
+        <div class="game-toolbar">
+          <button type="button" class="primary" id="hangman-new-game-btn">New Game</button>
+          <button type="button" id="hangman-hint-btn">Hint</button>
+        </div>
+      </div>
+    </div>
+    <script src="../../shared/games-focus.js"></script>
+    <script src="hangman.js?v=9"></script>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blackjack</title>
+    <link rel="stylesheet" href="../../shared/games-shell.css" />
+    <link rel="stylesheet" href="blackjack.css" />
+  </head>
+  <body>
+    <div class="game-shell game-blackjack">
+      <div id="blackjack-container" class="game-body bj-layout">
+        <div class="bj-table">
+          <div class="bj-rail">
+            <div class="bj-felt">
+              <div id="game-status" class="bj-status">Click Deal to start</div>
+
+              <section class="bj-zone bj-dealer-zone" aria-label="Dealer hand">
+                <div class="bj-zone-header">
+                  <span class="bj-zone-label">Dealer</span>
+                  <span class="bj-score-badge"><span id="dealer-score">0</span></span>
+                </div>
+                <div id="dealer-hand" class="bj-hand"></div>
+              </section>
+
+              <div class="bj-brand" aria-hidden="true">Blackjack pays 3 to 2</div>
+
+              <section class="bj-zone bj-player-zone" aria-label="Player hands">
+                <div class="bj-hands-row">
+                  <div class="bj-hand-slot" id="hand-slot-farLeft" data-slot="farLeft">
+                    <button type="button" class="bj-add-hand" data-slot="farLeft" aria-label="Add hand">
+                      +
+                    </button>
+                    <div class="bj-hand-panel bj-hand-panel--dormant" hidden>
+                      <div class="bj-zone-header">
+                        <span class="bj-active-chip" aria-hidden="true">Playing</span>
+                        <span class="bj-score-badge"><span class="bj-hand-score">0</span></span>
+                      </div>
+                      <div class="bj-hand" data-hand="farLeft"></div>
+                      <div class="bj-hand-result" aria-live="polite"></div>
+                      <button type="button" class="bj-remove-hand" hidden aria-label="Remove hand">
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="bj-hand-slot" id="hand-slot-left" data-slot="left">
+                    <button type="button" class="bj-add-hand" data-slot="left" aria-label="Add hand">
+                      +
+                    </button>
+                    <div class="bj-hand-panel bj-hand-panel--dormant" hidden>
+                      <div class="bj-zone-header">
+                        <span class="bj-active-chip" aria-hidden="true">Playing</span>
+                        <span class="bj-score-badge"><span class="bj-hand-score">0</span></span>
+                      </div>
+                      <div class="bj-hand" data-hand="left"></div>
+                      <div class="bj-hand-result" aria-live="polite"></div>
+                      <button type="button" class="bj-remove-hand" hidden aria-label="Remove hand">
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="bj-hand-slot is-enabled is-active" id="hand-slot-center" data-slot="center">
+                    <div class="bj-hand-panel">
+                      <div class="bj-zone-header">
+                        <span class="bj-active-chip" aria-hidden="true">Playing</span>
+                        <span class="bj-score-badge"
+                          ><span class="bj-hand-score" id="player-score">0</span></span
+                        >
+                      </div>
+                      <div class="bj-hand" id="player-hand" data-hand="center"></div>
+                      <div class="bj-hand-result" aria-live="polite"></div>
+                    </div>
+                  </div>
+
+                  <div class="bj-hand-slot" id="hand-slot-right" data-slot="right">
+                    <button type="button" class="bj-add-hand" data-slot="right" aria-label="Add hand">
+                      +
+                    </button>
+                    <div class="bj-hand-panel bj-hand-panel--dormant" hidden>
+                      <div class="bj-zone-header">
+                        <span class="bj-active-chip" aria-hidden="true">Playing</span>
+                        <span class="bj-score-badge"><span class="bj-hand-score">0</span></span>
+                      </div>
+                      <div class="bj-hand" data-hand="right"></div>
+                      <div class="bj-hand-result" aria-live="polite"></div>
+                      <button type="button" class="bj-remove-hand" hidden aria-label="Remove hand">
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="bj-hand-slot" id="hand-slot-farRight" data-slot="farRight">
+                    <button type="button" class="bj-add-hand" data-slot="farRight" aria-label="Add hand">
+                      +
+                    </button>
+                    <div class="bj-hand-panel bj-hand-panel--dormant" hidden>
+                      <div class="bj-zone-header">
+                        <span class="bj-active-chip" aria-hidden="true">Playing</span>
+                        <span class="bj-score-badge"><span class="bj-hand-score">0</span></span>
+                      </div>
+                      <div class="bj-hand" data-hand="farRight"></div>
+                      <div class="bj-hand-result" aria-live="polite"></div>
+                      <button type="button" class="bj-remove-hand" hidden aria-label="Remove hand">
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <div class="bj-controls">
+                <button type="button" class="bj-btn bj-btn-deal" id="deal-btn">Deal</button>
+                <button type="button" class="bj-btn bj-btn-hit" id="hit-btn" disabled>Hit</button>
+                <button type="button" class="bj-btn bj-btn-stand" id="stand-btn" disabled>Stand</button>
+                <button type="button" class="bj-btn bj-btn-new" id="new-game-btn" disabled>New Shoe</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="../../shared/games-focus.js"></script>
+    <script src="blackjack.js?v=7"></script>
+  </body>
+</html>

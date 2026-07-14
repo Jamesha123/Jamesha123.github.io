@@ -3,6 +3,6 @@
   "label": "To-Do List",
   "color": "#6366f1",
   "view": "app",
-  "page": "apps/lists.html",
+  "page": "embedded/apps/lists.html",
   "title": "To-Do List"
 }

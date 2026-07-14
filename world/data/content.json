@@ -5,16 +5,16 @@
     "maps/house-interior.json"
   ],
   "sprites": {
-    "player": "sprites/player.json",
-    "avatar": "sprites/avatar.json",
     "npcs": [
+      "sprites/npcs/player.json",
+      "sprites/npcs/avatar.json",
       "sprites/npcs/old-man.json"
     ],
     "props": [
       "sprites/props/house.json",
-      "sprites/props/mailbox.json"
-    ],
-    "furniture": "sprites/furniture.json"
+      "sprites/props/mailbox.json",
+      "sprites/props/furniture.json"
+    ]
   },
   "hotspots": [
     "hotspots/welcome.json",

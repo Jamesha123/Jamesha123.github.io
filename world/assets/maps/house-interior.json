@@ -3239,85 +3239,85 @@
       "tiles": [
         {
           "id": 0,
-          "image": "../monkeyboy-source/Tiles_Interactive/kitchen.png",
+          "image": "../tilesets/interactive/kitchen.png",
           "imagewidth": 128,
           "imageheight": 64
         },
         {
           "id": 1,
-          "image": "../monkeyboy-source/Tiles_Interactive/bookshelf.png",
+          "image": "../tilesets/interactive/bookshelf.png",
           "imagewidth": 32,
           "imageheight": 48
         },
         {
           "id": 2,
-          "image": "../monkeyboy-source/Tiles_Interactive/couch.png",
+          "image": "../tilesets/interactive/couch.png",
           "imagewidth": 32,
           "imageheight": 64
         },
         {
           "id": 3,
-          "image": "../monkeyboy-source/Tiles_Interactive/dinningTable.png",
+          "image": "../tilesets/interactive/dinningTable.png",
           "imagewidth": 48,
           "imageheight": 48
         },
         {
           "id": 4,
-          "image": "../monkeyboy-source/Tiles_Interactive/drawer.png",
+          "image": "../tilesets/interactive/drawer.png",
           "imagewidth": 16,
           "imageheight": 32
         },
         {
           "id": 5,
-          "image": "../monkeyboy-source/Tiles_Interactive/indoor1.png",
+          "image": "../tilesets/interactive/indoor1.png",
           "imagewidth": 16,
           "imageheight": 32
         },
         {
           "id": 6,
-          "image": "../monkeyboy-source/Tiles_Interactive/indoor8.png",
+          "image": "../tilesets/interactive/indoor8.png",
           "imagewidth": 16,
           "imageheight": 32
         },
         {
           "id": 7,
-          "image": "../monkeyboy-source/Tiles_Interactive/indoor9.png",
+          "image": "../tilesets/interactive/indoor9.png",
           "imagewidth": 16,
           "imageheight": 32
         },
         {
           "id": 8,
-          "image": "../monkeyboy-source/Tiles_Interactive/indoor10.png",
+          "image": "../tilesets/interactive/indoor10.png",
           "imagewidth": 16,
           "imageheight": 32
         },
         {
           "id": 9,
-          "image": "../monkeyboy-source/Tiles_Interactive/indoor11.png",
+          "image": "../tilesets/interactive/indoor11.png",
           "imagewidth": 16,
           "imageheight": 32
         },
         {
           "id": 10,
-          "image": "../monkeyboy-source/Tiles_Interactive/chair1.png",
+          "image": "../tilesets/interactive/chair1.png",
           "imagewidth": 17,
           "imageheight": 31
         },
         {
           "id": 11,
-          "image": "../monkeyboy-source/Tiles_Interactive/chair2.png",
+          "image": "../tilesets/interactive/chair2.png",
           "imagewidth": 17,
           "imageheight": 24
         },
         {
           "id": 12,
-          "image": "../monkeyboy-source/Tiles_Interactive/computerDesk.png",
+          "image": "../tilesets/interactive/computerDesk.png",
           "imagewidth": 48,
           "imageheight": 64
         },
         {
           "id": 13,
-          "image": "../monkeyboy-source/Tiles_Interactive/stickyNote.png",
+          "image": "../tilesets/interactive/stickyNote.png",
           "imagewidth": 16,
           "imageheight": 16
         }
