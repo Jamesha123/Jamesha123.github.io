@@ -1,17 +1,20 @@
-import { ContentStore } from "./core/content-store.js?v=119";
-import { loadContent } from "./core/load-content.js?v=119";
-import { createPhaserGame } from "./scenes/world-scene.js?v=119";
-import { setBootStage, showFatalError } from "./utils/helpers.js?v=119";
-import { bindFullscreenControls } from "./utils/fullscreen.js?v=119";
-import { bindMobileControls } from "./ui/mobile-controls.js?v=119";
+import { ContentStore } from "./core/content-store.js?v=126";
+import { loadContent } from "./core/load-content.js?v=126";
+import { createPhaserGame } from "./scenes/world-scene.js?v=126";
+import { showFatalError } from "./utils/helpers.js?v=126";
+import { setBootStageProgress } from "./ui/boot-progress.js?v=126";
+import { initTitleScreen } from "./ui/title-screen.js?v=126";
+import { bindFullscreenControls } from "./utils/fullscreen.js?v=126";
+import { bindMobileControls } from "./ui/mobile-controls.js?v=126";
 import { initWorldDebug, bindDebugRefresh } from "./config/debug.js";
-import { DebugGraphics } from "./systems/debug-graphics.js?v=119";
-import { MapTransitionSystem } from "./systems/map-transition-system.js?v=119";
-import { ASSET_VERSION } from "./version.js?v=119";
+import { DebugGraphics } from "./systems/debug-graphics.js?v=126";
+import { MapTransitionSystem } from "./systems/map-transition-system.js?v=126";
+import { ASSET_VERSION } from "./version.js?v=126";
 
 const BOOT_TIMEOUT_MS = 25000;
 
 initWorldDebug();
+initTitleScreen();
 
 if (typeof window !== "undefined") {
   window.__WORLD_VERSION__ = ASSET_VERSION;
@@ -36,7 +39,7 @@ window.addEventListener("unhandledrejection", function (event) {
 });
 
 const bootTimeoutId = window.setTimeout(function () {
-  const loading = document.getElementById("loading");
+  const loading = document.getElementById("boot-loading");
   if (loading && !loading.classList.contains("hidden")) {
     reportBootError(
       "Still loading after " +
@@ -50,14 +53,14 @@ function clearBootTimeout() {
   window.clearTimeout(bootTimeoutId);
 }
 
-setBootStage("Starting v" + ASSET_VERSION);
+setBootStageProgress("start", 0, "Starting v" + ASSET_VERSION);
 
 bindFullscreenControls();
 bindMobileControls();
 
 loadContent()
   .then(function (data) {
-    setBootStage("Starting game v" + ASSET_VERSION);
+    setBootStageProgress("assets", 0, "Starting game v" + ASSET_VERSION);
     try {
       createPhaserGame(new ContentStore(data));
     } catch (error) {

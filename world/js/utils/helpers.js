@@ -91,28 +91,44 @@ export function getObjectRectHitbox(obj, tileSize) {
 }
 
 export function setBootStage(message) {
-  const loading = document.getElementById("loading");
-  if (!loading || loading.classList.contains("hidden")) {
+  const overlay = document.getElementById("boot-overlay");
+  const loading = document.getElementById("boot-loading");
+  const status = document.getElementById("boot-status");
+  if (!overlay || overlay.classList.contains("hidden") || !loading || loading.classList.contains("hidden")) {
     return;
   }
-  loading.textContent = "Loading world...\n" + message;
+  if (status) {
+    status.textContent = message;
+  }
 }
 
 export function showFatalError(message) {
-  const loading = document.getElementById("loading");
+  const overlay = document.getElementById("boot-overlay");
+  const loading = document.getElementById("boot-loading");
+  const title = document.getElementById("title-screen");
+  const status = document.getElementById("boot-status");
   const version =
     typeof window !== "undefined" && window.__WORLD_VERSION__
       ? " (build v" + window.__WORLD_VERSION__ + ")"
       : "";
   const fullMessage = String(message || "Unknown error") + version;
-  if (!loading) {
+  if (!overlay || !loading) {
     console.error(fullMessage);
     return;
   }
+  overlay.classList.remove("hidden");
   loading.classList.remove("hidden");
-  loading.textContent = fullMessage;
+  if (title) {
+    title.hidden = true;
+  }
+  if (status) {
+    status.textContent = fullMessage;
+  }
 }
 
 export function hideLoading() {
-  document.getElementById("loading").classList.add("hidden");
+  const overlay = document.getElementById("boot-overlay");
+  if (overlay) {
+    overlay.classList.add("hidden");
+  }
 }

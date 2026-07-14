@@ -1,4 +1,5 @@
-import { setBootStage, getWorldRootUrl } from "../utils/helpers.js?v=114";
+import { setBootStageProgress } from "../ui/boot-progress.js?v=126";
+import { getWorldRootUrl } from "../utils/helpers.js?v=126";
 
 const FETCH_TIMEOUT_MS = 15000;
 
@@ -7,7 +8,6 @@ function getDataRoot() {
 }
 
 async function fetchJson(relativePath) {
-  setBootStage("Loading " + relativePath);
   const url = new URL(relativePath, getDataRoot()).href;
   const requestUrl = url + (url.includes("?") ? "&" : "?") + "v=" + Date.now();
   const controller = new AbortController();
@@ -39,12 +39,21 @@ async function fetchJson(relativePath) {
   return response.json();
 }
 
-async function fetchJsonList(relativePaths) {
+async function fetchJsonList(relativePaths, onFileLoaded) {
   if (!Array.isArray(relativePaths) || !relativePaths.length) {
     return [];
   }
 
-  const results = await Promise.all(relativePaths.map(fetchJson));
+  const results = await Promise.all(
+    relativePaths.map(async function (relativePath) {
+      const data = await fetchJson(relativePath);
+      if (onFileLoaded) {
+        onFileLoaded(relativePath);
+      }
+      return data;
+    })
+  );
+
   return results.filter(function (entry) {
     return entry && typeof entry === "object";
   });
@@ -95,16 +104,36 @@ function splitPropEntries(propEntries) {
 }
 
 export async function loadContent() {
-  setBootStage("Reading manifest");
+  setBootStageProgress("start", 0.2, "Reading manifest");
   const manifest = await fetchJson("content.json");
+  setBootStageProgress("manifest", 1, "Manifest loaded");
   const sprites = manifest.sprites || {};
 
+  const dataPaths = []
+    .concat(manifest.maps || [])
+    .concat(sprites.npcs || [])
+    .concat(sprites.props || [])
+    .concat(manifest.hotspots || []);
+
+  let loadedCount = 0;
+  const totalPaths = Math.max(dataPaths.length, 1);
+
+  function trackDataFile(relativePath) {
+    loadedCount += 1;
+    const fraction = loadedCount / totalPaths;
+    setBootStageProgress("data", fraction, "Loading " + relativePath);
+  }
+
+  setBootStageProgress("data", 0, "Loading world data");
+
   const [maps, npcEntries, propEntries, hotspots] = await Promise.all([
-    fetchJsonList(manifest.maps || []),
-    fetchJsonList(sprites.npcs || []),
-    fetchJsonList(sprites.props || []),
-    fetchJsonList(manifest.hotspots || []),
+    fetchJsonList(manifest.maps || [], trackDataFile),
+    fetchJsonList(sprites.npcs || [], trackDataFile),
+    fetchJsonList(sprites.props || [], trackDataFile),
+    fetchJsonList(manifest.hotspots || [], trackDataFile),
   ]);
+
+  setBootStageProgress("data", 1, "World data loaded");
 
   const { player, avatar, npcs } = splitNpcEntries(npcEntries);
   const { props, furniture } = splitPropEntries(propEntries);

@@ -1,5 +1,5 @@
 {
-  "startMap": "house-interior",
+  "startMap": "portfolio",
   "maps": [
     "maps/portfolio.json",
     "maps/house-interior.json"

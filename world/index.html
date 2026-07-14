@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=119" />
+    <link rel="stylesheet" href="styles.css?v=126" />
     <script>
       (function () {
         var path = location.pathname;
@@ -36,12 +36,43 @@
     </script>
   </head>
   <body>
-    <div id="loading">Loading world...</div>
+    <div id="boot-overlay">
+      <div id="boot-loading">
+        <p id="boot-status">Loading world...</p>
+        <div class="boot-progress-track" aria-hidden="true">
+          <div id="boot-progress-bar" class="boot-progress-bar"></div>
+        </div>
+        <p id="boot-percent" class="boot-percent">0%</p>
+      </div>
 
-    <div id="ui-layer">
+      <div id="title-screen" hidden>
+        <img
+          class="title-bg"
+          src="assets/title/home.png"
+          alt=""
+        />
+        <div class="title-overlay">
+          <h1 class="title-heading">Monkey Boy</h1>
+          <img
+            class="title-sprite"
+            src="assets/sprites/monkey-boy/boy_right_1.png"
+            width="48"
+            height="48"
+            alt="Monkey Boy"
+          />
+          <div class="title-menu">
+            <button type="button" id="title-play-btn" class="title-option">Play</button>
+            <button type="button" id="title-classic-btn" class="title-option">Classic Portfolio</button>
+            <p class="title-hint">No time? Check out the classic page.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="ui-layer" class="pre-game-hidden">
       <div class="top-bar">
         <div class="top-bar-actions">
-          <a href="../index.html">&larr; Classic Portfolio</a>
+          <a href="../index.html">Classic Portfolio</a>
           <button type="button" id="fullscreen-btn" aria-pressed="false">Fullscreen</button>
         </div>
       </div>
@@ -80,9 +111,9 @@
 
     <div id="map-fade" aria-hidden="true"></div>
 
-    <div id="game-container"></div>
+    <div id="game-container" class="pre-game-hidden"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
-    <script type="module" src="js/main.js?v=119"></script>
+    <script type="module" src="js/main.js?v=126"></script>
   </body>
 </html>

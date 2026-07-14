@@ -1015,6 +1015,190 @@ html.mobile-user .mobile-interact-btn:not([hidden]) {
   display: none;
 }
 
+#boot-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  background: #1a1a2e;
+}
+
+#boot-overlay:has(#title-screen:not([hidden])) {
+  background: #000;
+}
+
+#boot-overlay:not(:has(#title-screen:not([hidden]))) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+#boot-overlay.hidden {
+  display: none;
+}
+
+#boot-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: min(28rem, 100%);
+  text-align: center;
+}
+
+#boot-loading.hidden {
+  display: none;
+}
+
+#boot-status {
+  margin: 0;
+  font-size: 0.62rem;
+  line-height: 1.8;
+  color: #d8d8ff;
+}
+
+.boot-progress-track {
+  width: 100%;
+  height: 1rem;
+  border: 3px solid #fff;
+  background: #0f0f1a;
+  box-shadow: inset 0 0 0 1px #000;
+}
+
+.boot-progress-bar {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(180deg, #6ee7ff 0%, #2b8cff 100%);
+  transition: width 0.15s ease-out;
+}
+
+.boot-percent {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #fff;
+}
+
+#title-screen {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+#title-screen[hidden] {
+  display: none !important;
+}
+
+.title-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.title-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.title-heading {
+  position: absolute;
+  top: calc(22% + 1.8in);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: clamp(1.75rem, 6vw, 4.25rem);
+  line-height: 1;
+  color: #cc5500;
+  text-shadow: 0.12em 0.12em 0 #000;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.title-sprite {
+  position: absolute;
+  top: calc(38% + 1.9in);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(72px, 10vw, 96px);
+  height: clamp(72px, 10vw, 96px);
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.title-menu {
+  position: absolute;
+  top: calc(68% - 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.65rem, 1.8vh, 1rem);
+  pointer-events: auto;
+}
+
+.title-option {
+  position: relative;
+  margin: 0;
+  padding: 0.15rem 1.5rem;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-family: inherit;
+  font-size: clamp(0.62rem, 1.8vw, 0.85rem);
+  line-height: 1.6;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.title-option::before {
+  content: ">";
+  position: absolute;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.title-option:hover,
+.title-option:focus-visible {
+  color: #ffe8a3;
+  outline: none;
+}
+
+.title-option:hover::before,
+.title-option:focus-visible::before {
+  opacity: 1;
+}
+
+.title-hint {
+  margin: clamp(0.75rem, 2vh, 1.25rem) 0 0;
+  padding: 0 1rem;
+  max-width: 28rem;
+  font-size: clamp(0.42rem, 1.2vw, 0.55rem);
+  line-height: 1.9;
+  color: rgba(255, 255, 255, 0.82);
+  text-align: center;
+  text-transform: none;
+  letter-spacing: 0;
+  text-shadow: 0.1em 0.1em 0 rgba(0, 0, 0, 0.85);
+}
+
+.pre-game-hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 #map-fade {
   position: fixed;
   inset: 0;
@@ -1028,6 +1212,10 @@ html.mobile-user .mobile-interact-btn:not([hidden]) {
 #map-fade.active {
   opacity: 1;
   pointer-events: auto;
+}
+
+#map-fade.play-transition {
+  z-index: 35;
 }
 
 html.is-fullscreen,

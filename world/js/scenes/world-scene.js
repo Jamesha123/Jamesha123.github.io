@@ -8,7 +8,9 @@ import { CharacterAnimation } from "../systems/character-animation.js?v=114";
 import { Player } from "../entities/player.js?v=114";
 import { TiledWorldBuilder } from "../map/tiled-world-builder.js?v=114";
 import { FallbackWorldBuilder } from "../map/fallback-world-builder.js?v=114";
-import { cacheBust, showFatalError, hideLoading } from "../utils/helpers.js?v=114";
+import { cacheBust, showFatalError } from "../utils/helpers.js?v=122";
+import { setBootProgress, setBootStageProgress, finishBoot } from "../ui/boot-progress.js?v=126";
+import { showTitleScreen, isGameStarted } from "../ui/title-screen.js?v=126";
 import { DebugGraphics } from "../systems/debug-graphics.js?v=114";
 import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=114";
 import { getMobileJoystick } from "../ui/mobile-controls.js?v=114";
@@ -44,6 +46,13 @@ export default class WorldScene extends Phaser.Scene {
     const assetsReady = this.registry.get("worldAssetsReady") === true;
     const initialMapOnly = !assetsReady;
     const activeMapId = this.activeMapId || this.content.startMapId;
+
+    if (!assetsReady && !this._worldLoadProgressBound) {
+      this._worldLoadProgressBound = true;
+      this.load.on("progress", function (value) {
+        setBootProgress(20 + value * 72, "Loading assets...");
+      });
+    }
 
     if (!this._worldLoadErrorsBound) {
       this._worldLoadErrorsBound = true;
@@ -176,6 +185,7 @@ export default class WorldScene extends Phaser.Scene {
 
   create() {
     try {
+      setBootStageProgress("world", 0, "Building world...");
       this.runBuildStep("reset runtime", () => {
         this.transitionOutlineGfx = null;
         this.debugOutlineGfx = null;
@@ -270,14 +280,18 @@ export default class WorldScene extends Phaser.Scene {
       this.world.enterMap(this.activeMapId);
       this.events.once("shutdown", () => this.world.leaveMap());
       this.registry.set("worldAssetsReady", true);
-      hideLoading();
-      window.dispatchEvent(new Event("world-ready"));
 
-      if (this.fadeIn) {
+      if (!isGameStarted()) {
+        finishBoot("Ready").then(() => {
+          showTitleScreen(this);
+        });
+      } else if (this.fadeIn) {
         this.ui.fadeInFromMapTransition();
       } else {
         this.ui.resetMapFade();
       }
+
+      window.dispatchEvent(new Event("world-ready"));
     } catch (error) {
       console.error(error);
       showFatalError("Map failed: " + error.message + (error.stack ? "\n" + error.stack : ""));
