@@ -1,470 +1,56 @@
 {
   "lists": [
     {
-      "id": "538c6fed-9449-48e3-8b2b-336c5e2def91",
-      "name": "My Tasks",
-      "type": "todo",
-      "createdAt": 1782929762794,
-      "items": [],
-      "customCategories": []
-    },
-    {
       "id": "6017c8c5-767f-44cf-9a24-3aaf94b9e1b8",
       "name": "Groceries List",
       "type": "groceries",
       "createdAt": 1782934315138,
       "items": [
         {
-          "id": "ccdf58fb-293f-480e-b953-3c12eab72c39",
-          "text": "Collar",
+          "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+          "text": "Banana",
           "done": false,
           "createdAt": 1783010205526,
-          "category": "ava",
-          "qty": null
-        },
-        {
-          "id": "6cc36ca1-47ab-4e2c-8c2c-0e69b153c30c",
-          "text": "Oat Milk (sams)",
-          "done": true,
-          "createdAt": 1783962286184,
-          "category": "c-dairy",
-          "qty": null
-        },
-        {
-          "id": "359716c2-4691-49f7-a337-e708805b68ea",
-          "text": "Steak",
-          "done": false,
-          "createdAt": 1783979495960,
-          "category": "protein",
-          "qty": null
-        },
-        {
-          "id": "dd4e14e9-5eb2-4d6c-97b6-a5b7706cfe51",
-          "text": "Corn",
-          "done": true,
-          "createdAt": 1783979539341,
-          "category": "pantry",
-          "qty": {
-            "amount": 4,
-            "unit": "each"
-          }
-        },
-        {
-          "id": "0e7b9eb7-f630-48b3-b811-8c0ddb6fd993",
-          "text": "White Onion",
-          "done": false,
-          "createdAt": 1783979664497,
           "category": "produce",
           "qty": {
-            "amount": 1,
+            "amount": 99,
             "unit": "each"
           }
         },
         {
-          "id": "1ffd1749-3c9b-4662-8a73-643e5bc28264",
-          "text": "Cucumber",
-          "done": true,
-          "createdAt": 1783979700190,
-          "category": "produce",
-          "qty": {
-            "amount": 1,
-            "unit": "each"
-          }
+          "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+          "text": "Sugar",
+          "done": false,
+          "createdAt": 1783010205527,
+          "category": "bakery",
+          "qty": null
+        },
+        {
+          "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+          "text": "Ice Cream",
+          "done": false,
+          "createdAt": 1783010205528,
+          "category": "c-frozen",
+          "qty": null
         }
       ],
       "customCategories": [
         {
-          "key": "c-dairy",
-          "label": "Dairy"
-        },
-        {
           "key": "c-frozen",
-          "label": "Frozen"
+          "label": "Frozen Food"
         }
       ]
     }
   ],
   "remembered": {
-    "todo": [
-      {
-        "key": "post office",
-        "name": "Post Office",
-        "category": "c-errands",
-        "label": ""
-      }
-    ],
-    "groceries": [
-      {
-        "key": "chicken breast",
-        "name": "Chicken Breast",
-        "category": "protein",
-        "label": "Protein"
-      },
-      {
-        "key": "chili powder",
-        "name": "Chili Powder",
-        "category": "condiments",
-        "label": "Seasonings/Condiments"
-      },
-      {
-        "key": "smoked paprika",
-        "name": "Smoked Paprika",
-        "category": "condiments",
-        "label": "Seasonings/Condiments"
-      },
-      {
-        "key": "garlic powder",
-        "name": "Garlic Powder",
-        "category": "condiments",
-        "label": "Seasonings/Condiments"
-      },
-      {
-        "key": "cumin",
-        "name": "Cumin",
-        "category": "condiments",
-        "label": "Seasonings/Condiments"
-      },
-      {
-        "key": "olive oil",
-        "name": "Olive Oil",
-        "category": "pantry",
-        "label": "Pantry"
-      },
-      {
-        "key": "rice",
-        "name": "Rice",
-        "category": "pantry",
-        "label": "Pantry"
-      },
-      {
-        "key": "lime",
-        "name": "Lime",
-        "category": "produce",
-        "label": "Produce"
-      },
-      {
-        "key": "cilantro",
-        "name": "Cilantro",
-        "category": "produce",
-        "label": "Produce"
-      },
-      {
-        "key": "corn",
-        "name": "Corn",
-        "category": "pantry",
-        "label": "Pantry"
-      },
-      {
-        "key": "mayonnaise",
-        "name": "Mayonnaise",
-        "category": "condiments",
-        "label": "Seasonings/Condiments"
-      },
-      {
-        "key": "cotija cheese",
-        "name": "Cotija Cheese",
-        "category": "c-dairy",
-        "label": "Dairy"
-      },
-      {
-        "key": "avocado",
-        "name": "Avocado",
-        "category": "produce",
-        "label": "Produce"
-      },
-      {
-        "key": "jalapeno",
-        "name": "Jalapenos",
-        "category": "produce",
-        "label": "Produce"
-      },
-      {
-        "key": "potato",
-        "name": "Potatoes",
-        "category": "produce",
-        "label": "Produce"
-      },
-      {
-        "key": "butter",
-        "name": "Butter",
-        "category": "c-dairy",
-        "label": "Dairy"
-      },
-      {
-        "key": "egg",
-        "name": "Egg",
-        "category": "bakery",
-        "label": "Bakery"
-      },
-      {
-        "key": "carrot",
-        "name": "Carrots",
-        "category": "produce",
-        "label": "Produce"
-      },
-      {
-        "key": "white onion",
-        "name": "White Onion",
-        "category": "produce",
-        "label": "Produce"
-      },
-      {
-        "key": "garlic (minced)",
-        "name": "Garlic (minced)",
-        "category": "produce",
-        "label": "Produce"
-      },
-      {
-        "key": "salt and black pepper",
-        "name": "Salt And Black Pepper",
-        "category": "condiments",
-        "label": "Seasonings/Condiments"
-      },
-      {
-        "key": "green onion",
-        "name": "Green Onion",
-        "category": "produce",
-        "label": "Produce"
-      },
-      {
-        "key": "soy sauce",
-        "name": "Soy Sauce",
-        "category": "condiments",
-        "label": "Seasonings/Condiments"
-      },
-      {
-        "key": "oyster sauce",
-        "name": "Oyster Sauce",
-        "category": "condiments",
-        "label": "Seasonings/Condiments"
-      },
-      {
-        "key": "toasted sesame oil",
-        "name": "Toasted Sesame Oil",
-        "category": "condiments",
-        "label": "Seasonings/Condiments"
-      },
-      {
-        "key": "chinese sausage",
-        "name": "Chinese Sausage",
-        "category": "protein",
-        "label": "Protein"
-      },
-      {
-        "key": "seaweed",
-        "name": "Seaweed",
-        "category": "pantry",
-        "label": "Pantry"
-      },
-      {
-        "key": "salmon",
-        "name": "Salmon",
-        "category": "protein",
-        "label": "Protein"
-      },
-      {
-        "key": "lemon pepper",
-        "name": "Lemon Pepper",
-        "category": "condiments",
-        "label": "Seasonings/Condiments"
-      },
-      {
-        "key": "sriracha",
-        "name": "Sriracha",
-        "category": "condiments",
-        "label": "Seasonings/Condiments"
-      },
-      {
-        "key": "cucumber",
-        "name": "Cucumber",
-        "category": "produce",
-        "label": "Produce"
-      },
-      {
-        "key": "rotisserie chicken",
-        "name": "Rotisserie Chicken",
-        "category": "protein",
-        "label": "Protein"
-      },
-      {
-        "key": "cabbage",
-        "name": "Cabbage",
-        "category": "produce",
-        "label": "Produce"
-      },
-      {
-        "key": "sour cream",
-        "name": "Sour Cream",
-        "category": "c-dairy",
-        "label": "Dairy"
-      },
-      {
-        "key": "chicken thigh",
-        "name": "Chicken Thighs",
-        "category": "protein",
-        "label": "Protein"
-      },
-      {
-        "key": "shallot",
-        "name": "Shallots",
-        "category": "produce",
-        "label": "Produce"
-      },
-      {
-        "key": "ginger",
-        "name": "Ginger",
-        "category": "produce",
-        "label": "Produce"
-      },
-      {
-        "key": "lemon",
-        "name": "Lemon",
-        "category": "produce",
-        "label": "Produce"
-      },
-      {
-        "key": "cayenne pepper",
-        "name": "Cayenne Pepper",
-        "category": "condiments",
-        "label": "Seasonings/Condiments"
-      },
-      {
-        "key": "honey",
-        "name": "Honey",
-        "category": "condiments",
-        "label": "Seasonings/Condiments"
-      },
-      {
-        "key": "sesame dressing",
-        "name": "Sesame Dressing",
-        "category": "condiments",
-        "label": "Seasonings/Condiments"
-      },
-      {
-        "key": "sesame seed",
-        "name": "Sesame Seeds",
-        "category": "pantry",
-        "label": "Pantry"
-      },
-      {
-        "key": "panko",
-        "name": "Panko",
-        "category": "pantry",
-        "label": "Pantry"
-      },
-      {
-        "key": "all-purpose flour",
-        "name": "All-Purpose Flour",
-        "category": "bakery",
-        "label": "Bakery"
-      },
-      {
-        "key": "pork chop",
-        "name": "Pork Chop",
-        "category": "protein",
-        "label": "Protein"
-      },
-      {
-        "key": "canola oil",
-        "name": "Canola Oil",
-        "category": "pantry",
-        "label": "Pantry"
-      },
-      {
-        "key": "worcestershire",
-        "name": "Worcestershire",
-        "category": "condiments",
-        "label": "Seasonings/Condiments"
-      },
-      {
-        "key": "sugar",
-        "name": "Sugar",
-        "category": "condiments",
-        "label": "Seasonings/Condiments"
-      },
-      {
-        "key": "ketchup",
-        "name": "Ketchup",
-        "category": "condiments",
-        "label": "Seasonings/Condiments"
-      },
-      {
-        "key": "dr pepper",
-        "name": "Dr Pepper",
-        "category": "beverages",
-        "label": "Beverages"
-      },
-      {
-        "key": "chocolate milk",
-        "name": "Chocolate Milk",
-        "category": "beverages",
-        "label": "Beverages"
-      },
-      {
-        "key": "paper towel",
-        "name": "Paper Towels",
-        "category": "home",
-        "label": "Home Goods"
-      },
-      {
-        "key": "rice vinegar",
-        "name": "Rice Vinegar",
-        "category": "condiments",
-        "label": "Seasonings/Condiments"
-      },
-      {
-        "key": "brown sugar",
-        "name": "Brown Sugar",
-        "category": "bakery",
-        "label": "Bakery"
-      },
-      {
-        "key": "cleaner",
-        "name": "Cleaner",
-        "category": "home",
-        "label": "Home Goods"
-      },
-      {
-        "key": "giant dill dough",
-        "name": "Giant Dill Dough",
-        "category": "misc",
-        "label": "Miscellaneous"
-      },
-      {
-        "key": "clipper",
-        "name": "Clippers",
-        "category": "misc",
-        "label": "Miscellaneous"
-      },
-      {
-        "key": "val\u2019s pizza",
-        "name": "Val\u2019s Pizza",
-        "category": "c-frozen",
-        "label": "Frozen"
-      },
-      {
-        "key": "haircutting scissor",
-        "name": "Haircutting Scissors",
-        "category": "misc",
-        "label": "Miscellaneous"
-      },
-      {
-        "key": "fabric roller cutter",
-        "name": "Fabric Roller Cutter",
-        "category": "misc",
-        "label": "Miscellaneous"
-      }
-    ]
+    "todo": [],
+    "groceries": []
   },
   "recipes": [],
   "grocerySubtopics": [
     {
-      "key": "c-dairy",
-      "label": "Dairy"
-    },
-    {
       "key": "c-frozen",
-      "label": "Frozen"
+      "label": "Frozen Food"
     }
   ],
   "activity": [],
