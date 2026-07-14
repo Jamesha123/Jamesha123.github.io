@@ -9,13 +9,13 @@ import { Player } from "../entities/player.js?v=114";
 import { TiledWorldBuilder } from "../map/tiled-world-builder.js?v=114";
 import { FallbackWorldBuilder } from "../map/fallback-world-builder.js?v=114";
 import { cacheBust, showFatalError } from "../utils/helpers.js?v=122";
-import { setBootProgress, setBootStageProgress, finishBoot } from "../ui/boot-progress.js?v=127";
-import { showTitleScreen, isGameStarted } from "../ui/title-screen.js?v=127";
-import { DebugGraphics } from "../systems/debug-graphics.js?v=114";
-import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=114";
-import { getMobileJoystick } from "../ui/mobile-controls.js?v=114";
-import { preloadWorldLabelFont } from "../ui/world-label.js?v=114";
-import { ASSET_VERSION } from "../version.js?v=114";
+import { setBootProgress, setBootStageProgress, finishBoot } from "../ui/boot-progress.js?v=128";
+import { getMobileJoystick } from "../ui/mobile-controls.js?v=128";
+import { showTitleScreen, isGameStarted } from "../ui/title-screen.js?v=128";
+import { DebugGraphics } from "../systems/debug-graphics.js?v=128";
+import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=128";
+import { preloadWorldLabelFont } from "../ui/world-label.js?v=128";
+import { ASSET_VERSION } from "../version.js?v=128";
 
 export default class WorldScene extends Phaser.Scene {
   constructor(contentStore) {
@@ -401,11 +401,12 @@ export default class WorldScene extends Phaser.Scene {
       return;
     }
 
-    const mobileJoystick = this.mobileControls ? getMobileJoystick() : null;
-
-    if (!this.cursors && !mobileJoystick) {
+    if (!isGameStarted()) {
+      this.player.stop();
       return;
     }
+
+    const mobileJoystick = getMobileJoystick();
 
     if (this.ui.isModalOpen() || this.ui.isMapFading() || isMobileLandscape()) {
       this.player.stop();

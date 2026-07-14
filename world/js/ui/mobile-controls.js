@@ -1,6 +1,6 @@
-import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=127";
-import { refreshPhaserScale } from "../utils/viewport.js?v=127";
-import { VirtualJoystick } from "./virtual-joystick.js?v=127";
+import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=128";
+import { refreshPhaserScale } from "../utils/viewport.js?v=128";
+import { VirtualJoystick } from "./virtual-joystick.js?v=128";
 
 let joystick = null;
 
@@ -30,6 +30,7 @@ export function bindMobileControls() {
   const joystickRoot = document.getElementById("virtual-joystick");
   if (joystickRoot) {
     joystick = new VirtualJoystick(joystickRoot);
+    window.__WORLD_JOYSTICK__ = joystick;
   }
 
   updateRotateOverlay();
@@ -50,5 +51,5 @@ export function bindMobileControls() {
 }
 
 export function getMobileJoystick() {
-  return joystick;
+  return joystick || window.__WORLD_JOYSTICK__ || null;
 }

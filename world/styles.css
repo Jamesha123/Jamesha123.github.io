@@ -96,7 +96,8 @@ html:not(.mobile-user) .bottom-hud {
 
 html.mobile-user .bottom-hud {
   left: 1rem;
-  bottom: 1.25rem;
+  bottom: calc(1.25rem + 3.5rem);
+  transform: translateY(50%);
   max-width: calc(100% - 9rem);
   pointer-events: none;
 }
@@ -191,6 +192,9 @@ html.mobile-user .mobile-interact-btn:not([hidden]) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 3.25rem;
+  padding: 0.75rem 1.2rem;
+  font-size: 0.62rem;
   background: rgba(255, 255, 255, 0.22);
   box-shadow: 0 0 14px rgba(255, 255, 255, 0.35);
 }
@@ -1192,6 +1196,55 @@ html.mobile-user .mobile-interact-btn:not([hidden]) {
   text-transform: none;
   letter-spacing: 0;
   text-shadow: 0.1em 0.1em 0 rgba(0, 0, 0, 0.85);
+}
+
+html.mobile-user #title-screen .title-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: calc(22% + 1.8in - 4px);
+}
+
+html.mobile-user .title-heading {
+  position: static;
+  top: auto;
+  left: auto;
+  transform: none;
+  margin: 0;
+}
+
+html.mobile-user .title-sprite {
+  position: static;
+  top: auto;
+  left: auto;
+  transform: none;
+  margin-top: 1cm;
+}
+
+html.mobile-user .title-menu {
+  position: static;
+  top: auto;
+  left: auto;
+  transform: none;
+  margin-top: 1cm;
+  width: max-content;
+  max-width: calc(100% - 2rem);
+}
+
+html.mobile-user .title-option {
+  white-space: nowrap;
+  width: max-content;
+  max-width: 100%;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  font-size: clamp(0.46rem, 2.5vw, 0.58rem);
+  letter-spacing: 0.03em;
+}
+
+html.mobile-user .title-hint {
+  white-space: normal;
+  max-width: min(22rem, calc(100vw - 2rem));
 }
 
 .pre-game-hidden {

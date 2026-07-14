@@ -1,4 +1,4 @@
-import { getMobileJoystick } from "./mobile-controls.js?v=127";
+import { getMobileJoystick } from "./mobile-controls.js?v=128";
 
 let worldScene = null;
 let gameStarted = false;
@@ -19,29 +19,8 @@ export function initTitleScreen() {
   }
 }
 
-function pauseWorldScene(scene) {
-  if (!scene || !scene.game || !scene.game.scene) {
-    return;
-  }
-
-  if (scene.game.scene.isActive("WorldScene")) {
-    scene.game.scene.pause("WorldScene");
-  }
-}
-
-export function resumeWorldScene() {
-  if (!worldScene || !worldScene.game || !worldScene.game.scene) {
-    return;
-  }
-
-  if (worldScene.game.scene.isPaused("WorldScene")) {
-    worldScene.game.scene.resume("WorldScene");
-  }
-}
-
 export function showTitleScreen(scene) {
   worldScene = scene;
-  pauseWorldScene(scene);
 
   const loading = document.getElementById("boot-loading");
   const title = document.getElementById("title-screen");
@@ -72,8 +51,6 @@ function revealGame() {
   if (mobileJoystick) {
     mobileJoystick.show();
   }
-
-  resumeWorldScene();
 }
 
 function finishPlayTransition() {
@@ -81,8 +58,6 @@ function finishPlayTransition() {
   if (mapFade) {
     mapFade.classList.remove("play-transition");
   }
-
-  resumeWorldScene();
 
   const ui = worldScene && worldScene.ui;
   if (ui && ui.isMapFading && ui.isMapFading()) {
