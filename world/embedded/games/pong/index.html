@@ -23,15 +23,19 @@
 
         <div class="pong-arena">
           <div class="pong-paddle-slider-wrap" id="pong-paddle-slider-wrap" hidden>
-            <label class="pong-slider-label" for="pong-paddle-slider">Paddle</label>
-            <input
-              type="range"
-              id="pong-paddle-slider"
-              min="0"
-              max="1000"
-              value="500"
+            <span class="pong-slider-label">Paddle</span>
+            <div
+              class="pong-slider-track"
+              id="pong-paddle-slider-track"
+              role="slider"
               aria-label="Move paddle"
-            />
+              aria-valuemin="0"
+              aria-valuemax="1000"
+              aria-valuenow="500"
+              tabindex="0"
+            >
+              <div class="pong-slider-thumb" id="pong-paddle-slider-thumb" aria-hidden="true"></div>
+            </div>
           </div>
 
           <div class="game-playfield">
@@ -57,6 +61,6 @@
       </div>
     </div>
     <script src="../../shared/games-focus.js"></script>
-    <script src="pong.js?v=13"></script>
+    <script src="pong.js?v=14"></script>
   </body>
 </html>

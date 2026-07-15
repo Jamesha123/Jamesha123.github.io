@@ -20,12 +20,17 @@
 
   let touchStartY = 0;
 
-  let paddleSlider = null;
+  let sliderTrack = null;
+  let sliderThumb = null;
   let sliderWrap = null;
+  let sliderDragging = false;
   let useMobileSlider = false;
   let syncingSlider = false;
+  let sliderResizeObserver = null;
 
-  const mobileControlsQuery = window.matchMedia("(max-width: 768px), (pointer: coarse)");
+  const mobileShell = document.querySelector(".game-pong");
+  const coarsePointerQuery = window.matchMedia("(pointer: coarse)");
+  const narrowViewportQuery = window.matchMedia("(max-width: 768px)");
 
   const retroTheme = !!document.querySelector(".game-pong");
 
@@ -111,38 +116,225 @@
     return Math.max(0, canvas.height - playerPaddle.height);
   }
 
+  function isMobileLikeDevice() {
+    if (coarsePointerQuery.matches) {
+      return true;
+    }
+
+    if (/Android|iPhone|iPad|iPod|Mobile|Tablet|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      return true;
+    }
+
+    return narrowViewportQuery.matches && navigator.maxTouchPoints > 0;
+  }
+
   function detectMobileControls() {
-    useMobileSlider = mobileControlsQuery.matches;
+    useMobileSlider = isMobileLikeDevice();
     sliderWrap = document.getElementById("pong-paddle-slider-wrap");
-    paddleSlider = document.getElementById("pong-paddle-slider");
+    sliderTrack = document.getElementById("pong-paddle-slider-track");
+    sliderThumb = document.getElementById("pong-paddle-slider-thumb");
 
     if (sliderWrap) {
       sliderWrap.hidden = !useMobileSlider;
     }
+
+    if (mobileShell) {
+      mobileShell.classList.toggle("is-mobile-controls", useMobileSlider);
+    }
+  }
+
+  function sliderThumbTravel() {
+    if (!sliderTrack || !sliderThumb) {
+      return 0;
+    }
+
+    return Math.max(0, sliderTrack.clientHeight - sliderThumb.offsetHeight);
+  }
+
+  function updateSliderThumbPosition(ratio) {
+    if (!sliderTrack || !sliderThumb) {
+      return;
+    }
+
+    const clamped = Math.min(1, Math.max(0, ratio));
+    const travel = sliderThumbTravel();
+    sliderThumb.style.transform = "translate3d(0, " + clamped * travel + "px, 0)";
+    sliderTrack.setAttribute("aria-valuenow", String(Math.round(clamped * 1000)));
+  }
+
+  function ratioFromClientY(clientY) {
+    if (!sliderTrack || !sliderThumb) {
+      return 0.5;
+    }
+
+    const rect = sliderTrack.getBoundingClientRect();
+    const travel = sliderThumbTravel();
+    if (travel <= 0) {
+      return 0.5;
+    }
+
+    const thumbHalf = sliderThumb.offsetHeight * 0.5;
+    let offset = clientY - rect.top - thumbHalf;
+    offset = Math.max(0, Math.min(travel, offset));
+    return offset / travel;
+  }
+
+  function applyRatioToPaddle(ratio) {
+    if (!playerPaddle || syncingSlider) {
+      return;
+    }
+
+    const travel = paddleTravelRange();
+    playerPaddle.y = ratio * travel;
+    playerPaddle.dy = 0;
+    updateSliderThumbPosition(ratio);
   }
 
   function syncSliderFromPaddle() {
-    if (!useMobileSlider || !paddleSlider || !playerPaddle) {
+    if (!useMobileSlider || !sliderTrack || !playerPaddle) {
       return;
     }
 
     const travel = paddleTravelRange();
-    const value = travel > 0 ? Math.round((playerPaddle.y / travel) * 1000) : 500;
-
-    syncingSlider = true;
-    paddleSlider.value = String(Math.min(1000, Math.max(0, value)));
-    syncingSlider = false;
+    const ratio = travel > 0 ? playerPaddle.y / travel : 0.5;
+    updateSliderThumbPosition(ratio);
   }
 
-  function applySliderToPaddle() {
-    if (!paddleSlider || !playerPaddle || syncingSlider) {
+  function setSliderFromClientY(clientY) {
+    applyRatioToPaddle(ratioFromClientY(clientY));
+    if (!gameRunning) {
+      draw();
+    }
+  }
+
+  function handleSliderPointerDown(event) {
+    if (!useMobileSlider || !sliderTrack) {
       return;
     }
 
-    const travel = paddleTravelRange();
-    const ratio = Number(paddleSlider.value) / 1000;
-    playerPaddle.y = ratio * travel;
-    playerPaddle.dy = 0;
+    event.preventDefault();
+    sliderDragging = true;
+    sliderTrack.classList.add("is-active");
+
+    if (sliderTrack.setPointerCapture) {
+      sliderTrack.setPointerCapture(event.pointerId);
+    }
+
+    setSliderFromClientY(event.clientY);
+  }
+
+  function handleSliderPointerMove(event) {
+    if (!sliderDragging || !sliderTrack) {
+      return;
+    }
+
+    event.preventDefault();
+    applyRatioToPaddle(ratioFromClientY(event.clientY));
+  }
+
+  function handleSliderTouchStart(event) {
+    if (!useMobileSlider || !sliderTrack || !event.touches.length) {
+      return;
+    }
+
+    event.preventDefault();
+    sliderDragging = true;
+    sliderTrack.classList.add("is-active");
+    setSliderFromClientY(event.touches[0].clientY);
+  }
+
+  function handleSliderTouchMove(event) {
+    if (!sliderDragging || !sliderTrack || !event.touches.length) {
+      return;
+    }
+
+    event.preventDefault();
+    applyRatioToPaddle(ratioFromClientY(event.touches[0].clientY));
+  }
+
+  function handleSliderTouchEnd(event) {
+    if (!sliderDragging || !sliderTrack) {
+      return;
+    }
+
+    event.preventDefault();
+    sliderDragging = false;
+    sliderTrack.classList.remove("is-active");
+  }
+
+  function handleSliderPointerUp(event) {
+    if (!sliderDragging || !sliderTrack) {
+      return;
+    }
+
+    event.preventDefault();
+    sliderDragging = false;
+    sliderTrack.classList.remove("is-active");
+
+    if (sliderTrack.releasePointerCapture) {
+      try {
+        sliderTrack.releasePointerCapture(event.pointerId);
+      } catch (_error) {
+        // Ignore if capture was already released.
+      }
+    }
+  }
+
+  function handleSliderKeyDown(event) {
+    if (!useMobileSlider || !sliderTrack || (event.key !== "ArrowUp" && event.key !== "ArrowDown")) {
+      return;
+    }
+
+    event.preventDefault();
+    const current = Number(sliderTrack.getAttribute("aria-valuenow") || "500");
+    const step = event.key === "ArrowUp" ? -40 : 40;
+    applyRatioToPaddle((current + step) / 1000);
+    if (!gameRunning) {
+      draw();
+    }
+  }
+
+  function bindSliderEvents() {
+    if (!sliderTrack) {
+      return;
+    }
+
+    if (window.PointerEvent) {
+      sliderTrack.addEventListener("pointerdown", handleSliderPointerDown, { passive: false });
+      sliderTrack.addEventListener("pointermove", handleSliderPointerMove, { passive: false });
+      sliderTrack.addEventListener("pointerup", handleSliderPointerUp, { passive: false });
+      sliderTrack.addEventListener("pointercancel", handleSliderPointerUp, { passive: false });
+    } else {
+      sliderTrack.addEventListener("touchstart", handleSliderTouchStart, { passive: false });
+      sliderTrack.addEventListener("touchmove", handleSliderTouchMove, { passive: false });
+      sliderTrack.addEventListener("touchend", handleSliderTouchEnd, { passive: false });
+      sliderTrack.addEventListener("touchcancel", handleSliderTouchEnd, { passive: false });
+    }
+
+    sliderTrack.addEventListener("keydown", handleSliderKeyDown);
+
+    if (typeof ResizeObserver === "function") {
+      if (sliderResizeObserver) {
+        sliderResizeObserver.disconnect();
+      }
+      sliderResizeObserver = new ResizeObserver(function () {
+        syncSliderFromPaddle();
+      });
+      sliderResizeObserver.observe(sliderTrack);
+    }
+  }
+
+  function watchMobileControlQueries(listener) {
+    if (typeof coarsePointerQuery.addEventListener === "function") {
+      coarsePointerQuery.addEventListener("change", listener);
+      narrowViewportQuery.addEventListener("change", listener);
+      return;
+    }
+
+    if (typeof coarsePointerQuery.addListener === "function") {
+      coarsePointerQuery.addListener(listener);
+      narrowViewportQuery.addListener(listener);
+    }
   }
 
   function initCanvas() {
@@ -198,32 +390,12 @@
     canvas.addEventListener("touchend", handleTouchEnd, { passive: false });
     canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
 
-    if (paddleSlider) {
-      paddleSlider.addEventListener("input", function () {
-        applySliderToPaddle();
-        if (!gameRunning) {
-          draw();
-        }
-      });
-      paddleSlider.addEventListener("change", function () {
-        applySliderToPaddle();
-        if (!gameRunning) {
-          draw();
-        }
-      });
-    }
+    bindSliderEvents();
 
-    if (typeof mobileControlsQuery.addEventListener === "function") {
-      mobileControlsQuery.addEventListener("change", function () {
-        detectMobileControls();
-        syncSliderFromPaddle();
-      });
-    } else if (typeof mobileControlsQuery.addListener === "function") {
-      mobileControlsQuery.addListener(function () {
-        detectMobileControls();
-        syncSliderFromPaddle();
-      });
-    }
+    watchMobileControlQueries(function () {
+      detectMobileControls();
+      syncSliderFromPaddle();
+    });
 
     window.addEventListener("resize", function () {
       if (!canvas) {
