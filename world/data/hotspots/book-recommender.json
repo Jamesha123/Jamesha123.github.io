@@ -12,8 +12,8 @@
       "tech": "1.1rem"
     },
     "mobile": {
-      "body": "1.5rem",
-      "tech": "1rem"
+      "body": "1rem",
+      "tech": ".6rem"
     }
   },
   "technologies": [
