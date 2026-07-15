@@ -12,8 +12,8 @@
       "body": "1.7rem"
     },
     "mobile": {
-      "title": "1.1rem",
-      "body": "0.88rem",
+      "title": "2.3rem",
+      "body": "0.9rem",
       "link": "0.75rem"
     }
   },
