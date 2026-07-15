@@ -10,8 +10,8 @@
       "body": "1.9rem"
     },
     "mobile": {
-      "title": "2rem",
-      "body": "1rem",
+      "title": "1.9rem",
+      "body": "1.2rem",
       "link": "0.75rem"
     }
   }
