@@ -5,7 +5,18 @@
   "y": 4,
   "color": "#e67e22",
   "title": "Monkey Boy",
-  "body": "Monkey Boy is a top down 2D adventure game. A passion project that took me months to build. You can explore different biomes, fight bosses, learn magic, and work through quests along the way. Pick up gear, manage your inventory, and save whenever you need to. Grab the JAR below to play (you'll need Java installed), or check out the code on GitHub.",
+  "body": "Monkey Boy is a top down 2D adventure game. A passion project that took me months to build and is the foundation of this portfolio website you are currently on. You can explore, fight bosses, learn magic, and work through quests. Pick up gear, manage your inventory, and save whenever you need to. Grab the JAR below to play (you'll need Java installed), or check out the code on GitHub.",
+  "typography": {
+    "desktop": {
+      "title": "4rem",
+      "body": "1.7rem"
+    },
+    "mobile": {
+      "title": "1.1rem",
+      "body": "0.88rem",
+      "link": "0.75rem"
+    }
+  },
   "links": [
     { "label": "View on GitHub", "url": "https://github.com/Jamesha123/Monkey_Boy" },
     { "label": "Download JAR", "url": "https://raw.githubusercontent.com/Jamesha123/Monkey_Boy/main/MonkeyBoy.jar" }

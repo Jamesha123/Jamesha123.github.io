@@ -1,6 +1,6 @@
 import { ContentStore } from "../core/content-store.js?v=114";
 import { WorldState } from "../core/world-state.js?v=114";
-import { GameUI } from "../ui/game-ui.js?v=139";
+import { GameUI } from "../ui/game-ui.js?v=140";
 import { HotspotSystem } from "../systems/hotspot-system.js?v=114";
 import { MapTransitionSystem } from "../systems/map-transition-system.js?v=114";
 import { MapPropSystem } from "../systems/map-prop-system.js?v=114";

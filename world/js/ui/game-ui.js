@@ -5,6 +5,10 @@ import {
   showMobileJoystickAfterOverlay,
 } from "./mobile-controls.js?v=139";
 import { isGameStarted } from "./title-screen.js?v=128";
+import {
+  applyHotspotTypography,
+  clearHotspotTypography,
+} from "./hotspot-typography.js?v=1";
 
 export class GameUI {
   constructor() {
@@ -213,6 +217,7 @@ export class GameUI {
   }
 
   clearHotspotPanelMode() {
+    clearHotspotTypography(this.modalEl);
     if (this.modalEl) {
       this.modalEl.classList.remove("modal-hotspot-panel");
     }
@@ -455,6 +460,8 @@ export class GameUI {
       const isSecondary = link.secondary === true || index > 0;
       this.appendModalLink(link, isSecondary);
     });
+
+    applyHotspotTypography(this.modalEl, hotspot, this.isMobile);
 
     this.modalOverlay.classList.add("open");
     this.modalOverlay.classList.remove("games-mode", "app-mode");

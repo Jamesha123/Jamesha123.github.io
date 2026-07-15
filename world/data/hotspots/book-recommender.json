@@ -6,6 +6,16 @@
   "color": "#9b59b6",
   "title": "Book Recommender",
   "body": "Book Recommender is a full stack app that learns your taste in books and suggests what to read next. Search titles, rate what you've read, and get recommendations that improve as your profile grows.",
+  "typography": {
+    "desktop": {
+      "body": "1.7rem",
+      "tech": "1.1rem"
+    },
+    "mobile": {
+      "body": "1.5rem",
+      "tech": "1rem"
+    }
+  },
   "technologies": [
     "Node.js",
     "Express",

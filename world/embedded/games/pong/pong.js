@@ -200,6 +200,22 @@
     updateSliderThumbPosition(ratio);
   }
 
+  function syncSliderLayout() {
+    if (!sliderWrap) {
+      return;
+    }
+
+    if (!useMobileSlider || !canvas) {
+      sliderWrap.style.height = "";
+      return;
+    }
+
+    const canvasHeight = canvas.getBoundingClientRect().height;
+    if (canvasHeight > 0) {
+      sliderWrap.style.height = Math.round(canvasHeight) + "px";
+    }
+  }
+
   function setSliderFromClientY(clientY) {
     applyRatioToPaddle(ratioFromClientY(clientY));
     if (!gameRunning) {
@@ -313,14 +329,15 @@
 
     sliderTrack.addEventListener("keydown", handleSliderKeyDown);
 
-    if (typeof ResizeObserver === "function") {
+    if (typeof ResizeObserver === "function" && canvas) {
       if (sliderResizeObserver) {
         sliderResizeObserver.disconnect();
       }
       sliderResizeObserver = new ResizeObserver(function () {
+        syncSliderLayout();
         syncSliderFromPaddle();
       });
-      sliderResizeObserver.observe(sliderTrack);
+      sliderResizeObserver.observe(canvas);
     }
   }
 
@@ -369,6 +386,7 @@
 
     layoutObjects();
     detectMobileControls();
+    syncSliderLayout();
     syncSliderFromPaddle();
     return true;
   }
@@ -394,6 +412,7 @@
 
     watchMobileControlQueries(function () {
       detectMobileControls();
+      syncSliderLayout();
       syncSliderFromPaddle();
     });
 
@@ -402,6 +421,7 @@
         return;
       }
       layoutObjects();
+      syncSliderLayout();
       syncSliderFromPaddle();
     });
 

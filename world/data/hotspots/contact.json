@@ -4,6 +4,17 @@
   "color": "#2ecc71",
   "title": "Get in Touch",
   "body": "Below are my contact information. Feel free to reach out to me via email or linkedin.",
+  "typography": {
+    "desktop": {
+      "title": "4rem",
+      "body": "2rem"
+    },
+    "mobile": {
+      "title": "1.1rem",
+      "body": "0.88rem",
+      "link": "0.75rem"
+    }
+  },
   "links": [
     {
       "label": "LinkedIn",

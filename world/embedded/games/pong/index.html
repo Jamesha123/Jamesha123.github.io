@@ -22,6 +22,10 @@
         </header>
 
         <div class="pong-arena">
+          <div class="game-playfield">
+            <canvas id="pong-canvas"></canvas>
+          </div>
+
           <div class="pong-paddle-slider-wrap" id="pong-paddle-slider-wrap" hidden>
             <span class="pong-slider-label">Paddle</span>
             <div
@@ -36,10 +40,6 @@
             >
               <div class="pong-slider-thumb" id="pong-paddle-slider-thumb" aria-hidden="true"></div>
             </div>
-          </div>
-
-          <div class="game-playfield">
-            <canvas id="pong-canvas"></canvas>
           </div>
         </div>
 
@@ -61,6 +61,6 @@
       </div>
     </div>
     <script src="../../shared/games-focus.js"></script>
-    <script src="pong.js?v=14"></script>
+    <script src="pong.js?v=15"></script>
   </body>
 </html>

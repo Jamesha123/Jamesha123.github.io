@@ -94,8 +94,17 @@ html:not(.mobile-user) .bottom-hud {
   transform: translateX(-50%);
 }
 
+html.mobile-user .modal.modal-hotspot-panel {
+  --hs-title-size: clamp(1.05rem, 4.8vw, 1.35rem);
+  --hs-body-size: clamp(0.82rem, 3.4vw, 1rem);
+  --hs-tech-size: clamp(0.82rem, 3.2vw, 0.98rem);
+  --hs-link-size: clamp(0.72rem, 3.4vw, 0.92rem);
+  --hs-link-label-size: clamp(0.65rem, 2.4vw, 0.78rem);
+  --hs-contact-label-size: clamp(0.62rem, 2.8vw, 0.78rem);
+  --hs-contact-value-size: clamp(0.78rem, 3.6vw, 1rem);
+}
+
 html.mobile-user .modal.modal-hotspot-panel h2 {
-  font-size: clamp(1.05rem, 4.8vw, 1.35rem);
   line-height: 1.25;
   margin-bottom: 0.65rem;
   padding: 0 1rem;
@@ -107,7 +116,6 @@ html.mobile-user .modal.modal-hotspot-panel h2 {
 
 html.mobile-user .modal.modal-hotspot-panel .modal-link-label {
   white-space: nowrap;
-  font-size: clamp(0.65rem, 2.4vw, 0.78rem);
 }
 
 html.mobile-user .modal.modal-hotspot-panel .modal-body-inner {
@@ -119,7 +127,6 @@ html.mobile-user .modal.modal-hotspot-panel .modal-body-scroll {
 }
 
 html.mobile-user .modal.modal-hotspot-panel .modal-body-scroll p {
-  font-size: clamp(0.82rem, 3.4vw, 1rem);
   line-height: 1.6;
 }
 
@@ -374,6 +381,13 @@ html.mobile-user .mobile-interact-btn:active {
   flex-direction: column;
   padding: 1.25rem 1.5rem 1.5rem;
   padding-top: 3rem;
+  --hs-title-size: clamp(1.75rem, 4vw, 2.75rem);
+  --hs-body-size: clamp(1.15rem, 2.2vw, 1.65rem);
+  --hs-tech-size: clamp(0.95rem, 1.8vw, 1.15rem);
+  --hs-link-size: clamp(0.85rem, 1.8vw, 1.15rem);
+  --hs-link-label-size: clamp(0.75rem, 1.4vw, 0.95rem);
+  --hs-contact-label-size: clamp(0.8rem, 1.5vw, 1rem);
+  --hs-contact-value-size: clamp(1rem, 2.2vw, 1.35rem);
 }
 
 .modal.modal-hotspot-panel #modal-standard {
@@ -406,7 +420,7 @@ html.mobile-user .mobile-interact-btn:active {
   width: 100%;
   max-width: none;
   margin: 0 0 1.1em;
-  font-size: clamp(1.15rem, 2.2vw, 1.65rem);
+  font-size: var(--hs-body-size);
   line-height: 1.75;
   text-align: left;
   text-indent: 0;
@@ -422,7 +436,7 @@ html.mobile-user .mobile-interact-btn:active {
   flex-shrink: 0;
   margin: 0 0 1.25rem;
   padding: 0 2.5rem;
-  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-size: var(--hs-title-size);
   line-height: 1.25;
   text-align: center;
   color: #f1c40f;
@@ -448,7 +462,7 @@ html.mobile-user .mobile-interact-btn:active {
 .modal.modal-hotspot-panel .modal-body-inner .modal-tech-list li {
   margin: 0 0 0.3rem;
   font-family: "Segoe UI", Tahoma, sans-serif;
-  font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+  font-size: var(--hs-tech-size);
   line-height: 1.5;
   color: #ecf0f1;
 }
@@ -520,7 +534,7 @@ html.mobile-user .mobile-interact-btn:active {
 
 .modal.modal-hotspot-panel .modal-contact-label {
   font-family: "Segoe UI", Tahoma, sans-serif;
-  font-size: clamp(0.8rem, 1.5vw, 1rem);
+  font-size: var(--hs-contact-label-size);
   line-height: 1.3;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -529,14 +543,14 @@ html.mobile-user .mobile-interact-btn:active {
 
 .modal.modal-hotspot-panel .modal-contact-value {
   font-family: "Segoe UI", Tahoma, sans-serif;
-  font-size: clamp(1rem, 2.2vw, 1.35rem);
+  font-size: var(--hs-contact-value-size);
   line-height: 1.45;
   word-break: break-word;
 }
 
 .modal.modal-hotspot-panel .modal-link-label {
   font-family: "Segoe UI", Tahoma, sans-serif;
-  font-size: clamp(0.75rem, 1.4vw, 0.95rem);
+  font-size: var(--hs-link-label-size);
   line-height: 1.4;
   color: #bdc3c7;
   letter-spacing: 0.04em;
@@ -547,7 +561,7 @@ html.mobile-user .mobile-interact-btn:active {
   display: block;
   width: 100%;
   font-family: inherit;
-  font-size: clamp(0.85rem, 1.8vw, 1.1rem);
+  font-size: var(--hs-link-size);
   line-height: 1.45;
   text-decoration: none;
   text-align: center;
@@ -582,7 +596,7 @@ html.mobile-user .mobile-interact-btn:active {
 
 .modal.modal-hotspot-panel .modal-links a:not(.modal-contact-card),
 .modal.modal-hotspot-panel .modal-links button {
-  font-size: clamp(0.85rem, 1.8vw, 1.15rem);
+  font-size: var(--hs-link-size);
   line-height: 1.4;
   padding: 1rem 2rem;
   min-width: min(100%, 14rem);
@@ -1026,7 +1040,6 @@ html.mobile-user .mobile-interact-btn:active {
   }
 
   .modal.modal-hotspot-panel h2 {
-    font-size: clamp(1.05rem, 4.8vw, 1.35rem);
     line-height: 1.25;
     margin-bottom: 0.65rem;
     padding: 0 1rem;
@@ -1038,7 +1051,6 @@ html.mobile-user .mobile-interact-btn:active {
 
   .modal.modal-hotspot-panel .modal-link-label {
     white-space: nowrap;
-    font-size: clamp(0.65rem, 2.4vw, 0.78rem);
   }
 
   .modal.modal-hotspot-panel .modal-body-inner {
@@ -1046,7 +1058,6 @@ html.mobile-user .mobile-interact-btn:active {
   }
 
   .modal.modal-hotspot-panel .modal-body-scroll p {
-    font-size: clamp(0.82rem, 3.4vw, 1rem);
     line-height: 1.6;
   }
 
