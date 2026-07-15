@@ -81,6 +81,30 @@
   opacity: 0.55;
 }
 
+.game-snake .snake-hint-mobile {
+  display: none;
+}
+
+html.is-snake-mobile .game-snake .snake-hint-desktop,
+.game-snake.is-mobile-controls .snake-hint-desktop {
+  display: none;
+}
+
+html.is-snake-mobile .game-snake .snake-hint-mobile,
+.game-snake.is-mobile-controls .snake-hint-mobile {
+  display: flex;
+}
+
+@media (pointer: coarse) {
+  .game-snake .snake-hint-desktop {
+    display: none;
+  }
+
+  .game-snake .snake-hint-mobile {
+    display: flex;
+  }
+}
+
 .game-snake .game-playfield {
   flex: 1;
   min-height: 0;

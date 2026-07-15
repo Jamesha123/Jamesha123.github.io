@@ -5,7 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Snake</title>
     <link rel="stylesheet" href="../../shared/games-shell.css" />
-    <link rel="stylesheet" href="snake.css" />
+    <link rel="stylesheet" href="snake.css?v=2" />
+    <script>
+      (function () {
+        function hasMobileParent() {
+          try {
+            var win = window;
+            while (win && win.parent && win !== win.parent) {
+              win = win.parent;
+              if (win.document.documentElement.classList.contains("mobile-user")) {
+                return true;
+              }
+            }
+          } catch (_error) {
+            // Ignore cross-origin parent access errors.
+          }
+          return false;
+        }
+
+        function isMobileView() {
+          if (new URLSearchParams(location.search).get("mobile") === "1") {
+            return true;
+          }
+          if (hasMobileParent()) {
+            return true;
+          }
+          if (window.matchMedia("(pointer: coarse)").matches) {
+            return true;
+          }
+          if (/Android|iPhone|iPad|iPod|Mobile|Tablet|webOS|BlackBerry|IEMobile|Opera Mini|Silk|Kindle/i.test(navigator.userAgent)) {
+            return true;
+          }
+          if (navigator.maxTouchPoints > 0 && window.matchMedia("(max-width: 900px)").matches) {
+            return true;
+          }
+          return false;
+        }
+
+        if (isMobileView()) {
+          document.documentElement.classList.add("is-snake-mobile");
+        }
+      })();
+    </script>
   </head>
   <body>
     <div class="game-shell game-snake">
@@ -15,12 +56,11 @@
             <span>Score</span>
             <span class="snake-score-value" id="snake-score">0</span>
           </div>
-          <p class="snake-controls-hint">
-            <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> or <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>
-            <span class="snake-hint-sep">·</span>
-            swipe to steer
-            <span class="snake-hint-sep">·</span>
-            tap center to restart
+          <p class="snake-controls-hint snake-hint-desktop">
+            <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> or <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> to steer
+          </p>
+          <p class="snake-controls-hint snake-hint-mobile">
+            Swipe to steer
           </p>
         </header>
         <div class="game-playfield">
@@ -29,6 +69,6 @@
       </div>
     </div>
     <script src="../../shared/games-focus.js"></script>
-    <script src="snake.js?v=5"></script>
+    <script src="snake.js?v=8"></script>
   </body>
 </html>

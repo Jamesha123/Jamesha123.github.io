@@ -7,6 +7,81 @@
 
   const ctx = canvas.getContext("2d");
   const scoreEl = document.getElementById("snake-score");
+  const gameShell = document.querySelector(".game-snake");
+  const coarsePointerQuery = window.matchMedia("(pointer: coarse)");
+  const narrowViewportQuery = window.matchMedia("(max-width: 900px)");
+
+  function hasMobileParent() {
+    try {
+      let win = window;
+      while (win && win.parent && win !== win.parent) {
+        win = win.parent;
+        if (win.document.documentElement.classList.contains("mobile-user")) {
+          return true;
+        }
+      }
+    } catch (_error) {
+      // Ignore cross-origin parent access errors.
+    }
+    return false;
+  }
+
+  function isMobileLikeDevice() {
+    if (document.documentElement.classList.contains("is-snake-mobile")) {
+      return true;
+    }
+
+    if (hasMobileParent()) {
+      return true;
+    }
+
+    if (new URLSearchParams(window.location.search).get("mobile") === "1") {
+      return true;
+    }
+
+    if (coarsePointerQuery.matches) {
+      return true;
+    }
+
+    if (/Android|iPhone|iPad|iPod|Mobile|Tablet|webOS|BlackBerry|IEMobile|Opera Mini|Silk|Kindle/i.test(navigator.userAgent)) {
+      return true;
+    }
+
+    if (navigator.maxTouchPoints > 0 && narrowViewportQuery.matches) {
+      return true;
+    }
+
+    return false;
+  }
+
+  function detectMobileControls() {
+    const mobile = isMobileLikeDevice();
+    if (gameShell) {
+      gameShell.classList.toggle("is-mobile-controls", mobile);
+    }
+    if (mobile) {
+      document.documentElement.classList.add("is-snake-mobile");
+    } else {
+      document.documentElement.classList.remove("is-snake-mobile");
+    }
+    return mobile;
+  }
+
+  let useMobileControls = detectMobileControls();
+
+  function watchMobileControlQueries(listener) {
+    if (coarsePointerQuery.addEventListener) {
+      coarsePointerQuery.addEventListener("change", listener);
+      narrowViewportQuery.addEventListener("change", listener);
+    } else if (coarsePointerQuery.addListener) {
+      coarsePointerQuery.addListener(listener);
+      narrowViewportQuery.addListener(listener);
+    }
+  }
+
+  watchMobileControlQueries(function () {
+    useMobileControls = detectMobileControls();
+  });
 
   const TILE = 16;
   const PIX = 2;
@@ -211,12 +286,18 @@
     }
   }
 
+  function createInitialSnake() {
+    const headX = Math.floor(tilesX / 2);
+    const headY = Math.floor(tilesY / 2);
+    const segments = [];
+    for (let i = 0; i < 5; i += 1) {
+      segments.push({ x: headX - i, y: headY });
+    }
+    return segments;
+  }
+
   function restart() {
-    snake = [
-      { x: Math.floor(tilesX / 2), y: Math.floor(tilesY / 2) },
-      { x: Math.floor(tilesX / 2) - 1, y: Math.floor(tilesY / 2) },
-      { x: Math.floor(tilesX / 2) - 2, y: Math.floor(tilesY / 2) },
-    ];
+    snake = createInitialSnake();
     direction = { x: 1, y: 0 };
     nextDirection = { x: 1, y: 0 };
     food = spawnFood();
@@ -389,10 +470,7 @@
     ctx.fillStyle = "#f4ffe8";
     ctx.font = "bold 16px Tahoma, sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2 - 6);
-    ctx.font = "11px Tahoma, sans-serif";
-    ctx.fillStyle = "#d7f5b8";
-    ctx.fillText("Space or tap center to restart", canvas.width / 2, canvas.height / 2 + 16);
+    ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2 + 4);
     ctx.textAlign = "start";
   }
 
