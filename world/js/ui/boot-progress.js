@@ -6,7 +6,7 @@ const STAGES = {
   world: [92, 100],
 };
 
-const BOOT_MIN_DURATION_MS = 2000;
+const BOOT_MIN_DURATION_MS = 1000;
 const bootStartedAt = Date.now();
 
 let currentPercent = 0;

@@ -1,5 +1,10 @@
 import { GamesDesktop } from "./games-desktop.js";
-import { isMobileDevice } from "../utils/device.js?v=114";
+import { isMobileDevice } from "../utils/device.js?v=137";
+import {
+  hideMobileJoystickForOverlay,
+  showMobileJoystickAfterOverlay,
+} from "./mobile-controls.js?v=139";
+import { isGameStarted } from "./title-screen.js?v=128";
 
 export class GameUI {
   constructor() {
@@ -60,6 +65,19 @@ export class GameUI {
       });
     }
 
+    this.handleHintActivate = this.handleHintActivate.bind(this);
+
+    if (this.hintEl) {
+      this.hintEl.addEventListener("click", this.handleHintActivate);
+      this.hintEl.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") {
+          return;
+        }
+        event.preventDefault();
+        this.handleHintActivate();
+      });
+    }
+
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && this.modalOpen) {
         if (this.gamesDesktop && this.gamesDesktop.hasOpenApp()) {
@@ -89,6 +107,21 @@ export class GameUI {
         this.onInteract();
       }
     });
+  }
+
+  handleHintActivate() {
+    if (
+      this.isMobile ||
+      this.modalOpen ||
+      this.mapFading ||
+      !this.hintEl ||
+      !this.hintEl.classList.contains("hint-interact") ||
+      !this.onInteract
+    ) {
+      return;
+    }
+
+    this.onInteract();
   }
 
   getDefaultHintText() {
@@ -122,9 +155,18 @@ export class GameUI {
     this.hideInteractPrompt();
     const action = actionText || "interact";
     this.setHint("Press E to " + action, true);
+    this.hintEl.classList.add("hint-interact");
+    this.hintEl.setAttribute("role", "button");
+    this.hintEl.setAttribute("tabindex", "0");
   }
 
   hideInteractPrompt() {
+    if (this.hintEl) {
+      this.hintEl.classList.remove("hint-interact");
+      this.hintEl.removeAttribute("role");
+      this.hintEl.removeAttribute("tabindex");
+    }
+
     if (this.mobileInteractBtn) {
       this.mobileInteractBtn.hidden = true;
     }
@@ -375,6 +417,10 @@ export class GameUI {
     this.setHint("", false);
     this.hideInteractPrompt();
 
+    if (this.isMobile) {
+      hideMobileJoystickForOverlay();
+    }
+
     if (hotspot.view === "desktop") {
       this.clearHotspotPanelMode();
       this.closeAppView();
@@ -485,6 +531,10 @@ export class GameUI {
     this.closeAppView();
     this.clearHotspotPanelMode();
     this.modalOverlay.classList.remove("open", "games-mode", "app-mode", "hotspot-panel-mode");
+
+    if (this.isMobile && isGameStarted()) {
+      showMobileJoystickAfterOverlay();
+    }
 
     const canvas = this.scene && this.scene.game ? this.scene.game.canvas : null;
     if (canvas && typeof canvas.focus === "function") {

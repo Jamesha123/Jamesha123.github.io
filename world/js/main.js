@@ -5,7 +5,7 @@ import { showFatalError } from "./utils/helpers.js?v=128";
 import { setBootStageProgress } from "./ui/boot-progress.js?v=128";
 import { initTitleScreen } from "./ui/title-screen.js?v=128";
 import { bindFullscreenControls } from "./utils/fullscreen.js?v=128";
-import { bindMobileControls } from "./ui/mobile-controls.js?v=128";
+import { bindMobileControls } from "./ui/mobile-controls.js?v=139";
 import { initWorldDebug, bindDebugRefresh } from "./config/debug.js";
 import { DebugGraphics } from "./systems/debug-graphics.js?v=128";
 import { MapTransitionSystem } from "./systems/map-transition-system.js?v=128";

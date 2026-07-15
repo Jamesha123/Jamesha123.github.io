@@ -21,8 +21,22 @@
           </div>
         </header>
 
-        <div class="game-playfield">
-          <canvas id="pong-canvas"></canvas>
+        <div class="pong-arena">
+          <div class="pong-paddle-slider-wrap" id="pong-paddle-slider-wrap" hidden>
+            <label class="pong-slider-label" for="pong-paddle-slider">Paddle</label>
+            <input
+              type="range"
+              id="pong-paddle-slider"
+              min="0"
+              max="1000"
+              value="500"
+              aria-label="Move paddle"
+            />
+          </div>
+
+          <div class="game-playfield">
+            <canvas id="pong-canvas"></canvas>
+          </div>
         </div>
 
         <div class="pong-controls">
@@ -37,11 +51,12 @@
           <button type="button" class="pong-btn pong-btn-primary" id="pong-start-btn">Start</button>
           <button type="button" class="pong-btn" id="pong-reset-btn" disabled>Reset</button>
           <p id="pong-status" class="pong-message" hidden aria-live="polite"></p>
-          <p class="pong-hint"><kbd>W</kbd> / <kbd>S</kbd> or drag to move · first to 7 wins</p>
+          <p class="pong-hint pong-hint-desktop"><kbd>W</kbd> / <kbd>S</kbd> or drag to move · first to 7 wins</p>
+          <p class="pong-hint pong-hint-mobile">Use the slider to move · first to 7 wins</p>
         </div>
       </div>
     </div>
     <script src="../../shared/games-focus.js"></script>
-    <script src="pong.js?v=12"></script>
+    <script src="pong.js?v=13"></script>
   </body>
 </html>

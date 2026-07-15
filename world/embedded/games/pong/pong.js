@@ -20,6 +20,13 @@
 
   let touchStartY = 0;
 
+  let paddleSlider = null;
+  let sliderWrap = null;
+  let useMobileSlider = false;
+  let syncingSlider = false;
+
+  const mobileControlsQuery = window.matchMedia("(max-width: 768px), (pointer: coarse)");
+
   const retroTheme = !!document.querySelector(".game-pong");
 
   let statusEl = document.getElementById("pong-status");
@@ -97,6 +104,47 @@
     computerPaddle.speed = Math.max(3, h * 0.018);
   }
 
+  function paddleTravelRange() {
+    if (!canvas) {
+      return 0;
+    }
+    return Math.max(0, canvas.height - playerPaddle.height);
+  }
+
+  function detectMobileControls() {
+    useMobileSlider = mobileControlsQuery.matches;
+    sliderWrap = document.getElementById("pong-paddle-slider-wrap");
+    paddleSlider = document.getElementById("pong-paddle-slider");
+
+    if (sliderWrap) {
+      sliderWrap.hidden = !useMobileSlider;
+    }
+  }
+
+  function syncSliderFromPaddle() {
+    if (!useMobileSlider || !paddleSlider || !playerPaddle) {
+      return;
+    }
+
+    const travel = paddleTravelRange();
+    const value = travel > 0 ? Math.round((playerPaddle.y / travel) * 1000) : 500;
+
+    syncingSlider = true;
+    paddleSlider.value = String(Math.min(1000, Math.max(0, value)));
+    syncingSlider = false;
+  }
+
+  function applySliderToPaddle() {
+    if (!paddleSlider || !playerPaddle || syncingSlider) {
+      return;
+    }
+
+    const travel = paddleTravelRange();
+    const ratio = Number(paddleSlider.value) / 1000;
+    playerPaddle.y = ratio * travel;
+    playerPaddle.dy = 0;
+  }
+
   function initCanvas() {
     canvas = document.getElementById("pong-canvas");
     if (!canvas) {
@@ -128,6 +176,8 @@
     };
 
     layoutObjects();
+    detectMobileControls();
+    syncSliderFromPaddle();
     return true;
   }
 
@@ -148,6 +198,41 @@
     canvas.addEventListener("touchend", handleTouchEnd, { passive: false });
     canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
 
+    if (paddleSlider) {
+      paddleSlider.addEventListener("input", function () {
+        applySliderToPaddle();
+        if (!gameRunning) {
+          draw();
+        }
+      });
+      paddleSlider.addEventListener("change", function () {
+        applySliderToPaddle();
+        if (!gameRunning) {
+          draw();
+        }
+      });
+    }
+
+    if (typeof mobileControlsQuery.addEventListener === "function") {
+      mobileControlsQuery.addEventListener("change", function () {
+        detectMobileControls();
+        syncSliderFromPaddle();
+      });
+    } else if (typeof mobileControlsQuery.addListener === "function") {
+      mobileControlsQuery.addListener(function () {
+        detectMobileControls();
+        syncSliderFromPaddle();
+      });
+    }
+
+    window.addEventListener("resize", function () {
+      if (!canvas) {
+        return;
+      }
+      layoutObjects();
+      syncSliderFromPaddle();
+    });
+
     if (startBtn) {
       startBtn.addEventListener("click", startGame);
     }
@@ -160,7 +245,7 @@
   }
 
   function handleKeyDown(e) {
-    if (!gameRunning) {
+    if (!gameRunning || useMobileSlider) {
       return;
     }
     switch (e.key.toLowerCase()) {
@@ -176,7 +261,7 @@
   }
 
   function handleKeyUp(e) {
-    if (!gameRunning) {
+    if (!gameRunning || useMobileSlider) {
       return;
     }
     switch (e.key.toLowerCase()) {
@@ -190,6 +275,9 @@
   }
 
   function handleTouchStart(e) {
+    if (useMobileSlider) {
+      return;
+    }
     e.preventDefault();
     if (!gameRunning) {
       return;
@@ -198,6 +286,9 @@
   }
 
   function handleTouchEnd(e) {
+    if (useMobileSlider) {
+      return;
+    }
     e.preventDefault();
     if (!gameRunning) {
       return;
@@ -206,6 +297,9 @@
   }
 
   function handleTouchMove(e) {
+    if (useMobileSlider) {
+      return;
+    }
     e.preventDefault();
     if (!gameRunning) {
       return;
@@ -290,6 +384,7 @@
     computerPaddle.y = canvas.height / 2 - computerPaddle.height / 2;
     playerPaddle.dy = 0;
     computerPaddle.dy = 0;
+    syncSliderFromPaddle();
 
     playerScore = 0;
     computerScore = 0;

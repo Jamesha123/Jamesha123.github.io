@@ -1,6 +1,6 @@
-import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=128";
-import { refreshPhaserScale } from "../utils/viewport.js?v=128";
-import { VirtualJoystick } from "./virtual-joystick.js?v=128";
+import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=139";
+import { refreshPhaserScale } from "../utils/viewport.js?v=139";
+import { VirtualJoystick } from "./virtual-joystick.js?v=139";
 
 let joystick = null;
 
@@ -52,4 +52,18 @@ export function bindMobileControls() {
 
 export function getMobileJoystick() {
   return joystick || window.__WORLD_JOYSTICK__ || null;
+}
+
+export function hideMobileJoystickForOverlay() {
+  const joy = getMobileJoystick();
+  if (joy) {
+    joy.hide();
+  }
+}
+
+export function showMobileJoystickAfterOverlay() {
+  const joy = getMobileJoystick();
+  if (joy) {
+    joy.show();
+  }
 }
