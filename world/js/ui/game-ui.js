@@ -8,7 +8,8 @@ import { isGameStarted } from "./title-screen.js?v=128";
 import {
   applyHotspotTypography,
   clearHotspotTypography,
-} from "./hotspot-typography.js?v=1";
+  isHotspotMobileView,
+} from "./hotspot-typography.js?v=2";
 
 export class GameUI {
   constructor() {
@@ -461,7 +462,7 @@ export class GameUI {
       this.appendModalLink(link, isSecondary);
     });
 
-    applyHotspotTypography(this.modalEl, hotspot, this.isMobile);
+    applyHotspotTypography(this.modalEl, hotspot, isHotspotMobileView());
 
     this.modalOverlay.classList.add("open");
     this.modalOverlay.classList.remove("games-mode", "app-mode");

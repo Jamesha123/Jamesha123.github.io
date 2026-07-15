@@ -261,14 +261,8 @@
       return;
     }
 
-    if (!useMobileSlider || !canvas) {
+    if (!useMobileSlider) {
       sliderWrap.style.height = "";
-      return;
-    }
-
-    const canvasHeight = canvas.getBoundingClientRect().height;
-    if (canvasHeight > 0) {
-      sliderWrap.style.height = Math.round(canvasHeight) + "px";
     }
   }
 
