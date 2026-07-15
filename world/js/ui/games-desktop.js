@@ -1,3 +1,5 @@
+import { isMobileDevice } from "../utils/device.js?v=137";
+
 export class GamesDesktop {
   constructor(rootEl, hotspot) {
     this.rootEl = rootEl;
@@ -131,7 +133,7 @@ export class GamesDesktop {
 
     const frame = document.createElement("iframe");
     frame.className = "games-app-frame";
-    frame.src = app.page;
+    frame.src = buildGameFrameSrc(app.page);
     frame.title = app.label;
     frame.scrolling = app.page === "embedded/games/projects/index.html" ? "auto" : "no";
     if (app.page !== "embedded/games/projects/index.html") {
@@ -197,6 +199,14 @@ export class GamesDesktop {
     this.rootEl.innerHTML = "";
     this.rootEl.hidden = true;
   }
+}
+
+function buildGameFrameSrc(page) {
+  if (!page || !isMobileDevice()) {
+    return page;
+  }
+
+  return page + (page.includes("?") ? "&" : "?") + "mobile=1";
 }
 
 function escapeHtml(value) {

@@ -117,18 +117,39 @@
   }
 
   function isMobileLikeDevice() {
+    try {
+      if (
+        window.parent &&
+        window.parent !== window &&
+        window.parent.document.documentElement.classList.contains("mobile-user")
+      ) {
+        return true;
+      }
+    } catch (_error) {
+      // Ignore cross-origin parent access errors.
+    }
+
+    if (new URLSearchParams(window.location.search).get("mobile") === "1") {
+      return true;
+    }
+
     if (coarsePointerQuery.matches) {
       return true;
     }
 
-    if (/Android|iPhone|iPad|iPod|Mobile|Tablet|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    if (/Android|iPhone|iPad|iPod|Mobile|Tablet|webOS|BlackBerry|IEMobile|Opera Mini|Silk|Kindle/i.test(navigator.userAgent)) {
       return true;
     }
 
-    return narrowViewportQuery.matches && navigator.maxTouchPoints > 0;
+    if (navigator.maxTouchPoints > 0 && narrowViewportQuery.matches) {
+      return true;
+    }
+
+    return false;
   }
 
   function detectMobileControls() {
+    const wasMobileSlider = useMobileSlider;
     useMobileSlider = isMobileLikeDevice();
     sliderWrap = document.getElementById("pong-paddle-slider-wrap");
     sliderTrack = document.getElementById("pong-paddle-slider-track");
@@ -140,6 +161,15 @@
 
     if (mobileShell) {
       mobileShell.classList.toggle("is-mobile-controls", useMobileSlider);
+    }
+
+    if (canvas && wasMobileSlider !== useMobileSlider) {
+      layoutObjects();
+      syncSliderLayout();
+      syncSliderFromPaddle();
+      if (!gameRunning) {
+        draw();
+      }
     }
   }
 
@@ -200,7 +230,33 @@
     updateSliderThumbPosition(ratio);
   }
 
+  function syncCanvasDisplaySize() {
+    if (!canvas || !canvas.parentElement) {
+      return;
+    }
+
+    const parent = canvas.parentElement;
+    const availW = parent.clientWidth;
+    const availH = parent.clientHeight;
+    if (availW <= 0 || availH <= 0) {
+      return;
+    }
+
+    const ratio = ARENA_W / ARENA_H;
+    let displayW = availW;
+    let displayH = displayW / ratio;
+    if (displayH > availH) {
+      displayH = availH;
+      displayW = displayH * ratio;
+    }
+
+    canvas.style.width = Math.floor(displayW) + "px";
+    canvas.style.height = Math.floor(displayH) + "px";
+  }
+
   function syncSliderLayout() {
+    syncCanvasDisplaySize();
+
     if (!sliderWrap) {
       return;
     }
@@ -397,6 +453,7 @@
     }
     resetGame();
     setupEventListeners();
+    syncSliderLayout();
     draw();
   }
 
