@@ -39,6 +39,43 @@
 
 .projects-shell.is-detail .projects-detail {
   display: flex;
+  max-width: none;
+  width: 100%;
+}
+
+.projects-detail-demo-label {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #333;
+}
+
+.projects-detail-demo {
+  width: 100%;
+  height: min(56vh, 460px);
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  border: 2px inset #808080;
+  background: #111;
+  padding: 0.35rem;
+  overflow: hidden;
+}
+
+.projects-detail-demo[hidden] {
+  display: none !important;
+}
+
+.projects-detail-demo-frame {
+  display: block;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  border: 0;
+  background: #000;
 }
 
 .projects-toolbar-title {

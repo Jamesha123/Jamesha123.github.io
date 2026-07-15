@@ -1,4 +1,4 @@
-import { GamesDesktop } from "./games-desktop.js?v=1";
+import { GamesDesktop } from "./games-desktop.js?v=2";
 import { isMobileDevice } from "../utils/device.js?v=137";
 import {
   hideMobileJoystickForOverlay,

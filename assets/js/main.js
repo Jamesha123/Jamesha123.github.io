@@ -419,200 +419,85 @@
 
 })(jQuery);
 
-// Snake demo controls (safe to run even if elements missing)
-(function(){
-	function byId(id){ return document.getElementById(id); }
-	var toggle = byId('snake-toggle');
-	var container = byId('snake-container');
-	if(!toggle || !container) return;
-	// Hide container initially
-	container.style.display = 'none';
-	var started = false;
-	toggle.addEventListener('click', function(e){
-		e.preventDefault();
-		// Show the container when Play is clicked
-		container.style.display = 'block';
-		
-		if (!window.__snakeLoaded) {
-			var s = document.createElement('script');
-			s.src = 'assets/js/snake.js?v=4';
-			s.onload = function(){ 
-				window.__snakeLoaded = true;
-			};
-			document.body.appendChild(s);
+// Mini game demo controls — load the same embedded games used in the world desktop.
+(function () {
+	function byId(id) { return document.getElementById(id); }
+
+	function isMobileDevice() {
+		if (window.matchMedia("(pointer: coarse)").matches) {
+			return true;
 		}
-		started = true;
-		toggle.textContent = 'Playing';
-		toggle.classList.add('disabled');
-	});
-	
-	// Reset game when leaving Snake page
-	window.addEventListener('hashchange', function(){
-		if (location.hash !== '#project-snake') {
-			// Hide container when leaving snake page
-			container.style.display = 'none';
-			
-			// Reset Snake game state
-			if (window.__snakeLoaded) {
-				var old = document.querySelector('script[src^="assets/js/snake.js"]');
-				if (old) old.remove();
-				window.__snakeLoaded = false;
-			}
-			started = false;
-			if (toggle) {
-				toggle.textContent = 'Play Demo';
-				toggle.classList.remove('disabled');
-			}
+		return /Android|iPhone|iPad|iPod|Mobile|Tablet/i.test(navigator.userAgent);
+	}
+
+	function buildDemoSrc(page) {
+		if (!page) {
+			return "";
 		}
+		if (!isMobileDevice()) {
+			return page;
+		}
+		return page + (page.includes("?") ? "&" : "?") + "mobile=1";
+	}
+
+	var demos = [
+		{
+			toggleId: "snake-toggle",
+			containerId: "snake-container",
+			frameId: "snake-demo-frame",
+			page: "world/embedded/games/snake/index.html?v=3",
+			hash: "#project-snake",
+		},
+		{
+			toggleId: "blackjack-toggle",
+			containerId: "blackjack-container",
+			frameId: "blackjack-demo-frame",
+			page: "world/embedded/games/blackjack/index.html",
+			hash: "#project-blackjack",
+		},
+		{
+			toggleId: "pong-toggle",
+			containerId: "pong-container",
+			frameId: "pong-demo-frame",
+			page: "world/embedded/games/pong/index.html",
+			hash: "#project-pong",
+		},
+		{
+			toggleId: "hangman-toggle",
+			containerId: "hangman-container",
+			frameId: "hangman-demo-frame",
+			page: "world/embedded/games/hangman/index.html",
+			hash: "#project-hangman",
+		},
+	];
+
+	demos.forEach(function (demo) {
+		var toggle = byId(demo.toggleId);
+		var container = byId(demo.containerId);
+		var frame = byId(demo.frameId);
+		if (!toggle || !container || !frame) {
+			return;
+		}
+
+		container.style.display = "none";
+
+		toggle.addEventListener("click", function (event) {
+			event.preventDefault();
+			container.style.display = "block";
+			if (!frame.getAttribute("src")) {
+				frame.src = buildDemoSrc(demo.page);
+			}
+			toggle.textContent = "Playing";
+			toggle.classList.add("disabled");
+		});
+
+		window.addEventListener("hashchange", function () {
+			if (location.hash !== demo.hash) {
+				container.style.display = "none";
+				frame.src = "";
+				toggle.textContent = "Play Demo";
+				toggle.classList.remove("disabled");
+			}
+		});
 	});
 })();
-
-// Blackjack demo controls
-(function(){
-	function byId(id){ return document.getElementById(id); }
-	var toggle = byId('blackjack-toggle');
-	var container = byId('blackjack-container');
-	if(!toggle || !container) return;
-	
-	// Hide container initially
-	container.style.display = 'none';
-	var started = false;
-	
-	toggle.addEventListener('click', function(e){
-		e.preventDefault();
-		// Show the container when Play is clicked
-		container.style.display = 'block';
-		
-		if (!window.__blackjackLoaded) {
-			var s = document.createElement('script');
-			s.src = 'assets/js/blackjack.js?v=6';
-			s.onload = function(){ 
-				window.__blackjackLoaded = true;
-			};
-			document.body.appendChild(s);
-		}
-		started = true;
-		toggle.textContent = 'Playing';
-		toggle.classList.add('disabled');
-	});
-	
-	// Reset game when leaving Blackjack page
-	window.addEventListener('hashchange', function(){
-		if (location.hash !== '#project-blackjack') {
-			// Hide container when leaving blackjack page
-			container.style.display = 'none';
-			
-			// Reset Blackjack game state
-			if (window.__blackjackLoaded) {
-				var old = document.querySelector('script[src^="assets/js/blackjack.js"]');
-				if (old) old.remove();
-				window.__blackjackLoaded = false;
-			}
-			started = false;
-			if (toggle) {
-				toggle.textContent = 'Play Demo';
-				toggle.classList.remove('disabled');
-			}
-		}
-	});
-})();
-
-// Hangman demo controls
-$(document).ready(function(){
-	function byId(id){ return document.getElementById(id); }
-	var toggle = byId('hangman-toggle');
-	var container = byId('hangman-container');
-	if(!toggle || !container) return;
-	
-	// Hide container initially
-	container.style.display = 'none';
-	var started = false;
-	
-	toggle.addEventListener('click', function(e){
-		e.preventDefault();
-		// Show the container when Play is clicked
-		container.style.display = 'block';
-		
-		if (!window.__hangmanLoaded) {
-			var s = document.createElement('script');
-			s.src = 'assets/js/hangman.js?v=9';
-			s.onload = function(){ 
-				window.__hangmanLoaded = true;
-			};
-			document.body.appendChild(s);
-		}
-		started = true;
-		toggle.textContent = 'Playing';
-		toggle.classList.add('disabled');
-	});
-	
-	// Reset game when leaving Hangman page
-	window.addEventListener('hashchange', function(){
-		if (location.hash !== '#project-hangman') {
-			// Hide container when leaving hangman page
-			container.style.display = 'none';
-			
-			// Reset Hangman game state
-			if (window.__hangmanLoaded) {
-				var old = document.querySelector('script[src^="assets/js/hangman.js"]');
-				if (old) old.remove();
-				window.__hangmanLoaded = false;
-			}
-			started = false;
-			if (toggle) {
-				toggle.textContent = 'Play Demo';
-				toggle.classList.remove('disabled');
-			}
-		}
-	});
-});
-
-// Pong demo controls
-$(document).ready(function(){
-	function byId(id){ return document.getElementById(id); }
-	var toggle = byId('pong-toggle');
-	var container = byId('pong-container');
-	if(!toggle || !container) return;
-	
-	// Hide container initially
-	container.style.display = 'none';
-	var started = false;
-	
-	toggle.addEventListener('click', function(e){
-		e.preventDefault();
-		// Show the container when Play is clicked
-		container.style.display = 'block';
-		
-		if (!window.__pongLoaded) {
-			var s = document.createElement('script');
-			s.src = 'assets/js/pong.js?v=10';
-			s.onload = function(){ 
-				window.__pongLoaded = true;
-			};
-			document.body.appendChild(s);
-		}
-		started = true;
-		toggle.textContent = 'Playing';
-		toggle.classList.add('disabled');
-	});
-	
-	// Reset game when leaving Pong page
-	window.addEventListener('hashchange', function(){
-		if (location.hash !== '#project-pong') {
-			// Hide container when leaving pong page
-			container.style.display = 'none';
-			
-			// Reset Pong game state
-			if (window.__pongLoaded) {
-				var old = document.querySelector('script[src^="assets/js/pong.js"]');
-				if (old) old.remove();
-				window.__pongLoaded = false;
-			}
-			started = false;
-			if (toggle) {
-				toggle.textContent = 'Play Demo';
-				toggle.classList.remove('disabled');
-			}
-		}
-	});
-});

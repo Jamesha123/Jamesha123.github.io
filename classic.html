@@ -147,9 +147,13 @@
 									<button type="button" class="button primary" id="snake-toggle">Play Demo</button>
 									<a href="https://github.com/Jamesha123/Snake" class="button" target="_blank" rel="noopener">View Source on GitHub</a>
 								</div>
-								<div id="snake-container">
-									<canvas id="snake-canvas" width="420" height="300" style="width:100%;max-width:420px;height:300px;border:1px solid #333;border-radius:6px;display:block;margin:0 auto 1rem auto;background:#111;touch-action:none;"></canvas>
-									<p style="text-align:center;font-size:0.9rem;opacity:0.8;">Use Arrow Keys, WASD, swipe on mobile, or tap center to restart.</p>
+								<div id="snake-container" style="display:none;">
+									<iframe
+										id="snake-demo-frame"
+										title="Snake demo"
+										scrolling="no"
+										style="width:100%;max-width:720px;height:420px;min-height:320px;border:2px solid #333;border-radius:8px;display:block;margin:0 auto 1rem auto;background:#111;"
+									></iframe>
 								</div>
 							</article>
 
@@ -168,37 +172,12 @@
 									<a href="https://github.com/Jamesha123/Blackjack" class="button" target="_blank" rel="noopener">View Source on GitHub</a>
 								</div>
 								<div id="blackjack-container" style="display:none;">
-									<div id="blackjack-game" style="background: #1a1a1a; border: 2px solid #333; border-radius: 8px; padding: 1.5rem; margin: 0 auto; max-width: 600px;">
-										<div style="text-align: center; margin-bottom: 1rem;">
-											<h3 style="color: #fff; margin: 0 0 0.5rem 0;">Blackjack Demo</h3>
-											<div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-												<div style="color: #fff;">
-													<strong>Dealer: <span id="dealer-score">0</span></strong>
-												</div>
-												<div style="color: #fff;">
-													<strong>Player: <span id="player-score">0</span></strong>
-												</div>
-											</div>
-											<div id="game-status" style="color: #2ecc71; font-weight: bold; margin-bottom: 1rem;">Click "Deal" to start!</div>
-										</div>
-										
-										<div id="dealer-cards" style="min-height: 80px; margin-bottom: 1rem; padding: 0.5rem; background: #222; border-radius: 4px;">
-											<div style="color: #fff; margin-bottom: 0.5rem;">Dealer's Cards:</div>
-											<div id="dealer-hand"></div>
-										</div>
-										
-										<div id="player-cards" style="min-height: 80px; margin-bottom: 1rem; padding: 0.5rem; background: #222; border-radius: 4px;">
-											<div style="color: #fff; margin-bottom: 0.5rem;">Your Cards:</div>
-											<div id="player-hand"></div>
-										</div>
-										
-										<div style="text-align: center;">
-											<button id="deal-btn" class="button primary" style="margin: 0 0.5rem;">Deal Cards</button>
-											<button id="hit-btn" class="button" style="margin: 0 0.5rem;" disabled>Hit</button>
-											<button id="stand-btn" class="button" style="margin: 0 0.5rem;" disabled>Stand</button>
-											<button id="new-game-btn" class="button" style="margin: 1rem 1rem 0 1rem;" disabled>New Game</button>
-										</div>
-									</div>
+									<iframe
+										id="blackjack-demo-frame"
+										title="Blackjack demo"
+										scrolling="no"
+										style="width:100%;max-width:720px;height:520px;min-height:360px;border:2px solid #333;border-radius:8px;display:block;margin:0 auto 1rem auto;background:#111;"
+									></iframe>
 								</div>
 							</article>
 
@@ -247,34 +226,12 @@
 									<a href="https://github.com/Jamesha123/Pong" class="button" target="_blank" rel="noopener">View Source on GitHub</a>
 								</div>
 								<div id="pong-container" style="display:none;">
-									<div id="pong-game" style="background: #1a1a1a; border: 2px solid #333; border-radius: 8px; padding: 1.5rem; margin: 0 auto; max-width: 600px;">
-										<div style="text-align: center; margin-bottom: 1rem;">
-											<h3 style="color: #fff; margin: 0 0 0.5rem 0;">Pong Demo</h3>
-											<div id="pong-status" style="color: #2ecc71; font-weight: bold; margin-bottom: 1rem;">Click "Start Game" to begin!</div>
-											<div style="color: #fff; margin-bottom: 1rem;">
-												<strong>Player Score: <span id="pong-player-score">0</span> | Computer Score: <span id="pong-computer-score">0</span></strong>
-											</div>
-											<div style="margin-bottom: 1rem;">
-												<label style="color: #fff; margin-right: 0.5rem;">Difficulty:</label>
-												<select id="pong-difficulty" style="background: #333; color: #fff; border: 1px solid #555; padding: 0.25rem; border-radius: 4px;">
-													<option value="easy">Easy</option>
-													<option value="medium" selected>Medium</option>
-													<option value="hard">Hard</option>
-												</select>
-											</div>
-										</div>
-										
-										<canvas id="pong-canvas" width="400" height="300" style="width: 100%; max-width: 400px; height: 300px; border: 1px solid #333; border-radius: 4px; display: block; margin: 0 auto 1rem auto; background: #111; touch-action: none;"></canvas>
-										
-										<div style="text-align: center; margin-bottom: 1rem;">
-											<p style="color: #fff; font-size: 0.9rem; opacity: 0.8; margin: 0;">Use W/S keys or touch and drag to control paddle</p>
-										</div>
-										
-										<div style="text-align: center;">
-											<button id="pong-start-btn" class="button primary" style="margin: 0 0.5rem;">Start Game</button>
-											<button id="pong-reset-btn" class="button" style="margin: 0 0.5rem;">Reset</button>
-										</div>
-									</div>
+									<iframe
+										id="pong-demo-frame"
+										title="Pong demo"
+										scrolling="no"
+										style="width:100%;max-width:720px;height:420px;min-height:320px;border:2px solid #333;border-radius:8px;display:block;margin:0 auto 1rem auto;background:#111;"
+									></iframe>
 								</div>
 							</article>
 
@@ -290,30 +247,12 @@
 									<a href="https://github.com/Jamesha123/HangMan" class="button" target="_blank" rel="noopener">View Source on GitHub</a>
 								</div>
 								<div id="hangman-container" style="display:none;">
-									<div id="hangman-game" style="background: #1a1a1a; border: 2px solid #333; border-radius: 8px; padding: 1.5rem; margin: 0 auto; max-width: 600px;">
-										<div style="text-align: center; margin-bottom: 1rem;">
-											<h3 style="color: #fff; margin: 0 0 0.5rem 0;">Hangman Demo</h3>
-											<div id="hangman-status" style="color: #2ecc71; font-weight: bold; margin-bottom: 1rem;">Click "New Game" to start!</div>
-											<div style="color: #fff; margin-bottom: 1rem;">
-												<strong>Word: <span id="word-display"></span></strong>
-											</div>
-											<div style="color: #fff; margin-bottom: 1rem;">
-												<strong>Wrong Guesses: <span id="wrong-count">0</span>/6</strong>
-											</div>
-										</div>
-										
-										<div id="hangman-drawing" style="min-height: 200px; margin-bottom: 1rem; padding: 0.5rem; background: #1a2030; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
-										</div>
-										
-										<div id="letter-buttons" style="margin-bottom: 1rem; text-align: center;">
-											<!-- Letter buttons will be generated here -->
-										</div>
-										
-										<div style="text-align: center;">
-											<button id="hangman-new-game-btn" class="button primary" style="margin: 0 0.5rem;">New Game</button>
-											<button id="hangman-hint-btn" class="button" style="margin: 0 0.5rem;">Hint</button>
-										</div>
-									</div>
+									<iframe
+										id="hangman-demo-frame"
+										title="Hangman demo"
+										scrolling="no"
+										style="width:100%;max-width:720px;height:520px;min-height:360px;border:2px solid #333;border-radius:8px;display:block;margin:0 auto 1rem auto;background:#111;"
+									></iframe>
 								</div>
 							</article>
 
@@ -412,7 +351,7 @@
 			<script src="assets/js/browser.min.js?v=2"></script>
 			<script src="assets/js/breakpoints.min.js?v=2"></script>
 			<script src="assets/js/util.js?v=2"></script>
-			<script src="assets/js/main.js?v=6"></script>
+			<script src="assets/js/main.js?v=7"></script>
 
 	</body>
 </html>

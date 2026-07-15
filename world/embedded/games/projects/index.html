@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Projects</title>
     <link rel="stylesheet" href="../../shared/games-shell.css" />
-    <link rel="stylesheet" href="projects.css" />
+    <link rel="stylesheet" href="projects.css?v=3" />
   </head>
   <body>
     <div class="game-shell game-projects">
@@ -20,6 +20,14 @@
           <article id="projects-detail" class="projects-detail" aria-live="polite">
             <div id="projects-detail-hero" class="projects-detail-hero"></div>
             <h2 id="projects-detail-title"></h2>
+            <div id="projects-detail-demo" class="projects-detail-demo" hidden>
+              <iframe
+                id="projects-detail-demo-frame"
+                class="projects-detail-demo-frame"
+                title="Project demo"
+                scrolling="no"
+              ></iframe>
+            </div>
             <ul id="projects-detail-list"></ul>
             <div class="projects-detail-actions">
               <a id="projects-detail-repo" href="#" target="_blank" rel="noopener noreferrer">View Source on GitHub</a>
@@ -45,6 +53,6 @@
       </div>
     </div>
     <script src="projects-focus.js"></script>
-    <script src="projects.js"></script>
+    <script src="projects.js?v=3"></script>
   </body>
 </html>

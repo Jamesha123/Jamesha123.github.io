@@ -58,6 +58,7 @@ const PROJECTS = [
     id: "pong",
     label: "Pong",
     icon: "images/pong.jpg",
+    demo: "../pong/index.html",
     repo: "https://github.com/Jamesha123/Pong",
     repoLabel: "View Source on GitHub",
     bullets: [
@@ -70,6 +71,7 @@ const PROJECTS = [
     id: "snake",
     label: "Snake Game",
     icon: "images/Snake.jpg",
+    demo: "../snake/index.html?v=3",
     repo: "https://github.com/Jamesha123/Snake",
     repoLabel: "View Source on GitHub",
     bullets: [
@@ -82,6 +84,7 @@ const PROJECTS = [
     id: "blackjack",
     label: "Blackjack",
     icon: "images/blackjack.jpg",
+    demo: "../blackjack/index.html",
     repo: "https://github.com/Jamesha123/Blackjack",
     repoLabel: "View Source on GitHub",
     bullets: [
@@ -96,6 +99,7 @@ const PROJECTS = [
     id: "hangman",
     label: "Hangman",
     icon: "images/hangman.jpg",
+    demo: "../hangman/index.html",
     repo: "https://github.com/Jamesha123/HangMan",
     repoLabel: "View Source on GitHub",
     bullets: [
@@ -153,8 +157,99 @@ const detailHero = document.getElementById("projects-detail-hero");
 const detailTitle = document.getElementById("projects-detail-title");
 const detailList = document.getElementById("projects-detail-list");
 const detailRepo = document.getElementById("projects-detail-repo");
+let detailDemo = document.getElementById("projects-detail-demo");
+let detailDemoFrame = document.getElementById("projects-detail-demo-frame");
 
 let activeProject = null;
+
+function isMobileDevice() {
+  try {
+    var win = window;
+    while (win && win.parent && win !== win.parent) {
+      win = win.parent;
+      if (win.document.documentElement.classList.contains("mobile-user")) {
+        return true;
+      }
+    }
+  } catch (_error) {
+    // Ignore cross-origin parent access errors.
+  }
+
+  if (window.matchMedia("(pointer: coarse)").matches) {
+    return true;
+  }
+
+  return /Android|iPhone|iPad|iPod|Mobile|Tablet/i.test(navigator.userAgent);
+}
+
+function resolveDemoUrl(page) {
+  return new URL(page, window.location.href).href;
+}
+
+function buildDemoFrameSrc(page) {
+  if (!page) {
+    return "";
+  }
+
+  const resolved = resolveDemoUrl(page);
+  if (!isMobileDevice()) {
+    return resolved;
+  }
+
+  return resolved + (resolved.includes("?") ? "&" : "?") + "mobile=1";
+}
+
+function ensureDemoElements() {
+  if (detailDemo && detailDemoFrame) {
+    return;
+  }
+
+  const detail = document.getElementById("projects-detail");
+  const list = document.getElementById("projects-detail-list");
+  if (!detail || !list) {
+    return;
+  }
+
+  detailDemo = document.createElement("div");
+  detailDemo.id = "projects-detail-demo";
+  detailDemo.className = "projects-detail-demo";
+  detailDemo.hidden = true;
+
+  const label = document.createElement("p");
+  label.className = "projects-detail-demo-label";
+  label.textContent = "Live Demo";
+
+  detailDemoFrame = document.createElement("iframe");
+  detailDemoFrame.id = "projects-detail-demo-frame";
+  detailDemoFrame.className = "projects-detail-demo-frame";
+  detailDemoFrame.title = "Project demo";
+  detailDemoFrame.setAttribute("scrolling", "no");
+
+  detailDemo.appendChild(label);
+  detailDemo.appendChild(detailDemoFrame);
+  detail.insertBefore(detailDemo, list);
+}
+
+function setProjectDemo(project) {
+  ensureDemoElements();
+
+  if (!detailDemo || !detailDemoFrame) {
+    return;
+  }
+
+  if (!project || !project.demo) {
+    detailDemo.hidden = true;
+    detailDemoFrame.src = "about:blank";
+    return;
+  }
+
+  detailDemo.hidden = false;
+  detailDemoFrame.title = project.label + " demo";
+  detailDemoFrame.src = buildDemoFrameSrc(project.demo);
+  window.requestAnimationFrame(function () {
+    detailDemo.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  });
+}
 
 function isSvgIcon(path) {
   return /\.svg($|\?)/i.test(path);
@@ -202,6 +297,7 @@ function openProject(project) {
     .join("");
   detailRepo.href = project.repo;
   detailRepo.textContent = project.repoLabel;
+  setProjectDemo(project);
 }
 
 function closeProject() {
@@ -209,6 +305,7 @@ function closeProject() {
     return;
   }
 
+  setProjectDemo(null);
   activeProject = null;
   shell.classList.remove("is-detail");
   toolbarTitle.textContent = "Projects";
