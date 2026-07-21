@@ -55,73 +55,6 @@ const PROJECTS = [
     ],
   },
   {
-    id: "pong",
-    label: "Pong",
-    icon: "images/pong.jpg",
-    demo: "../pong/index.html",
-    repo: "https://github.com/Jamesha123/Pong",
-    repoLabel: "View Source on GitHub",
-    bullets: [
-      "Created a classic Pong arcade game using Java with advanced physics simulation and collision detection algorithms",
-      "Developed interactive web demo with HTML5 Canvas, featuring smooth animations and responsive touch controls",
-      "Implemented intelligent AI opponent with three difficulty levels (Easy, Medium, Hard) and adaptive gameplay",
-    ],
-  },
-  {
-    id: "snake",
-    label: "Snake Game",
-    icon: "images/Snake.jpg",
-    demo: "../snake/index.html?v=3",
-    repo: "https://github.com/Jamesha123/Snake",
-    repoLabel: "View Source on GitHub",
-    bullets: [
-      "Developed a complete Snake game implementation using Java with object-oriented design patterns and Swing GUI",
-      "Created interactive web demo using HTML5 Canvas, CSS3, and vanilla JavaScript with responsive design",
-      "Implemented cross-platform controls including keyboard input, touch gestures, and mobile-optimized swipe controls",
-    ],
-  },
-  {
-    id: "blackjack",
-    label: "Blackjack",
-    icon: "images/blackjack.jpg",
-    demo: "../blackjack/index.html",
-    repo: "https://github.com/Jamesha123/Blackjack",
-    repoLabel: "View Source on GitHub",
-    bullets: [
-      "Engineered a complete Blackjack game using Java with advanced card game mechanics and AI dealer logic",
-      "Implemented sophisticated 6-deck shoe system with automatic reshuffling and realistic card dealing algorithms",
-      "Developed comprehensive game state management including betting, hand evaluation, and multiple game rounds",
-      "Created intuitive user interface with real-time score tracking and game status updates",
-      "Built interactive web demo featuring HTML5 Canvas rendering, dynamic card animations, and responsive UI design",
-    ],
-  },
-  {
-    id: "hangman",
-    label: "Hangman",
-    icon: "images/hangman.jpg",
-    demo: "../hangman/index.html",
-    repo: "https://github.com/Jamesha123/HangMan",
-    repoLabel: "View Source on GitHub",
-    bullets: [
-      "Engineered a complete Hangman word-guessing game using Java with comprehensive game logic and user interface",
-      "Developed interactive web demo featuring HTML5 Canvas, dynamic word generation, and progressive visual feedback",
-    ],
-  },
-  {
-    id: "disassembler",
-    label: "Disassembler",
-    icon: "images/assembly.jpg",
-    repo: "https://github.com/Jamesha123/Disassembler",
-    repoLabel: "View Source on GitHub",
-    bullets: [
-      "Built a comprehensive binary disassembler in Go capable of parsing and analyzing executable machine code",
-      "Implemented assembly code simulation engine with register management, memory addressing, and instruction execution",
-      "Developed robust parsing algorithms for multiple instruction set architectures with detailed error reporting",
-      "Learned Go programming language including goroutines, channels, and concurrent programming patterns",
-      "Collaborated effectively in team environment using Git version control and agile development methodologies",
-    ],
-  },
-  {
     id: "book-recommender",
     label: "Book Recommender",
     icon: "images/book.jpg",
@@ -148,10 +81,73 @@ const PROJECTS = [
       "Portfolio includes a static browser demo (assets/lists-app/) that runs on GitHub Pages with localStorage",
     ],
   },
+  {
+    id: "pong",
+    label: "Pong",
+    icon: "images/pong.jpg",
+    repo: "https://github.com/Jamesha123/Pong",
+    repoLabel: "View Source on GitHub",
+    bullets: [
+      "Created a classic Pong arcade game using Java with advanced physics simulation and collision detection algorithms",
+      "Developed interactive web demo with HTML5 Canvas, featuring smooth animations and responsive touch controls",
+      "Implemented AI opponent with three difficulty levels (Easy, Medium, Hard)",
+    ],
+  },
+  {
+    id: "snake",
+    label: "Snake Game",
+    icon: "images/Snake.jpg",
+    repo: "https://github.com/Jamesha123/Snake",
+    repoLabel: "View Source on GitHub",
+    bullets: [
+      "Developed a complete Snake game implementation using Java with object-oriented design patterns and Swing GUI",
+      "Created interactive web demo using HTML5 Canvas, CSS3, and vanilla JavaScript with responsive design",
+      "Implemented cross-platform controls including keyboard input, touch gestures, and mobile-optimized swipe controls",
+    ],
+  },
+  {
+    id: "blackjack",
+    label: "Blackjack",
+    icon: "images/blackjack.jpg",
+    repo: "https://github.com/Jamesha123/Blackjack",
+    repoLabel: "View Source on GitHub",
+    bullets: [
+      "Engineered a complete Blackjack game using Java with advanced card game mechanics and AI dealer logic",
+      "Implemented sophisticated 6-deck shoe system with automatic reshuffling and realistic card dealing algorithms",
+      "Developed comprehensive game state management including betting, hand evaluation, and multiple game rounds",
+      "Built interactive web demo featuring HTML5 Canvas rendering, dynamic card animations, and responsive UI design",
+    ],
+  },
+  {
+    id: "hangman",
+    label: "Hangman",
+    icon: "images/hangman.jpg",
+    repo: "https://github.com/Jamesha123/HangMan",
+    repoLabel: "View Source on GitHub",
+    bullets: [
+      "Engineered a complete Hangman word-guessing game using Java with comprehensive game logic and user interface",
+      "Developed interactive web demo featuring HTML5 Canvas, dynamic word generation, and progressive visual feedback",
+    ],
+  },
+  {
+    id: "disassembler",
+    label: "Disassembler",
+    icon: "images/assembly.jpg",
+    repo: "https://github.com/Jamesha123/Disassembler",
+    repoLabel: "View Source on GitHub",
+    bullets: [
+      "Built a comprehensive binary disassembler in Go capable of parsing and analyzing executable machine code",
+      "Implemented assembly code simulation engine with register management, memory addressing, and instruction execution",
+      "Developed robust parsing algorithms for multiple instruction set architectures with detailed error reporting",
+      "Learned Go programming language including goroutines, channels, and concurrent programming patterns",
+      "Collaborated effectively in team environment using Git version control and agile development methodologies",
+    ],
+  },
 ];
 
 const shell = document.getElementById("projects-shell");
 const gridEl = document.getElementById("projects-grid");
+const backBtn = document.getElementById("projects-back-btn");
 const toolbarTitle = document.getElementById("projects-toolbar-title");
 const detailHero = document.getElementById("projects-detail-hero");
 const detailTitle = document.getElementById("projects-detail-title");
@@ -278,10 +274,17 @@ function renderGrid() {
   });
 }
 
+function setDetailView(open) {
+  shell.classList.toggle("is-detail", open);
+  if (backBtn) {
+    backBtn.hidden = !open;
+  }
+  toolbarTitle.textContent = open && activeProject ? activeProject.label : "Projects";
+}
+
 function openProject(project) {
   activeProject = project;
-  shell.classList.add("is-detail");
-  toolbarTitle.textContent = project.label;
+  setDetailView(true);
 
   detailHero.innerHTML =
     '<img src="' +
@@ -307,8 +310,13 @@ function closeProject() {
 
   setProjectDemo(null);
   activeProject = null;
-  shell.classList.remove("is-detail");
-  toolbarTitle.textContent = "Projects";
+  setDetailView(false);
+}
+
+if (backBtn) {
+  backBtn.addEventListener("click", function () {
+    closeProject();
+  });
 }
 
 window.__closeProjectDetail = closeProject;
