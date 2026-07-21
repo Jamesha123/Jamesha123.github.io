@@ -1,3 +1,5 @@
+import { ASSET_VERSION } from "../version.js?v=145";
+
 let cachedWorldRoot = null;
 
 export function getWorldRootUrl() {
@@ -25,7 +27,7 @@ export function resolveWorldAsset(relativePath) {
 export function cacheBust(path) {
   const resolved = resolveWorldAsset(path);
   const separator = resolved.includes("?") ? "&" : "?";
-  return resolved + separator + "v=" + Date.now();
+  return resolved + separator + "v=" + ASSET_VERSION;
 }
 export function parseBooleanProperty(value, fallback) {
   if (value === null || value === undefined || value === "") {

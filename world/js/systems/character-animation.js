@@ -1,4 +1,4 @@
-import { cacheBust } from "../utils/helpers.js?v=77";
+import { cacheBust } from "../utils/helpers.js?v=145";
 
 export class CharacterAnimation {
   static preloadWalkFrames(loader, prefix, folder, walkConfig) {

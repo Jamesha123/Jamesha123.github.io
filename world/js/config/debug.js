@@ -1,5 +1,6 @@
 /**
  * Debug overlays — edit the flags below, hard refresh, then run DEBUG.refresh().
+ * Cache busting is automatic: bump ASSET_VERSION in js/version.js, then npm run sync-versions.
  *
  * showHotspots    — red interaction circles/rects (map exits, talk range)
  * showCharacters  — player + portrait NPC collision boxes

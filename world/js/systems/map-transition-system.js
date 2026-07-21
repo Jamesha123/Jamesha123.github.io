@@ -1,4 +1,4 @@
-import { isDebugEnabled } from "../config/debug.js";
+import { isDebugEnabled } from "../config/debug.js?v=145";
 
 export class MapTransitionSystem {
   constructor(scene, content, world) {

@@ -1,0 +1,19 @@
+{
+  "id": "weather-station",
+  "image": "assets/sprites/props/weather-station-source.png",
+  "preferConfigSize": true,
+  "width": 28,
+  "height": 60,
+  "scale": 1,
+  "depth": 4,
+  "hitboxWidth": 20,
+  "hitboxHeight": 30,
+  "hitboxOffsetX": 0,
+  "hitboxOffsetY": 10,
+  "hotspotId": "nws-alerts",
+  "hotspotReach": 2.75,
+  "collision": true,
+  "label": "Weather Alerts",
+  "labelGap": 4,
+  "labelFontSize": "1px"
+}

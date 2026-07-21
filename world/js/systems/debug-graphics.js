@@ -1,4 +1,27 @@
-import { isDebugEnabled } from "../config/debug.js";
+import { isDebugEnabled } from "../config/debug.js?v=145";
+
+function getStore() {
+  if (typeof window !== "undefined") {
+    if (!window.__DEBUG_GRAPHICS_STORE__) {
+      window.__DEBUG_GRAPHICS_STORE__ = {
+        hitboxTargets: [],
+        hotspotRanges: [],
+        hotspotRects: [],
+      };
+    }
+    return window.__DEBUG_GRAPHICS_STORE__;
+  }
+
+  if (!getStore.fallback) {
+    getStore.fallback = {
+      hitboxTargets: [],
+      hotspotRanges: [],
+      hotspotRects: [],
+    };
+  }
+
+  return getStore.fallback;
+}
 
 export class DebugGraphics {
   static reset(scene) {
@@ -13,9 +36,10 @@ export class DebugGraphics {
       }
     }
 
-    DebugGraphics.hitboxTargets = [];
-    DebugGraphics.hotspotRanges = [];
-    DebugGraphics.hotspotRects = [];
+    const store = getStore();
+    store.hitboxTargets = [];
+    store.hotspotRanges = [];
+    store.hotspotRects = [];
   }
 
   static addHitboxOutline(scene, bodyTarget, kind) {
@@ -23,7 +47,7 @@ export class DebugGraphics {
       return;
     }
 
-    DebugGraphics.hitboxTargets.push({
+    getStore().hitboxTargets.push({
       target: bodyTarget,
       kind: kind,
     });
@@ -31,12 +55,12 @@ export class DebugGraphics {
   }
 
   static addHotspotRangeOutline(scene, x, y, radius) {
-    DebugGraphics.hotspotRanges.push({ x: x, y: y, radius: radius });
+    getStore().hotspotRanges.push({ x: x, y: y, radius: radius });
     DebugGraphics.redraw(scene);
   }
 
   static addHotspotRectOutline(scene, rect) {
-    DebugGraphics.hotspotRects.push(rect);
+    getStore().hotspotRects.push(rect);
     DebugGraphics.redraw(scene);
   }
 
@@ -50,9 +74,10 @@ export class DebugGraphics {
     }
 
     const gfx = scene.debugOutlineGfx;
+    const store = getStore();
     gfx.clear();
 
-    DebugGraphics.hitboxTargets.forEach(function (entry) {
+    store.hitboxTargets.forEach(function (entry) {
       if (!isDebugEnabled(entry.kind)) {
         return;
       }
@@ -102,14 +127,14 @@ export class DebugGraphics {
       return;
     }
 
-    DebugGraphics.hotspotRanges.forEach(function (range) {
+    store.hotspotRanges.forEach(function (range) {
       gfx.fillStyle(0xff0000, 0.08);
       gfx.fillCircle(range.x, range.y, range.radius);
       gfx.lineStyle(2, 0xff0000, 0.9);
       gfx.strokeCircle(range.x, range.y, range.radius);
     });
 
-    DebugGraphics.hotspotRects.forEach(function (rect) {
+    store.hotspotRects.forEach(function (rect) {
       gfx.fillStyle(0xff0000, 0.08);
       gfx.fillRect(rect.left, rect.top, rect.width, rect.height);
       gfx.lineStyle(2, 0xff0000, 0.9);
@@ -146,7 +171,3 @@ export class DebugGraphics {
     gfx.strokePath();
   }
 }
-
-DebugGraphics.hitboxTargets = [];
-DebugGraphics.hotspotRanges = [];
-DebugGraphics.hotspotRects = [];

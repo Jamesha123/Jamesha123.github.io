@@ -1,5 +1,5 @@
-import { CharacterAnimation } from "../systems/character-animation.js?v=85";
-import { DebugGraphics } from "../systems/debug-graphics.js?v=93";
+import { CharacterAnimation } from "../systems/character-animation.js?v=145";
+import { DebugGraphics } from "../systems/debug-graphics.js?v=145";
 
 export class Player {
   constructor(scene, config) {

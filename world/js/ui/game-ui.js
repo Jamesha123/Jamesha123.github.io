@@ -1,15 +1,15 @@
-import { GamesDesktop } from "./games-desktop.js?v=2";
-import { isMobileDevice } from "../utils/device.js?v=137";
+import { GamesDesktop } from "./games-desktop.js?v=145";
+import { isMobileDevice } from "../utils/device.js?v=145";
 import {
   hideMobileJoystickForOverlay,
   showMobileJoystickAfterOverlay,
-} from "./mobile-controls.js?v=139";
-import { isGameStarted } from "./title-screen.js?v=128";
+} from "./mobile-controls.js?v=145";
+import { isGameStarted } from "./title-screen.js?v=145";
 import {
   applyHotspotTypography,
   clearHotspotTypography,
   isHotspotMobileView,
-} from "./hotspot-typography.js?v=2";
+} from "./hotspot-typography.js?v=145";
 
 export class GameUI {
   constructor() {

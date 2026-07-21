@@ -1,4 +1,4 @@
-import { isMobileDevice } from "../utils/device.js?v=137";
+import { isMobileDevice } from "../utils/device.js?v=145";
 
 function isProjectsPage(page) {
   if (!page) {

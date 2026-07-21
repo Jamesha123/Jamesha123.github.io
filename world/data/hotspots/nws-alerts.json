@@ -1,0 +1,8 @@
+{
+  "id": "nws-alerts",
+  "label": "Weather Alerts",
+  "color": "#3498db",
+  "view": "app",
+  "page": "embedded/apps/nws.html",
+  "title": "NWS Alert Subscriber"
+}

@@ -1,21 +1,21 @@
-import { ContentStore } from "../core/content-store.js?v=114";
-import { WorldState } from "../core/world-state.js?v=114";
-import { GameUI } from "../ui/game-ui.js?v=143";
-import { HotspotSystem } from "../systems/hotspot-system.js?v=114";
-import { MapTransitionSystem } from "../systems/map-transition-system.js?v=114";
-import { MapPropSystem } from "../systems/map-prop-system.js?v=114";
-import { CharacterAnimation } from "../systems/character-animation.js?v=114";
-import { Player } from "../entities/player.js?v=114";
-import { TiledWorldBuilder } from "../map/tiled-world-builder.js?v=114";
-import { FallbackWorldBuilder } from "../map/fallback-world-builder.js?v=114";
-import { cacheBust, showFatalError } from "../utils/helpers.js?v=122";
-import { setBootProgress, setBootStageProgress, finishBoot } from "../ui/boot-progress.js?v=128";
-import { getMobileJoystick } from "../ui/mobile-controls.js?v=139";
-import { showTitleScreen, isGameStarted } from "../ui/title-screen.js?v=128";
-import { DebugGraphics } from "../systems/debug-graphics.js?v=128";
-import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=128";
-import { preloadWorldLabelFont } from "../ui/world-label.js?v=128";
-import { ASSET_VERSION } from "../version.js?v=128";
+import { ContentStore } from "../core/content-store.js?v=145";
+import { WorldState } from "../core/world-state.js?v=145";
+import { GameUI } from "../ui/game-ui.js?v=145";
+import { HotspotSystem } from "../systems/hotspot-system.js?v=145";
+import { MapTransitionSystem } from "../systems/map-transition-system.js?v=145";
+import { MapPropSystem } from "../systems/map-prop-system.js?v=145";
+import { CharacterAnimation } from "../systems/character-animation.js?v=145";
+import { Player } from "../entities/player.js?v=145";
+import { TiledWorldBuilder } from "../map/tiled-world-builder.js?v=145";
+import { FallbackWorldBuilder } from "../map/fallback-world-builder.js?v=145";
+import { cacheBust, showFatalError } from "../utils/helpers.js?v=145";
+import { setBootProgress, setBootStageProgress, finishBoot } from "../ui/boot-progress.js?v=145";
+import { getMobileJoystick } from "../ui/mobile-controls.js?v=145";
+import { showTitleScreen, isGameStarted } from "../ui/title-screen.js?v=145";
+import { DebugGraphics } from "../systems/debug-graphics.js?v=145";
+import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=145";
+import { preloadWorldLabelFont } from "../ui/world-label.js?v=145";
+import { ASSET_VERSION } from "../version.js?v=145";
 
 export default class WorldScene extends Phaser.Scene {
   constructor(contentStore) {

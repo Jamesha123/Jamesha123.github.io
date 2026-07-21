@@ -6184,6 +6184,23 @@
               "value": "mailbox"
             }
           ]
+        },
+        {
+          "id": 13,
+          "name": "Weather Station",
+          "x": 736.0,
+          "y": 347.0,
+          "width": 31.0,
+          "height": 51.0,
+          "visible": true,
+          "rotation": 0,
+          "properties": [
+            {
+              "name": "propId",
+              "type": "string",
+              "value": "weather-station"
+            }
+          ]
         }
       ]
     }

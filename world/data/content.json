@@ -13,7 +13,8 @@
     "props": [
       "sprites/props/house.json",
       "sprites/props/mailbox.json",
-      "sprites/props/furniture.json"
+      "sprites/props/furniture.json",
+      "sprites/props/weather-station.json"
     ]
   },
   "hotspots": [
@@ -23,6 +24,7 @@
     "hotspots/monkeyboy.json",
     "hotspots/book-recommender.json",
     "hotspots/games.json",
-    "hotspots/todo-lists.json"
+    "hotspots/todo-lists.json",
+    "hotspots/nws-alerts.json"
   ]
 }

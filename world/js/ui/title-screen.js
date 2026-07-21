@@ -1,4 +1,4 @@
-import { getMobileJoystick } from "./mobile-controls.js?v=139";
+import { getMobileJoystick } from "./mobile-controls.js?v=145";
 
 let worldScene = null;
 let gameStarted = false;

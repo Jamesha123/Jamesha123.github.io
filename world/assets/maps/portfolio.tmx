@@ -169,5 +169,10 @@
     <property name="propId" value="mailbox"/>
    </properties>
   </object>
+  <object id="13" name="Weather Station" x="736" y="347" width="31" height="51">
+   <properties>
+    <property name="propId" value="weather-station"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>
