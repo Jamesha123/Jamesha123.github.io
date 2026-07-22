@@ -1,4 +1,5 @@
-import { isDebugEnabled } from "../config/debug.js?v=145";
+import { isDebugEnabled } from "../config/debug.js?v=146";
+import { getAchievementStore } from "../core/achievement-store.js?v=146";
 
 export class MapTransitionSystem {
   constructor(scene, content, world) {
@@ -44,7 +45,7 @@ export class MapTransitionSystem {
   checkProximity(playerSprite, ui) {
     this.nearbyTarget = null;
 
-    if (ui.isModalOpen() || ui.isMapFading() || !playerSprite) {
+    if (ui.isInputBlocked() || !playerSprite) {
       return;
     }
 
@@ -103,6 +104,11 @@ export class MapTransitionSystem {
 
     if (this.pendingTransition) {
       return;
+    }
+
+    const store = getAchievementStore();
+    if (store && targetMapId) {
+      store.unlock("map:" + targetMapId);
     }
 
     this.pendingTransition = true;

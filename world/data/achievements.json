@@ -1,0 +1,59 @@
+{
+  "achievements": [
+    {
+      "id": "hotspot:welcome",
+      "title": "Nice to Meet You",
+      "description": "Talked to James.",
+      "icon": "👋"
+    },
+    {
+      "id": "hotspot:contact",
+      "title": "Get in Touch",
+      "description": "Found the contact info.",
+      "icon": "✉️"
+    },
+    {
+      "id": "hotspot:monkeyboy",
+      "title": "Monkey Business",
+      "description": "Met the old wizard.",
+      "icon": "🐵"
+    },
+    {
+      "id": "hotspot:games",
+      "title": "Arcade Visit",
+      "description": "Opened the mini games desktop.",
+      "icon": "🕹️"
+    },
+    {
+      "id": "hotspot:todo-lists",
+      "title": "List Maker",
+      "description": "Tried the collaborative lists demo.",
+      "icon": "📝"
+    },
+    {
+      "id": "hotspot:nws-alerts",
+      "title": "Weather Watch",
+      "description": "Checked out the NWS alert demo.",
+      "icon": "🌩️"
+    },
+    {
+      "id": "hotspot:book-recommender",
+      "title": "Bookworm",
+      "description": "Visited the book recommender project.",
+      "icon": "📚"
+    },
+    {
+      "id": "map:house-interior",
+      "title": "Step Inside",
+      "description": "Entered the house.",
+      "icon": "🏠"
+    },
+    {
+      "id": "completionist",
+      "title": "Completionist",
+      "description": "Unlocked every achievement.",
+      "icon": "💎",
+      "hidden": true
+    }
+  ]
+}

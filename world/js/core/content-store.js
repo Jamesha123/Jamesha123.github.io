@@ -79,6 +79,10 @@ export class ContentStore {
     });
   }
 
+  get achievements() {
+    return this.data.achievements || [];
+  }
+
   getProp(id) {
     return this.propConfigs.find(function (item) {
       return item.id === id;

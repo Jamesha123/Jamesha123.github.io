@@ -1,15 +1,16 @@
-import { GamesDesktop } from "./games-desktop.js?v=145";
-import { isMobileDevice } from "../utils/device.js?v=145";
+import { GamesDesktop } from "./games-desktop.js?v=146";
+import { isMobileDevice } from "../utils/device.js?v=146";
 import {
   hideMobileJoystickForOverlay,
   showMobileJoystickAfterOverlay,
-} from "./mobile-controls.js?v=145";
-import { isGameStarted } from "./title-screen.js?v=145";
+} from "./mobile-controls.js?v=146";
+import { isGameStarted } from "./title-screen.js?v=146";
 import {
   applyHotspotTypography,
   clearHotspotTypography,
   isHotspotMobileView,
-} from "./hotspot-typography.js?v=145";
+} from "./hotspot-typography.js?v=146";
+import { getAchievementStore } from "../core/achievement-store.js?v=146";
 
 export class GameUI {
   constructor() {
@@ -33,6 +34,7 @@ export class GameUI {
     this.gamesDesktop = null;
     this.appFrame = null;
     this.scene = null;
+    this.achievementLog = null;
 
     this.handleModalMessage = this.handleModalMessage.bind(this);
     window.addEventListener("message", this.handleModalMessage);
@@ -95,7 +97,7 @@ export class GameUI {
         return;
       }
 
-      if (this.modalOpen || this.mapFading) {
+      if (this.isInputBlocked()) {
         return;
       }
 
@@ -117,8 +119,7 @@ export class GameUI {
   handleHintActivate() {
     if (
       this.isMobile ||
-      this.modalOpen ||
-      this.mapFading ||
+      this.isInputBlocked() ||
       !this.hintEl ||
       !this.hintEl.classList.contains("hint-interact") ||
       !this.onInteract
@@ -181,6 +182,26 @@ export class GameUI {
     }
   }
 
+  bindAchievementLog(achievementLog) {
+    this.achievementLog = achievementLog;
+  }
+
+  isAchievementLogOpen() {
+    return !!(this.achievementLog && this.achievementLog.isOpen());
+  }
+
+  isInputBlocked() {
+    return this.modalOpen || this.mapFading || this.isAchievementLogOpen();
+  }
+
+  trackHotspotAchievement(hotspot) {
+    const store = getAchievementStore();
+    if (!store || !hotspot || !hotspot.id) {
+      return;
+    }
+    store.unlock("hotspot:" + hotspot.id);
+  }
+
   bindScene(scene) {
     this.scene = scene;
   }
@@ -196,6 +217,14 @@ export class GameUI {
 
     if (event.data.type === "games-desktop-escape" && this.gamesDesktop && this.gamesDesktop.hasOpenApp()) {
       this.gamesDesktop.closeApp();
+      return;
+    }
+
+    if (event.data.type === "world-achievement-unlock") {
+      const store = getAchievementStore();
+      if (store && event.data.id) {
+        store.unlock(event.data.id);
+      }
       return;
     }
 
@@ -420,6 +449,7 @@ export class GameUI {
   openModal(hotspot) {
     this.modalOpen = true;
     this.activeHotspot = hotspot;
+    this.trackHotspotAchievement(hotspot);
     this.setHint("", false);
     this.hideInteractPrompt();
 

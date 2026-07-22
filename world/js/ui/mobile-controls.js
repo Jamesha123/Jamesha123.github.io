@@ -1,6 +1,6 @@
-import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=145";
-import { refreshPhaserScale } from "../utils/viewport.js?v=145";
-import { VirtualJoystick } from "./virtual-joystick.js?v=145";
+import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=146";
+import { refreshPhaserScale } from "../utils/viewport.js?v=146";
+import { VirtualJoystick } from "./virtual-joystick.js?v=146";
 
 let joystick = null;
 

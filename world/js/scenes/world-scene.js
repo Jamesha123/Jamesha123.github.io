@@ -1,21 +1,23 @@
-import { ContentStore } from "../core/content-store.js?v=145";
-import { WorldState } from "../core/world-state.js?v=145";
-import { GameUI } from "../ui/game-ui.js?v=145";
-import { HotspotSystem } from "../systems/hotspot-system.js?v=145";
-import { MapTransitionSystem } from "../systems/map-transition-system.js?v=145";
-import { MapPropSystem } from "../systems/map-prop-system.js?v=145";
-import { CharacterAnimation } from "../systems/character-animation.js?v=145";
-import { Player } from "../entities/player.js?v=145";
-import { TiledWorldBuilder } from "../map/tiled-world-builder.js?v=145";
-import { FallbackWorldBuilder } from "../map/fallback-world-builder.js?v=145";
-import { cacheBust, showFatalError } from "../utils/helpers.js?v=145";
-import { setBootProgress, setBootStageProgress, finishBoot } from "../ui/boot-progress.js?v=145";
-import { getMobileJoystick } from "../ui/mobile-controls.js?v=145";
-import { showTitleScreen, isGameStarted } from "../ui/title-screen.js?v=145";
-import { DebugGraphics } from "../systems/debug-graphics.js?v=145";
-import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=145";
-import { preloadWorldLabelFont } from "../ui/world-label.js?v=145";
-import { ASSET_VERSION } from "../version.js?v=145";
+import { ContentStore } from "../core/content-store.js?v=146";
+import { WorldState } from "../core/world-state.js?v=146";
+import { GameUI } from "../ui/game-ui.js?v=146";
+import { HotspotSystem } from "../systems/hotspot-system.js?v=146";
+import { MapTransitionSystem } from "../systems/map-transition-system.js?v=146";
+import { MapPropSystem } from "../systems/map-prop-system.js?v=146";
+import { CharacterAnimation } from "../systems/character-animation.js?v=146";
+import { Player } from "../entities/player.js?v=146";
+import { TiledWorldBuilder } from "../map/tiled-world-builder.js?v=146";
+import { FallbackWorldBuilder } from "../map/fallback-world-builder.js?v=146";
+import { cacheBust, showFatalError } from "../utils/helpers.js?v=146";
+import { setBootProgress, setBootStageProgress, finishBoot } from "../ui/boot-progress.js?v=146";
+import { getMobileJoystick } from "../ui/mobile-controls.js?v=146";
+import { showTitleScreen, isGameStarted } from "../ui/title-screen.js?v=146";
+import { DebugGraphics } from "../systems/debug-graphics.js?v=146";
+import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=146";
+import { preloadWorldLabelFont } from "../ui/world-label.js?v=146";
+import { getAchievementStore } from "../core/achievement-store.js?v=146";
+import { AchievementLog } from "../ui/achievement-log.js?v=146";
+import { ASSET_VERSION } from "../version.js?v=146";
 
 export default class WorldScene extends Phaser.Scene {
   constructor(contentStore) {
@@ -32,6 +34,7 @@ export default class WorldScene extends Phaser.Scene {
     this.activeMapId = contentStore.startMapId;
     this.spawnId = null;
     this.returnState = null;
+    this.achievementLog = null;
   }
 
   init(data) {
@@ -194,6 +197,11 @@ export default class WorldScene extends Phaser.Scene {
         this.hotspots.nearbyHotspot = null;
         this.ui.bindScene(this);
         this.ui.bindContent(this.content);
+        const achievementStore = getAchievementStore();
+        if (achievementStore && !this.achievementLog) {
+          this.achievementLog = new AchievementLog(achievementStore);
+          this.ui.bindAchievementLog(this.achievementLog);
+        }
         this.mapTransitions = new MapTransitionSystem(this, this.content, this.world);
         this.ui.onInteract = () => this.handleInteract();
       });
@@ -318,8 +326,7 @@ export default class WorldScene extends Phaser.Scene {
 
     this._onPointerDown = (pointer) => {
       if (
-        this.ui.isModalOpen() ||
-        this.ui.isMapFading() ||
+        this.ui.isInputBlocked() ||
         !this.player ||
         pointer.button > 0 ||
         this.isPointerOnUi(pointer)
@@ -332,8 +339,7 @@ export default class WorldScene extends Phaser.Scene {
     this._onPointerMove = (pointer) => {
       if (
         !pointer.isDown ||
-        this.ui.isModalOpen() ||
-        this.ui.isMapFading() ||
+        this.ui.isInputBlocked() ||
         !this.player ||
         this.isPointerOnUi(pointer)
       ) {
@@ -347,7 +353,7 @@ export default class WorldScene extends Phaser.Scene {
   }
 
   handleInteract() {
-    if (this.ui.isModalOpen() || this.ui.isMapFading() || !this.player || !this.player.sprite) {
+    if (this.ui.isInputBlocked() || !this.player || !this.player.sprite) {
       return;
     }
 
@@ -408,7 +414,7 @@ export default class WorldScene extends Phaser.Scene {
 
     const mobileJoystick = getMobileJoystick();
 
-    if (this.ui.isModalOpen() || this.ui.isMapFading() || isMobileLandscape()) {
+    if (this.ui.isInputBlocked() || isMobileLandscape()) {
       this.player.stop();
     } else {
       const joystickVector =

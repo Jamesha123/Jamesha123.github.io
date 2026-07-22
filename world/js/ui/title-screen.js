@@ -1,4 +1,5 @@
-import { getMobileJoystick } from "./mobile-controls.js?v=145";
+import { getMobileJoystick } from "./mobile-controls.js?v=146";
+import { getAchievementStore } from "../core/achievement-store.js?v=146";
 
 let worldScene = null;
 let gameStarted = false;
@@ -76,6 +77,11 @@ export function startGame() {
   }
   startingGame = true;
   gameStarted = true;
+
+  const store = getAchievementStore();
+  if (store) {
+    store.unlock("start-adventure");
+  }
 
   const playBtn = document.getElementById("title-play-btn");
   const classicBtn = document.getElementById("title-classic-btn");

@@ -1,5 +1,5 @@
-import { DebugGraphics } from "./debug-graphics.js?v=145";
-import { createWorldLabel } from "../ui/world-label.js?v=145";
+import { DebugGraphics } from "./debug-graphics.js?v=146";
+import { createWorldLabel } from "../ui/world-label.js?v=146";
 
 export class HotspotSystem {
   constructor(content, world) {
@@ -105,11 +105,11 @@ export class HotspotSystem {
       return;
     }
 
-    if (!ui.isModalOpen() && !ui.isMapFading()) {
+    if (!ui.isInputBlocked()) {
       this.nearbyHotspot = this.findNearbyHotspot(player);
     }
 
-    if (ui.isModalOpen() || ui.isMapFading() || options.suppressHint) {
+    if (ui.isInputBlocked() || options.suppressHint) {
       return;
     }
 
@@ -121,7 +121,7 @@ export class HotspotSystem {
   }
 
   tryInteract(ui, player) {
-    if (ui.isModalOpen()) {
+    if (ui.isInputBlocked()) {
       return;
     }
 

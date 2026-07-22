@@ -1,5 +1,5 @@
-import { setBootStageProgress } from "../ui/boot-progress.js?v=145";
-import { getWorldRootUrl } from "../utils/helpers.js?v=145";
+import { setBootStageProgress } from "../ui/boot-progress.js?v=146";
+import { getWorldRootUrl } from "../utils/helpers.js?v=146";
 
 const FETCH_TIMEOUT_MS = 15000;
 
@@ -126,11 +126,17 @@ export async function loadContent() {
 
   setBootStageProgress("data", 0, "Loading world data");
 
-  const [maps, npcEntries, propEntries, hotspots] = await Promise.all([
+  const achievementsPath = manifest.achievements || "achievements.json";
+
+  const [maps, npcEntries, propEntries, hotspots, achievementsData] = await Promise.all([
     fetchJsonList(manifest.maps || [], trackDataFile),
     fetchJsonList(sprites.npcs || [], trackDataFile),
     fetchJsonList(sprites.props || [], trackDataFile),
     fetchJsonList(manifest.hotspots || [], trackDataFile),
+    fetchJson(achievementsPath).then(function (data) {
+      trackDataFile(achievementsPath);
+      return data;
+    }),
   ]);
 
   setBootStageProgress("data", 1, "World data loaded");
@@ -149,5 +155,6 @@ export async function loadContent() {
       furniture: furniture,
     },
     hotspots: hotspots,
+    achievements: Array.isArray(achievementsData.achievements) ? achievementsData.achievements : [],
   };
 }

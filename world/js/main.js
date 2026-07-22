@@ -1,15 +1,16 @@
-import { ContentStore } from "./core/content-store.js?v=145";
-import { loadContent } from "./core/load-content.js?v=145";
-import { createPhaserGame } from "./scenes/world-scene.js?v=145";
-import { showFatalError } from "./utils/helpers.js?v=145";
-import { setBootStageProgress } from "./ui/boot-progress.js?v=145";
-import { initTitleScreen } from "./ui/title-screen.js?v=145";
-import { bindFullscreenControls } from "./utils/fullscreen.js?v=145";
-import { bindMobileControls } from "./ui/mobile-controls.js?v=145";
-import { initWorldDebug, bindDebugRefresh } from "./config/debug.js?v=145";
-import { DebugGraphics } from "./systems/debug-graphics.js?v=145";
-import { MapTransitionSystem } from "./systems/map-transition-system.js?v=145";
-import { ASSET_VERSION } from "./version.js?v=145";
+import { ContentStore } from "./core/content-store.js?v=146";
+import { loadContent } from "./core/load-content.js?v=146";
+import { createPhaserGame } from "./scenes/world-scene.js?v=146";
+import { showFatalError } from "./utils/helpers.js?v=146";
+import { setBootStageProgress } from "./ui/boot-progress.js?v=146";
+import { initTitleScreen } from "./ui/title-screen.js?v=146";
+import { bindFullscreenControls } from "./utils/fullscreen.js?v=146";
+import { bindMobileControls } from "./ui/mobile-controls.js?v=146";
+import { initWorldDebug, bindDebugRefresh } from "./config/debug.js?v=146";
+import { DebugGraphics } from "./systems/debug-graphics.js?v=146";
+import { MapTransitionSystem } from "./systems/map-transition-system.js?v=146";
+import { initAchievementStore } from "./core/achievement-store.js?v=146";
+import { ASSET_VERSION } from "./version.js?v=146";
 
 const BOOT_TIMEOUT_MS = 25000;
 
@@ -62,6 +63,7 @@ loadContent()
   .then(function (data) {
     setBootStageProgress("assets", 0, "Starting game v" + ASSET_VERSION);
     try {
+      initAchievementStore(data.achievements || []);
       createPhaserGame(new ContentStore(data));
     } catch (error) {
       clearBootTimeout();

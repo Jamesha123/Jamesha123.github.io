@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=145" />
+    <link rel="stylesheet" href="styles.css?v=146" />
     <script>
       (function () {
         var path = location.pathname;
@@ -79,6 +79,15 @@
     <div id="ui-layer" class="pre-game-hidden">
       <div class="top-bar">
         <div class="top-bar-actions">
+          <button
+            type="button"
+            id="achievement-log-btn"
+            class="achievement-log-btn"
+            aria-expanded="false"
+            aria-controls="achievement-log-overlay"
+          >
+            Achievements<span class="achievement-log-btn__badge" id="achievement-log-badge" hidden>0</span>
+          </button>
           <a href="../classic.html">Classic Portfolio</a>
           <button type="button" id="fullscreen-btn" aria-pressed="false">Fullscreen</button>
         </div>
@@ -102,6 +111,21 @@
       </div>
     </div>
 
+    <div id="achievement-log-overlay" class="achievement-log-overlay" aria-hidden="true">
+      <div class="achievement-log-panel" role="dialog" aria-modal="true" aria-labelledby="achievement-log-title">
+        <div class="achievement-log-head">
+          <div>
+            <h2 id="achievement-log-title">Achievement Log</h2>
+            <p id="achievement-log-summary" class="achievement-log-summary">0 / 0 unlocked</p>
+          </div>
+          <button type="button" id="achievement-log-close" class="achievement-log-close" aria-label="Close (Esc)">×</button>
+        </div>
+        <ul id="achievement-log-list" class="achievement-log-list"></ul>
+      </div>
+    </div>
+
+    <div id="achievement-toast" class="achievement-toast" hidden aria-live="polite"></div>
+
     <div id="modal-overlay" aria-hidden="true">
       <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <button type="button" id="modal-close" class="modal-close" aria-label="Close (Esc)">×</button>
@@ -121,7 +145,7 @@
 
     <div id="game-container" class="pre-game-hidden"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js?v=145"></script>
-    <script type="module" src="js/main.js?v=145"></script>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js?v=146"></script>
+    <script type="module" src="js/main.js?v=146"></script>
   </body>
 </html>

@@ -26,5 +26,6 @@
     "hotspots/games.json",
     "hotspots/todo-lists.json",
     "hotspots/nws-alerts.json"
-  ]
+  ],
+  "achievements": "achievements.json"
 }
