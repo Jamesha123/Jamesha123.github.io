@@ -160,12 +160,16 @@
     "...B..",
   ];
 
+  function getSnakeAchievementScoreThreshold() {
+    return useMobileControls ? 15 : 25;
+  }
+
   function setScore(value) {
     score = value;
     if (scoreEl) {
       scoreEl.textContent = String(score);
     }
-    if (score > 25 && typeof unlockWorldAchievement === "function") {
+    if (score > getSnakeAchievementScoreThreshold() && typeof unlockWorldAchievement === "function") {
       unlockWorldAchievement("demo:snake-score-25");
     }
   }
