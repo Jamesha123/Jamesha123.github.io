@@ -149,13 +149,39 @@
     });
   }
 
-  function loadSubscriptions() {
-    const email = lookupEmailInput.value.trim();
-    if (!email) {
-      window.alert("Please enter an email address.");
-      return;
+  function applyProfileToForm(profile) {
+    const email = profile && profile.email ? profile.email : "";
+    const phone = profile && profile.phone ? profile.phone : "";
+    if (email) {
+      emailInput.value = email;
+      lookupEmailInput.value = email;
     }
+    if (phone) {
+      phoneInput.value = phone;
+    }
+  }
+
+  function loadSubscriptions(options) {
+    const silent = options && options.silent;
+    const email = lookupEmailInput.value.trim() || window.NwsStore.getActiveEmail();
+    if (!email) {
+      if (!silent) {
+        window.alert("Please enter an email address.");
+      }
+      return false;
+    }
+
+    lookupEmailInput.value = email;
+    emailInput.value = email;
+    window.NwsStore.setProfile(email);
     renderSubscriptions(window.NwsStore.getByEmail(email));
+    return true;
+  }
+
+  function restoreSession() {
+    const profile = window.NwsStore.getProfile();
+    applyProfileToForm(profile);
+    loadSubscriptions({ silent: true });
   }
 
   function subscribe() {
@@ -177,7 +203,6 @@
       phone: phoneInput.value.trim(),
     });
 
-    lookupEmailInput.value = email;
     loadSubscriptions();
     window.alert("Subscribed! (Saved in this browser — production app uses Spring Boot + SNS.)");
   }
@@ -358,4 +383,5 @@
 
   initMap();
   updateSelectedPlace();
+  restoreSession();
 })();
