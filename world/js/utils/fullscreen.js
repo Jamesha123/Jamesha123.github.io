@@ -1,6 +1,6 @@
-import { refreshPhaserScale } from "./viewport.js?v=146";
-import { isMobileDevice } from "./device.js?v=146";
-import { refreshCamera } from "../map/camera-controller.js?v=146";
+import { refreshPhaserScale } from "./viewport.js?v=147";
+import { isMobileDevice } from "./device.js?v=147";
+import { refreshCamera } from "../map/camera-controller.js?v=147";
 
 let fullscreenButton = null;
 let wantsFullscreen = false;

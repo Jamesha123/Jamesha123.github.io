@@ -83,10 +83,11 @@
     useMobileControls = detectMobileControls();
   });
 
-  const TILE = 16;
-  const PIX = 2;
-  const MIN_COLS = 12;
-  const MIN_ROWS = 10;
+  const TILE = 24;
+  const PIX = 3;
+  const GRID_UNIT = TILE / 16;
+  const MIN_COLS = 3;
+  const MIN_ROWS = 2;
 
   let tilesX = 28;
   let tilesY = 20;
@@ -101,8 +102,8 @@
 
     const availableW = field.clientWidth;
     const availableH = field.clientHeight;
-    const nextCols = Math.max(MIN_COLS, Math.floor(availableW / TILE));
-    const nextRows = Math.max(MIN_ROWS, Math.floor(availableH / TILE));
+    const nextCols = Math.max(MIN_COLS, Math.floor(availableW / TILE) - 5);
+    const nextRows = Math.max(MIN_ROWS, Math.floor(availableH / TILE) - 5);
 
     if (nextCols === tilesX && nextRows === tilesY) {
       return false;
@@ -118,8 +119,9 @@
   let snake = [];
   let direction = { x: 1, y: 0 };
   let nextDirection = { x: 1, y: 0 };
-  let food = { x: 0, y: 0 };
+  let foods = [];
   let score = 0;
+  const APPLES_PER_LEVEL = 10;
   let speedMs = 140;
   let lastTick = 0;
   let isGameOver = false;
@@ -162,6 +164,9 @@
     score = value;
     if (scoreEl) {
       scoreEl.textContent = String(score);
+    }
+    if (score > 25 && typeof unlockWorldAchievement === "function") {
+      unlockWorldAchievement("demo:snake-score-25");
     }
   }
 
@@ -213,7 +218,7 @@
         const rect = canvas.getBoundingClientRect();
         const tapX = ((touchEndX - rect.left) / rect.width) * canvas.width;
         const tapY = ((touchEndY - rect.top) / rect.height) * canvas.height;
-        const middleRadius = 70;
+        const middleRadius = 70 * GRID_UNIT;
 
         const distanceFromCenter = Math.sqrt(
           Math.pow(tapX - canvas.width / 2, 2) + Math.pow(tapY - canvas.height / 2, 2)
@@ -274,15 +279,45 @@
     }
   });
 
+  function isOccupied(x, y) {
+    if (snake.some(function (s) {
+      return s.x === x && s.y === y;
+    })) {
+      return true;
+    }
+    return foods.some(function (f) {
+      return f.x === x && f.y === y;
+    });
+  }
+
+  function getAppleCount() {
+    const desired = 1 + Math.floor(score / APPLES_PER_LEVEL);
+    const maxFree = tilesX * tilesY - snake.length;
+    return Math.max(1, Math.min(desired, Math.max(1, maxFree)));
+  }
+
   function spawnFood() {
-    while (true) {
+    const maxAttempts = tilesX * tilesY * 2;
+    for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
       const f = {
         x: Math.floor(Math.random() * tilesX),
         y: Math.floor(Math.random() * tilesY),
       };
-      if (!snake.some(function (s) { return s.x === f.x && s.y === f.y; })) {
+      if (!isOccupied(f.x, f.y)) {
         return f;
       }
+    }
+    return null;
+  }
+
+  function ensureFoodCount() {
+    const target = getAppleCount();
+    while (foods.length < target) {
+      const next = spawnFood();
+      if (!next) {
+        break;
+      }
+      foods.push(next);
     }
   }
 
@@ -300,8 +335,9 @@
     snake = createInitialSnake();
     direction = { x: 1, y: 0 };
     nextDirection = { x: 1, y: 0 };
-    food = spawnFood();
+    foods = [];
     setScore(0);
+    ensureFoodCount();
     speedMs = 140;
     isGameOver = false;
   }
@@ -329,12 +365,18 @@
     }
 
     snake.unshift(head);
-    if (head.x === food.x && head.y === food.y) {
+
+    const eatenIndex = foods.findIndex(function (f) {
+      return f.x === head.x && f.y === head.y;
+    });
+
+    if (eatenIndex !== -1) {
+      foods.splice(eatenIndex, 1);
       setScore(score + 1);
       if (speedMs > 70) {
         speedMs -= 3;
       }
-      food = spawnFood();
+      ensureFoodCount();
     } else {
       snake.pop();
     }
@@ -347,11 +389,11 @@
 
     if ((x * 5 + y * 3) % 7 === 0) {
       ctx.fillStyle = GRASS_SPECK;
-      ctx.fillRect(x * TILE + 3, y * TILE + 5, PIX, PIX);
+      ctx.fillRect(x * TILE + 3 * GRID_UNIT, y * TILE + 5 * GRID_UNIT, PIX, PIX);
     }
     if ((x * 2 + y * 7) % 9 === 0) {
       ctx.fillStyle = light ? GRASS_DARK : GRASS_LIGHT;
-      ctx.fillRect(x * TILE + 10, y * TILE + 8, PIX, PIX);
+      ctx.fillRect(x * TILE + 10 * GRID_UNIT, y * TILE + 8 * GRID_UNIT, PIX, PIX);
     }
   }
 
@@ -395,28 +437,31 @@
     }
   }
 
-  function drawPixelApple() {
-    blitSprite(APPLE_SPRITE, food.x, food.y, APPLE_COLORS);
+  function drawPixelApples() {
+    foods.forEach(function (apple) {
+      blitSprite(APPLE_SPRITE, apple.x, apple.y, APPLE_COLORS);
+    });
   }
 
   function drawEyes(px, py) {
+    const u = GRID_UNIT;
     ctx.fillStyle = "#fff";
-    ctx.fillRect(px + 8, py + 4, PIX, PIX);
-    ctx.fillRect(px + 8, py + 8, PIX, PIX);
+    ctx.fillRect(px + 8 * u, py + 4 * u, PIX, PIX);
+    ctx.fillRect(px + 8 * u, py + 8 * u, PIX, PIX);
 
     ctx.fillStyle = "#111";
     if (direction.x === 1) {
-      ctx.fillRect(px + 10, py + 4, PIX, PIX);
-      ctx.fillRect(px + 10, py + 8, PIX, PIX);
+      ctx.fillRect(px + 10 * u, py + 4 * u, PIX, PIX);
+      ctx.fillRect(px + 10 * u, py + 8 * u, PIX, PIX);
     } else if (direction.x === -1) {
-      ctx.fillRect(px + 6, py + 4, PIX, PIX);
-      ctx.fillRect(px + 6, py + 8, PIX, PIX);
+      ctx.fillRect(px + 6 * u, py + 4 * u, PIX, PIX);
+      ctx.fillRect(px + 6 * u, py + 8 * u, PIX, PIX);
     } else if (direction.y === -1) {
-      ctx.fillRect(px + 4, py + 6, PIX, PIX);
-      ctx.fillRect(px + 8, py + 6, PIX, PIX);
+      ctx.fillRect(px + 4 * u, py + 6 * u, PIX, PIX);
+      ctx.fillRect(px + 8 * u, py + 6 * u, PIX, PIX);
     } else {
-      ctx.fillRect(px + 4, py + 10, PIX, PIX);
-      ctx.fillRect(px + 8, py + 10, PIX, PIX);
+      ctx.fillRect(px + 4 * u, py + 10 * u, PIX, PIX);
+      ctx.fillRect(px + 8 * u, py + 10 * u, PIX, PIX);
     }
   }
 
@@ -454,8 +499,8 @@
     ctx.fillStyle = "rgba(20, 40, 14, 0.72)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    const boxW = 176;
-    const boxH = 72;
+    const boxW = Math.round(176 * GRID_UNIT);
+    const boxH = Math.round(72 * GRID_UNIT);
     const boxX = (canvas.width - boxW) / 2;
     const boxY = (canvas.height - boxH) / 2;
 
@@ -468,7 +513,7 @@
     ctx.fillRect(boxX + boxW - 4, boxY, 4, boxH);
 
     ctx.fillStyle = "#f4ffe8";
-    ctx.font = "bold 16px Tahoma, sans-serif";
+    ctx.font = "bold " + Math.round(16 * GRID_UNIT) + "px Tahoma, sans-serif";
     ctx.textAlign = "center";
     ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2 + 4);
     ctx.textAlign = "start";
@@ -476,14 +521,14 @@
 
   function draw() {
     drawGrassBackground();
-    drawPixelApple();
+    drawPixelApples();
     for (let i = 0; i < snake.length; i += 1) {
       drawPixelSnakeSegment(snake[i], i, snake.length);
     }
 
     if (!scoreEl) {
       ctx.fillStyle = "#f4ffe8";
-      ctx.font = "bold 12px Tahoma, sans-serif";
+      ctx.font = "bold " + Math.round(12 * GRID_UNIT) + "px Tahoma, sans-serif";
       ctx.fillText("Score: " + score, 8, 16);
     }
 

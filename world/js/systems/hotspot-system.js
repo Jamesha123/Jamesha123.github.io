@@ -1,5 +1,5 @@
-import { DebugGraphics } from "./debug-graphics.js?v=146";
-import { createWorldLabel } from "../ui/world-label.js?v=146";
+import { DebugGraphics } from "./debug-graphics.js?v=147";
+import { createWorldLabel } from "../ui/world-label.js?v=147";
 
 export class HotspotSystem {
   constructor(content, world) {

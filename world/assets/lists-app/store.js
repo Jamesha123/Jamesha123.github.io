@@ -862,6 +862,9 @@ async function handleRequest(method, url, body, actor) {
       addSingle(list, text, body.category, body.label, body.qty);
       logActivity(act, list, "add", text);
     });
+    if (typeof unlockWorldAchievement === "function") {
+      unlockWorldAchievement("demo:lists-add-item");
+    }
     return jsonResponse(201, { ok: true });
   }
 

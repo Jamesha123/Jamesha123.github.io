@@ -20,8 +20,33 @@
   const MOBILE_SLOT_ORDER = ["left", "center", "right"];
   const MOBILE_LAYOUT_QUERY = window.matchMedia("(max-width: 640px)");
 
+  function hasMobileParent() {
+    try {
+      let win = window;
+      while (win && win.parent && win !== win.parent) {
+        win = win.parent;
+        if (win.document.documentElement.classList.contains("mobile-user")) {
+          return true;
+        }
+      }
+    } catch (_error) {
+      // Ignore cross-origin parent access errors.
+    }
+    return false;
+  }
+
   function isMobileLayout() {
+    if (new URLSearchParams(window.location.search).get("mobile") === "1") {
+      return true;
+    }
+    if (hasMobileParent()) {
+      return true;
+    }
     return MOBILE_LAYOUT_QUERY.matches;
+  }
+
+  function getRequiredHandCount() {
+    return isMobileLayout() ? 3 : 5;
   }
 
   function isSlotAllowed(slot) {
@@ -467,6 +492,42 @@
     return { text: "Push " + playerValue, tone: "push" };
   }
 
+  function maybeUnlockBlackjackAchievement() {
+    if (!multiHandMode || !gameOver) {
+      return;
+    }
+
+    const enabled = getEnabledSlots();
+    const requiredHands = getRequiredHandCount();
+    if (enabled.length < requiredHands) {
+      return;
+    }
+
+    let wins = 0;
+    let losses = 0;
+    let pushes = 0;
+
+    enabled.forEach(function (slot) {
+      const winner = determineWinnerForHand(slotState[slot].cards);
+      if (winner === "player") {
+        wins += 1;
+      } else if (winner === "dealer") {
+        losses += 1;
+      } else {
+        pushes += 1;
+      }
+    });
+
+    if (
+      wins === enabled.length &&
+      losses === 0 &&
+      pushes === 0 &&
+      typeof unlockWorldAchievement === "function"
+    ) {
+      unlockWorldAchievement("demo:blackjack-sweep");
+    }
+  }
+
   function updateGameStatus() {
     if (!gameOver) {
       if (multiHandMode) {
@@ -481,6 +542,7 @@
 
     if (multiHandMode) {
       const enabled = getEnabledSlots();
+      const requiredHands = getRequiredHandCount();
       let wins = 0;
       let losses = 0;
       let pushes = 0;
@@ -496,8 +558,17 @@
         }
       });
 
-      if (wins > 0 && losses === 0 && pushes === 0) {
-        setStatusMessage("You win all hands!", "win");
+      if (wins === enabled.length && losses === 0 && pushes === 0) {
+        if (enabled.length >= requiredHands) {
+          setStatusMessage("You win all hands!", "win");
+        } else {
+          setStatusMessage(
+            "You win all hands! Use +" +
+              (requiredHands - enabled.length) +
+              " more hand(s) before dealing for the achievement.",
+            "win"
+          );
+        }
       } else if (losses > 0 && wins === 0 && pushes === 0) {
         setStatusMessage("Dealer wins all hands.", "lose");
       } else {
@@ -701,6 +772,7 @@
     updateGameStatus();
     resolveMultiHandResults();
     endRoundControls();
+    maybeUnlockBlackjackAchievement();
   }
 
   function resetSlotState() {
@@ -854,5 +926,6 @@
     MOBILE_LAYOUT_QUERY.addListener(syncMobileLayout);
   }
 
+  syncMobileLayout();
   newGame();
 })();

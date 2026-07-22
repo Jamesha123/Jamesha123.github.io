@@ -1,6 +1,6 @@
-import { cacheBust, getObjectProperty, getObjectFeetPosition } from "../utils/helpers.js?v=146";
-import { DebugGraphics } from "./debug-graphics.js?v=146";
-import { createWorldLabel } from "../ui/world-label.js?v=146";
+import { cacheBust, getObjectProperty, getObjectFeetPosition } from "../utils/helpers.js?v=147";
+import { DebugGraphics } from "./debug-graphics.js?v=147";
+import { createWorldLabel } from "../ui/world-label.js?v=147";
 
 export class MapPropSystem {
   static preload(scene, propConfigs) {

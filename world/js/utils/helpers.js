@@ -1,4 +1,4 @@
-import { ASSET_VERSION } from "../version.js?v=146";
+import { ASSET_VERSION } from "../version.js?v=147";
 
 let cachedWorldRoot = null;
 

@@ -1,5 +1,5 @@
-import { isDebugEnabled } from "../config/debug.js?v=146";
-import { getAchievementStore } from "../core/achievement-store.js?v=146";
+import { isDebugEnabled } from "../config/debug.js?v=147";
+import { getAchievementStore } from "../core/achievement-store.js?v=147";
 
 export class MapTransitionSystem {
   constructor(scene, content, world) {

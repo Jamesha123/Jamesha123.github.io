@@ -1,1 +1,1 @@
-export const ASSET_VERSION = "146";
+export const ASSET_VERSION = "147";

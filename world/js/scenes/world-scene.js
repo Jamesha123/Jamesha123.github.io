@@ -1,23 +1,23 @@
-import { ContentStore } from "../core/content-store.js?v=146";
-import { WorldState } from "../core/world-state.js?v=146";
-import { GameUI } from "../ui/game-ui.js?v=146";
-import { HotspotSystem } from "../systems/hotspot-system.js?v=146";
-import { MapTransitionSystem } from "../systems/map-transition-system.js?v=146";
-import { MapPropSystem } from "../systems/map-prop-system.js?v=146";
-import { CharacterAnimation } from "../systems/character-animation.js?v=146";
-import { Player } from "../entities/player.js?v=146";
-import { TiledWorldBuilder } from "../map/tiled-world-builder.js?v=146";
-import { FallbackWorldBuilder } from "../map/fallback-world-builder.js?v=146";
-import { cacheBust, showFatalError } from "../utils/helpers.js?v=146";
-import { setBootProgress, setBootStageProgress, finishBoot } from "../ui/boot-progress.js?v=146";
-import { getMobileJoystick } from "../ui/mobile-controls.js?v=146";
-import { showTitleScreen, isGameStarted } from "../ui/title-screen.js?v=146";
-import { DebugGraphics } from "../systems/debug-graphics.js?v=146";
-import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=146";
-import { preloadWorldLabelFont } from "../ui/world-label.js?v=146";
-import { getAchievementStore } from "../core/achievement-store.js?v=146";
-import { AchievementLog } from "../ui/achievement-log.js?v=146";
-import { ASSET_VERSION } from "../version.js?v=146";
+import { ContentStore } from "../core/content-store.js?v=147";
+import { WorldState } from "../core/world-state.js?v=147";
+import { GameUI } from "../ui/game-ui.js?v=147";
+import { HotspotSystem } from "../systems/hotspot-system.js?v=147";
+import { MapTransitionSystem } from "../systems/map-transition-system.js?v=147";
+import { MapPropSystem } from "../systems/map-prop-system.js?v=147";
+import { CharacterAnimation } from "../systems/character-animation.js?v=147";
+import { Player } from "../entities/player.js?v=147";
+import { TiledWorldBuilder } from "../map/tiled-world-builder.js?v=147";
+import { FallbackWorldBuilder } from "../map/fallback-world-builder.js?v=147";
+import { cacheBust, showFatalError } from "../utils/helpers.js?v=147";
+import { setBootProgress, setBootStageProgress, finishBoot } from "../ui/boot-progress.js?v=147";
+import { getMobileJoystick } from "../ui/mobile-controls.js?v=147";
+import { showTitleScreen, isGameStarted } from "../ui/title-screen.js?v=147";
+import { DebugGraphics } from "../systems/debug-graphics.js?v=147";
+import { isMobileDevice, isMobileLandscape } from "../utils/device.js?v=147";
+import { preloadWorldLabelFont } from "../ui/world-label.js?v=147";
+import { getAchievementStore } from "../core/achievement-store.js?v=147";
+import { AchievementLog } from "../ui/achievement-log.js?v=147";
+import { ASSET_VERSION } from "../version.js?v=147";
 
 export default class WorldScene extends Phaser.Scene {
   constructor(contentStore) {

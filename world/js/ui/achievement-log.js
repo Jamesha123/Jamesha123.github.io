@@ -1,9 +1,9 @@
 import {
   hideMobileJoystickForOverlay,
   showMobileJoystickAfterOverlay,
-} from "./mobile-controls.js?v=146";
-import { isGameStarted } from "./title-screen.js?v=146";
-import { isMobileDevice } from "../utils/device.js?v=146";
+} from "./mobile-controls.js?v=147";
+import { isGameStarted } from "./title-screen.js?v=147";
+import { isMobileDevice } from "../utils/device.js?v=147";
 
 function formatUnlockTime(ts) {
   if (!ts) {

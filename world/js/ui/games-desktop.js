@@ -1,4 +1,4 @@
-import { isMobileDevice } from "../utils/device.js?v=146";
+import { isMobileDevice } from "../utils/device.js?v=147";
 
 function isProjectsPage(page) {
   if (!page) {
@@ -32,6 +32,11 @@ export class GamesDesktop {
 
     if (event.data && event.data.type === "games-desktop-escape") {
       this.closeApp();
+      return;
+    }
+
+    if (event.data && event.data.type === "world-achievement-unlock" && event.data.id) {
+      window.postMessage(event.data, "*");
     }
   }
 

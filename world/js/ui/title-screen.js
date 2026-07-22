@@ -1,5 +1,5 @@
-import { getMobileJoystick } from "./mobile-controls.js?v=146";
-import { getAchievementStore } from "../core/achievement-store.js?v=146";
+import { getMobileJoystick } from "./mobile-controls.js?v=147";
+import { getAchievementStore } from "../core/achievement-store.js?v=147";
 
 let worldScene = null;
 let gameStarted = false;

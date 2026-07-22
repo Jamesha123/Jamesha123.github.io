@@ -1,16 +1,16 @@
-import { GamesDesktop } from "./games-desktop.js?v=146";
-import { isMobileDevice } from "../utils/device.js?v=146";
+import { GamesDesktop } from "./games-desktop.js?v=147";
+import { isMobileDevice } from "../utils/device.js?v=147";
 import {
   hideMobileJoystickForOverlay,
   showMobileJoystickAfterOverlay,
-} from "./mobile-controls.js?v=146";
-import { isGameStarted } from "./title-screen.js?v=146";
+} from "./mobile-controls.js?v=147";
+import { isGameStarted } from "./title-screen.js?v=147";
 import {
   applyHotspotTypography,
   clearHotspotTypography,
   isHotspotMobileView,
-} from "./hotspot-typography.js?v=146";
-import { getAchievementStore } from "../core/achievement-store.js?v=146";
+} from "./hotspot-typography.js?v=147";
+import { getAchievementStore } from "../core/achievement-store.js?v=147";
 
 export class GameUI {
   constructor() {
@@ -199,6 +199,16 @@ export class GameUI {
     if (!store || !hotspot || !hotspot.id) {
       return;
     }
+
+    const demoOnlyHotspots = {
+      "nws-alerts": true,
+      "todo-lists": true,
+    };
+
+    if (demoOnlyHotspots[hotspot.id]) {
+      return;
+    }
+
     store.unlock("hotspot:" + hotspot.id);
   }
 

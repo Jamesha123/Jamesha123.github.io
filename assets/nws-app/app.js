@@ -204,6 +204,9 @@
     });
 
     loadSubscriptions();
+    if (typeof unlockWorldAchievement === "function") {
+      unlockWorldAchievement("demo:nws-subscribe");
+    }
     window.alert("Subscribed! (Saved in this browser — production app uses Spring Boot + SNS.)");
   }
 

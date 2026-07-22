@@ -106,6 +106,9 @@
       if (checkWin()) {
         gameWon = true;
         gameOver = true;
+        if (typeof unlockWorldAchievement === "function") {
+          unlockWorldAchievement("demo:hangman-win");
+        }
         updateGameStatus();
       }
     } else {

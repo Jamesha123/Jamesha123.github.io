@@ -1,4 +1,4 @@
-import { resolveWorldAsset } from "../utils/helpers.js?v=146";
+import { resolveWorldAsset } from "../utils/helpers.js?v=147";
 
 export const WORLD_LABEL_FONT_KEY = "world-label-font";
 const FONT_NATIVE_SIZE = 16;

@@ -1,5 +1,5 @@
-import { setBootStageProgress } from "../ui/boot-progress.js?v=146";
-import { getWorldRootUrl } from "../utils/helpers.js?v=146";
+import { setBootStageProgress } from "../ui/boot-progress.js?v=147";
+import { getWorldRootUrl } from "../utils/helpers.js?v=147";
 
 const FETCH_TIMEOUT_MS = 15000;
 

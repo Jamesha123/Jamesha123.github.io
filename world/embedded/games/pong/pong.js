@@ -431,7 +431,12 @@
       height: 80,
       dy: 0,
       speed: 4,
-      reactionTime: 0.8,
+      reactionTime: 0.24,
+      deadZone: 15,
+      aimError: 28,
+      aimOffset: 0,
+      trackChance: 0.8,
+      idleCenterScale: 0,
     };
 
     layoutObjects();
@@ -562,25 +567,64 @@
     }
   }
 
+  function getDifficultySettings() {
+    switch (difficulty) {
+      case "easy":
+        return {
+          speedScale: 0.007,
+          speedMin: 1.2,
+          reactionTime: 0.12,
+          deadZone: 22,
+          aimError: 44,
+          trackChance: 0.68,
+          idleCenterScale: 0,
+        };
+      case "hard":
+        return {
+          speedScale: 0.016,
+          speedMin: 2.4,
+          reactionTime: 0.42,
+          deadZone: 9,
+          aimError: 14,
+          trackChance: 0.9,
+          idleCenterScale: 0.22,
+        };
+      default:
+        return {
+          speedScale: 0.01,
+          speedMin: 1.8,
+          reactionTime: 0.24,
+          deadZone: 15,
+          aimError: 28,
+          trackChance: 0.8,
+          idleCenterScale: 0,
+        };
+    }
+  }
+
+  function applyDifficultySettings() {
+    const settings = getDifficultySettings();
+    computerPaddle.speed = Math.max(settings.speedMin, canvas.height * settings.speedScale);
+    computerPaddle.reactionTime = settings.reactionTime;
+    computerPaddle.deadZone = settings.deadZone;
+    computerPaddle.aimError = settings.aimError;
+    computerPaddle.trackChance = settings.trackChance;
+    computerPaddle.idleCenterScale = settings.idleCenterScale;
+    computerPaddle.aimOffset = (Math.random() - 0.5) * 2 * settings.aimError;
+  }
+
   function updateDifficulty() {
     if (difficultySelect) {
       difficulty = difficultySelect.value;
     }
-
-    switch (difficulty) {
-      case "easy":
-        computerPaddle.speed = Math.max(2, canvas.height * 0.012);
-        computerPaddle.reactionTime = 0.3;
-        break;
-      case "hard":
-        computerPaddle.speed = Math.max(5, canvas.height * 0.028);
-        computerPaddle.reactionTime = 1.2;
-        break;
-      default:
-        computerPaddle.speed = Math.max(3, canvas.height * 0.018);
-        computerPaddle.reactionTime = 0.8;
-        break;
+    if (canvas) {
+      applyDifficultySettings();
     }
+  }
+
+  function refreshComputerAim() {
+    const settings = getDifficultySettings();
+    computerPaddle.aimOffset = (Math.random() - 0.5) * 2 * settings.aimError;
   }
 
   function startGame() {
@@ -689,6 +733,7 @@
     ) {
       ball.dx = -Math.abs(ball.dx);
       ball.dy += computerPaddle.dy * 0.5;
+      refreshComputerAim();
     }
 
     if (ball.x < 0) {
@@ -719,16 +764,24 @@
     const ballDistance = Math.abs(ball.x - computerPaddle.x);
 
     if (ball.dx > 0 && ballDistance < canvas.width * computerPaddle.reactionTime) {
-      const error = ball.y - paddleCenter;
-      if (Math.abs(error) > 5) {
-        computerPaddle.dy = error < 0 ? -computerPaddle.speed : computerPaddle.speed;
+      if (Math.random() < computerPaddle.trackChance) {
+        const targetY = ball.y + computerPaddle.aimOffset;
+        const error = targetY - paddleCenter;
+        if (Math.abs(error) > computerPaddle.deadZone) {
+          computerPaddle.dy = error < 0 ? -computerPaddle.speed : computerPaddle.speed;
+        } else {
+          computerPaddle.dy = 0;
+        }
       } else {
         computerPaddle.dy = 0;
       }
-    } else if (difficulty === "hard") {
+    } else if (computerPaddle.idleCenterScale > 0) {
       const centerError = canvas.height / 2 - paddleCenter;
-      if (Math.abs(centerError) > 10) {
-        computerPaddle.dy = centerError > 0 ? computerPaddle.speed * 0.5 : -computerPaddle.speed * 0.5;
+      if (Math.abs(centerError) > 14) {
+        computerPaddle.dy =
+          centerError > 0
+            ? computerPaddle.speed * computerPaddle.idleCenterScale
+            : -computerPaddle.speed * computerPaddle.idleCenterScale;
       } else {
         computerPaddle.dy = 0;
       }
@@ -750,6 +803,9 @@
       gameOver = true;
       gameRunning = false;
       setStatus("You Win!", "win");
+      if (typeof unlockWorldAchievement === "function") {
+        unlockWorldAchievement("demo:pong-win");
+      }
       if (startBtn) {
         startBtn.disabled = false;
         startBtn.textContent = "Play Again";
@@ -771,6 +827,7 @@
     const speed = Math.abs(ball.dx);
     ball.dx = (Math.random() > 0.5 ? 1 : -1) * speed;
     ball.dy = (Math.random() > 0.5 ? 1 : -1) * speed * 0.85;
+    refreshComputerAim();
   }
 
   function updateScores() {

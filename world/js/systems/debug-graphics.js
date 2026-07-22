@@ -1,4 +1,4 @@
-import { isDebugEnabled } from "../config/debug.js?v=146";
+import { isDebugEnabled } from "../config/debug.js?v=147";
 
 function getStore() {
   if (typeof window !== "undefined") {

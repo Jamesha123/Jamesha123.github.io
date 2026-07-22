@@ -1,6 +1,6 @@
-import { CharacterAnimation } from "../systems/character-animation.js?v=146";
-import { DebugGraphics } from "../systems/debug-graphics.js?v=146";
-import { createWorldLabel } from "../ui/world-label.js?v=146";
+import { CharacterAnimation } from "../systems/character-animation.js?v=147";
+import { DebugGraphics } from "../systems/debug-graphics.js?v=147";
+import { createWorldLabel } from "../ui/world-label.js?v=147";
 
 const FACING_DIRECTIONS = ["down", "left", "right", "up"];
 const OPPOSITE_FACING = {

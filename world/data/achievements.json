@@ -25,15 +25,15 @@
       "icon": "🕹️"
     },
     {
-      "id": "hotspot:todo-lists",
+      "id": "demo:lists-add-item",
       "title": "List Maker",
-      "description": "Tried the collaborative lists demo.",
+      "description": "Added an item to a to-do list.",
       "icon": "📝"
     },
     {
-      "id": "hotspot:nws-alerts",
+      "id": "demo:nws-subscribe",
       "title": "Weather Watch",
-      "description": "Checked out the NWS alert demo.",
+      "description": "Subscribed to NWS alerts for a location.",
       "icon": "🌩️"
     },
     {
@@ -41,6 +41,30 @@
       "title": "Bookworm",
       "description": "Visited the book recommender project.",
       "icon": "📚"
+    },
+    {
+      "id": "demo:snake-score-25",
+      "title": "Snake Charmer",
+      "description": "Scored over 25 in Snake.",
+      "icon": "🐍"
+    },
+    {
+      "id": "demo:blackjack-sweep",
+      "title": "Card Shark",
+      "description": "Enable all 5 hands (3 on mobile), then win every hand in one round.",
+      "icon": "🃏"
+    },
+    {
+      "id": "demo:pong-win",
+      "title": "Pong Pro",
+      "description": "Beat the CPU in Pong on any difficulty.",
+      "icon": "🏓"
+    },
+    {
+      "id": "demo:hangman-win",
+      "title": "Word Smith",
+      "description": "Guessed a Hangman word correctly.",
+      "icon": "🔤"
     },
     {
       "id": "map:house-interior",

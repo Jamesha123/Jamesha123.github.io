@@ -1,12 +1,12 @@
-import { getObjectProperty, getObjectFeetPosition, getObjectRectHitbox } from "../utils/helpers.js?v=146";
-import { setupCamera } from "./camera-controller.js?v=146";
+import { getObjectProperty, getObjectFeetPosition, getObjectRectHitbox } from "../utils/helpers.js?v=147";
+import { setupCamera } from "./camera-controller.js?v=147";
 
-import { CharacterAnimation } from "../systems/character-animation.js?v=146";
+import { CharacterAnimation } from "../systems/character-animation.js?v=147";
 
-import { MapPropSystem } from "../systems/map-prop-system.js?v=146";
-import { FurnitureSystem } from "../systems/furniture-system.js?v=146";
+import { MapPropSystem } from "../systems/map-prop-system.js?v=147";
+import { FurnitureSystem } from "../systems/furniture-system.js?v=147";
 
-import { AvatarNpc } from "../entities/avatar-npc.js?v=146";
+import { AvatarNpc } from "../entities/avatar-npc.js?v=147";
 
 
 

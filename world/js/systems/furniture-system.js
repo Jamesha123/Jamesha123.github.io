@@ -1,6 +1,6 @@
-import { getObjectProperty } from "../utils/helpers.js?v=146";
-import { DebugGraphics } from "./debug-graphics.js?v=146";
-import { MapPropSystem } from "./map-prop-system.js?v=146";
+import { getObjectProperty } from "../utils/helpers.js?v=147";
+import { DebugGraphics } from "./debug-graphics.js?v=147";
+import { MapPropSystem } from "./map-prop-system.js?v=147";
 
 export class FurnitureSystem {
   static shouldCollide(obj, furnitureDef) {
